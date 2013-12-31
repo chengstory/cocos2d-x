@@ -204,9 +204,9 @@ void UIButton::loadTextureNormal(const char* normal,TextureResType texType)
         dynamic_cast<CCSprite*>(m_pButtonNormalRenderer)->updateDisplayedColor(getColor());
         dynamic_cast<CCSprite*>(m_pButtonNormalRenderer)->updateDisplayedOpacity(getOpacity());
     }
-    m_normalTextureSize = m_pButtonNormalRenderer->getContentSize();
-    updateAnchorPoint();
+    m_normalTextureSize = m_pButtonNormalRenderer->getContentSize();    
     normalTextureScaleChangedWithSize();
+	updateAnchorPoint();
 }
 
 void UIButton::loadTexturePressed(const char* selected,TextureResType texType)
