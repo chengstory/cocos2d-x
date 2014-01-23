@@ -355,6 +355,10 @@ void ListView::setItemsMargin(float margin)
     _itemsMargin = margin;
     _refreshViewDirty = true;
 }
+float ListView::getItemMargin()
+{
+    return _itemsMargin;
+}
 
 void ListView::setDirection(SCROLLVIEW_DIR dir)
 {

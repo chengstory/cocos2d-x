@@ -215,6 +215,11 @@ void ImageView::setScale9Enabled(bool able)
     setCapInsets(_capInsets);
 }
 
+bool ImageView::isScale9Enabled()
+{
+    return _scale9Enabled;
+}
+
 void ImageView::ignoreContentAdaptWithSize(bool ignore)
 {
     if (!_scale9Enabled || (_scale9Enabled && !ignore))
@@ -232,6 +237,15 @@ void ImageView::setCapInsets(const CCRect &capInsets)
         return;
     }
     STATIC_CAST_SCALE9SPRITE->setCapInsets(capInsets);
+}
+
+CCRect& ImageView::getCapInsets()
+{
+    if(!_scale9Enabled)
+    {
+        return CCRectMake(0,0,0,0);
+    }
+    return STATIC_CAST_SCALE9SPRITE->getCapInsets();
 }
 
 void ImageView::setAnchorPoint(const CCPoint &pt)

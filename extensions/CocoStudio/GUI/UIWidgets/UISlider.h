@@ -76,6 +76,8 @@ public:
      * @param true that using scale9 renderer, false otherwise.
      */
     void setScale9Enabled(bool able);
+
+    bool isScale9Enabled();
     
     /**
      * Sets capinsets for slider, if slider is using scale9 renderer.
@@ -83,6 +85,8 @@ public:
      * @param capInsets    capinsets for slider
      */
     void setCapInsets(const CCRect &capInsets);
+
+    CCRect& getCapInsets();
     
     /**
      * Sets capinsets for slider, if slider is using scale9 renderer.

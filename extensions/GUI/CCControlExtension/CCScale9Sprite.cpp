@@ -137,8 +137,6 @@ bool CCScale9Sprite::updateWithBatchNode(CCSpriteBatchNode* batchnode, CCRect re
     }
 
     _scale9Image->removeAllChildrenWithCleanup(true);
-
-    m_capInsets = capInsets;
     
     // If there is no given rect
     if ( rect.equals(CCRectZero) )
@@ -679,7 +677,7 @@ void CCScale9Sprite::setCapInsets(CCRect capInsets)
 
 CCRect CCScale9Sprite::getCapInsets()
 {
-    return m_capInsets;
+    return m_capInsetsInternal;
 }
 
 void CCScale9Sprite::updateCapInset()

@@ -100,6 +100,7 @@ public:
      */
     void setCapInsets(const CCRect &capInsets);
 
+    CCRect& getCapInsets();
     /**
      * Sets capinsets for button, if button is using scale9 renderer.
      *
@@ -130,6 +131,8 @@ public:
      * @param true that using scale9 renderer, false otherwise.
      */
     virtual void setScale9Enabled(bool able);
+
+    virtual bool isScale9Enabled();
     
     //override "setFlipX" of widget.
     virtual void setFlipX(bool flipX);

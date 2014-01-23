@@ -481,6 +481,11 @@ void Layout::setBackGroundImageScale9Enabled(bool able)
     setBackGroundImageCapInsets(_backGroundImageCapInsets);
 }
 
+bool Layout::isBackGroundImageScale9Enabled()
+{
+    return _backGroundScale9Enabled;
+}
+
 void Layout::setBackGroundImage(const char* fileName,TextureResType texType)
 {
     if (!fileName || strcmp(fileName, "") == 0)
@@ -546,6 +551,15 @@ void Layout::setBackGroundImageCapInsets(const CCRect &capInsets)
     {
         static_cast<extension::CCScale9Sprite*>(_backGroundImage)->setCapInsets(capInsets);
     }
+}
+
+CCRect& Layout::getBackGroundImageCapInsets()
+{
+    if (_backGroundScale9Enabled && _backGroundImage)
+    {
+        return static_cast<extension::CCScale9Sprite*>(_backGroundImage)->getCapInsets();
+    }
+    return CCRectMake(0,0,0,0);
 }
 
 void Layout::supplyTheLayoutParameterLackToChild(Widget *child)
@@ -673,6 +687,11 @@ void Layout::setBackGroundColorType(LayoutBackGroundColorType type)
     }
 }
 
+LayoutBackGroundColorType Layout::getBackGroundColorType()
+{
+    return _colorType;
+}
+
 void Layout::setBackGroundColor(const ccColor3B &color)
 {
     _cColor = color;
@@ -680,6 +699,10 @@ void Layout::setBackGroundColor(const ccColor3B &color)
     {
         _colorRender->setColor(color);
     }
+}
+ccColor3B& Layout::getBackGroundColor()
+{
+    return _cColor;
 }
 
 void Layout::setBackGroundColor(const ccColor3B &startColor, const ccColor3B &endColor)
@@ -695,7 +718,15 @@ void Layout::setBackGroundColor(const ccColor3B &startColor, const ccColor3B &en
         _gradientRender->setEndColor(endColor);
     }
 }
+ccColor3B& Layout::getBackGroundStartColor()
+{
+    return _gStartColor;
+}
 
+ccColor3B& Layout::getBackGroundEndColor()
+{
+    return _gEndColor;
+}
 void Layout::setBackGroundColorOpacity(int opacity)
 {
     _cOpacity = opacity;
@@ -713,6 +744,10 @@ void Layout::setBackGroundColorOpacity(int opacity)
             break;
     }
 }
+int Layout::getBackGroundColorOpacity()
+{
+    return _cOpacity;
+}
 
 void Layout::setBackGroundColorVector(const CCPoint &vector)
 {
@@ -721,6 +756,10 @@ void Layout::setBackGroundColorVector(const CCPoint &vector)
     {
         _gradientRender->setVector(vector);
     }
+}
+CCPoint& Layout::getBackGroundColorVector()
+{
+    return _alongVector;
 }
 
 const CCSize& Layout::getBackGroundImageTextureSize() const

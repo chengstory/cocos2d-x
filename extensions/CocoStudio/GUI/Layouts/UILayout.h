@@ -90,6 +90,8 @@ public:
      *
      */
     void setBackGroundImageCapInsets(const CCRect& capInsets);
+
+    CCRect& getBackGroundImageCapInsets();
     
     /**
      * Sets Color Type for layout.
@@ -98,6 +100,7 @@ public:
      */
     void setBackGroundColorType(LayoutBackGroundColorType type);
     
+    LayoutBackGroundColorType getBackGroundColorType();
     /**
      * Sets background iamge use scale9 renderer.
      *
@@ -105,12 +108,15 @@ public:
      */
     void setBackGroundImageScale9Enabled(bool enabled);
     
+    bool isBackGroundImageScale9Enabled();
     /**
      * Sets background color for layout, if color type is LAYOUT_COLOR_SOLID
      *
      * @param color
      */
     void setBackGroundColor(const ccColor3B &color);
+
+    ccColor3B& getBackGroundColor(); 
     
     /**
      * Sets background color for layout, if color type is LAYOUT_COLOR_GRADIENT
@@ -120,6 +126,10 @@ public:
      * @param end color
      */
     void setBackGroundColor(const ccColor3B &startColor, const ccColor3B &endColor);
+
+    ccColor3B& getBackGroundStartColor();
+
+    ccColor3B& getBackGroundEndColor();
     
     /**
      * Sets background opacity layout.
@@ -127,6 +137,8 @@ public:
      * @param opacity
      */
     void setBackGroundColorOpacity(int opacity);
+
+    int getBackGroundColorOpacity();
     
     /**
      * Sets background color vector for layout, if color type is LAYOUT_COLOR_GRADIENT
@@ -134,6 +146,8 @@ public:
      * @param vector
      */
     void setBackGroundColorVector(const CCPoint &vector);
+
+    CCPoint& getBackGroundColorVector();
     
     /**
      * Remove the background image of layout.
