@@ -149,6 +149,8 @@ public:
      * @param margin
      */
     void setItemsMargin(float margin);
+
+    float getItemMargin();
     
     virtual void sortAllChildren();
     

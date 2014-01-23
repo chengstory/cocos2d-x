@@ -104,6 +104,11 @@ void Button::initRenderer()
     CCNodeRGBA::addChild(_titleRenderer,TITLE_RENDERER_Z, -1);
 }
 
+bool Button::isScale9Enabled()
+{
+    return _scale9Enabled;
+}
+
 void Button::setScale9Enabled(bool able)
 {
     if (_scale9Enabled == able)
@@ -315,6 +320,15 @@ void Button::setCapInsets(const CCRect &capInsets)
     setCapInsetsNormalRenderer(capInsets);
     setCapInsetsPressedRenderer(capInsets);
     setCapInsetsDisabledRenderer(capInsets);
+}
+
+CCRect& Button::getCapInsets()
+{
+    if(!_scale9Enabled)
+    {
+        return CCRectMake(0,0,0,0);
+    }
+    return static_cast<extension::CCScale9Sprite*>(_buttonNormalRenderer)->getCapInsets();
 }
 
 void Button::setCapInsetsNormalRenderer(const CCRect &capInsets)
