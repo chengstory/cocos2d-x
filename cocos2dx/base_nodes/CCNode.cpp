@@ -1309,10 +1309,16 @@ bool CCNode::addComponent(CCComponent *pComponent)
     return m_pComponentContainer->add(pComponent);
 }
 
-bool CCNode::removeComponent(const char *pName)
+bool CCNode::removeComponent(const char *pName, bool bCleanUp/* = true*/)
 {
-    return m_pComponentContainer->remove(pName);
+    return m_pComponentContainer->remove(pName, bCleanUp);
 }
+
+bool CCNode::removeComponent(CCComponent *pComponent, bool bCleanUp /*= true*/)
+{
+	return m_pComponentContainer->remove(pComponent, bCleanUp);
+}
+
 
 void CCNode::removeAllComponents()
 {

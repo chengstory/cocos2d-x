@@ -1369,7 +1369,12 @@ public:
     /** 
      *   removes a component by its name      
      */
-    virtual bool removeComponent(const char *pName);
+    virtual bool removeComponent(const char *pName, bool bCleanUp = true);
+
+	  /** 
+     *   removes a component by its name      
+     */
+    virtual bool removeComponent(CCComponent *pComponent, bool bCleanUp = true);
     
     /**
      *   removes all components
