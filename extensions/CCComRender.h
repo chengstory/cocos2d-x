@@ -22,86 +22,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "support/component/CCComponent.h"
-#include "CCDirector.h"
+#ifndef __CC_EXTENTIONS_CCCOMRENDER_H__
+#define __CC_EXTENTIONS_CCCOMRENDER_H__
 
+#include "CCComBase.h"
 
-NS_CC_BEGIN
+NS_CC_EXT_BEGIN
 
-CCComponent::CCComponent(void)
-: m_pOwner(NULL)
-, m_bEnabled(true)
+/**
+ *  @lua NA
+ */
+class CCComRender : public cocos2d::CCComponent
 {
-}
+	DECLARE_CLASS_COMPONENT_INFO
+public:
+    /**
+     *  @js ctor
+     */
+    CCComRender(void);
+    CCComRender(cocos2d::CCNode *node, const char *comName);
+    /**
+     *  @js NA
+     */
+    virtual ~CCComRender(void);
+    
+public:
+   virtual void onEnter();
+   virtual void onExit(bool bCleanUp = true);
+   virtual bool serialize(void* r);
+   virtual cocos2d::CCNode* getNode();
+   virtual void setNode(cocos2d::CCNode *pNode);
 
-CCComponent::~CCComponent(void)
-{
-}
+   static CCComRender* create(cocos2d::CCNode *pNode, const char *comName);
+   static CCComRender* create(void);
+private:
+   bool readJson(const char *pszFileName, rapidjson::Document &doc);
+private:
+   cocos2d::CCNode *m_pRender;
+};
 
-bool CCComponent::init()
-{
-    return true;
-}
+NS_CC_EXT_END
 
-void CCComponent::onEnter()
-{
-}
-
-void CCComponent::onExit(bool bCleanUp/* = true*/)
-{
-}
-
-void CCComponent::update(float delta)
-{
-}
-
-bool CCComponent::serialize(void *ar)
-{
-	return true;
-}
-
-CCComponent* CCComponent::create(void)
-{
-    CCComponent * pRet = new CCComponent();
-    if (pRet != NULL && pRet->init())
-    {
-        pRet->autorelease();
-    }
-    else
-    {
-        CC_SAFE_DELETE(pRet);
-    }
-	return pRet;
-}
-
-const char* CCComponent::getName() const
-{
-    return m_strName.c_str();
-}
-
-void  CCComponent::setName(const char *pName)
-{
-	m_strName.assign(pName);
-}
-
-CCNode* CCComponent::getOwner() const
-{
-    return m_pOwner;
-}
-
-void CCComponent::setOwner(CCNode *pOwner)
-{
-    m_pOwner = pOwner;
-}
-
-bool CCComponent::isEnabled() const
-{
-    return m_bEnabled;
-}
-
-void CCComponent::setEnabled(bool b)
-{
-    m_bEnabled = b;
-}
-
-NS_CC_END
+#endif  // __FUNDATION__CCCOMPONENT_H__

@@ -22,48 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "support/component/CCComponent.h"
-#include "CCDirector.h"
+#include "CCComController.h"
 
+NS_CC_EXT_BEGIN
 
-NS_CC_BEGIN
+IMPLEMENT_CLASS_COMPONENT_INFO(CCComController)
+CCComController::CCComController(void)
+{
+    m_strName = "CCComController";
+}
 
-CCComponent::CCComponent(void)
-: m_pOwner(NULL)
-, m_bEnabled(true)
+CCComController::~CCComController(void)
 {
 }
 
-CCComponent::~CCComponent(void)
-{
-}
-
-bool CCComponent::init()
+bool CCComController::init()
 {
     return true;
 }
 
-void CCComponent::onEnter()
+void CCComController::onEnter()
 {
 }
 
-void CCComponent::onExit(bool bCleanUp/* = true*/)
+void CCComController::onExit(bool bCleanUp/* = true*/)
 {
 }
 
-void CCComponent::update(float delta)
+void CCComController::update(float delta)
 {
 }
 
-bool CCComponent::serialize(void *ar)
+bool CCComController::isEnabled() const
 {
-	return true;
+    return m_bEnabled;
 }
 
-CCComponent* CCComponent::create(void)
+void CCComController::setEnabled(bool b)
 {
-    CCComponent * pRet = new CCComponent();
-    if (pRet != NULL && pRet->init())
+    m_bEnabled = b;
+}
+
+CCComController* CCComController::create(void)
+{
+    CCComController * pRet = new CCComController();
+    if (pRet && pRet->init())
     {
         pRet->autorelease();
     }
@@ -74,34 +77,4 @@ CCComponent* CCComponent::create(void)
 	return pRet;
 }
 
-const char* CCComponent::getName() const
-{
-    return m_strName.c_str();
-}
-
-void  CCComponent::setName(const char *pName)
-{
-	m_strName.assign(pName);
-}
-
-CCNode* CCComponent::getOwner() const
-{
-    return m_pOwner;
-}
-
-void CCComponent::setOwner(CCNode *pOwner)
-{
-    m_pOwner = pOwner;
-}
-
-bool CCComponent::isEnabled() const
-{
-    return m_bEnabled;
-}
-
-void CCComponent::setEnabled(bool b)
-{
-    m_bEnabled = b;
-}
-
-NS_CC_END
+NS_CC_EXT_END

@@ -22,86 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "support/component/CCComponent.h"
-#include "CCDirector.h"
+#ifndef __CC_EXTENTIONS_CCCOMCONTROLLER_H__
+#define __CC_EXTENTIONS_CCCOMCONTROLLER_H__
 
+#include "CCComBase.h"
+#include "CCInputDelegate.h"
 
-NS_CC_BEGIN
-
-CCComponent::CCComponent(void)
-: m_pOwner(NULL)
-, m_bEnabled(true)
+NS_CC_EXT_BEGIN
+/**
+ *  @lua NA
+ */
+class CCComController : public cocos2d::CCComponent, public CCInputDelegate
 {
-}
+	DECLARE_CLASS_COMPONENT_INFO
+public:
+   /**
+    *  @js ctor
+    */
+   CCComController(void);
+   /**
+    *  @js NA
+    */
+   virtual ~CCComController(void);
+   virtual bool init();
+   virtual void onEnter();
+   virtual void onExit(bool bCleanUp = true);
+   virtual void update(float delta);
+   virtual bool isEnabled() const;
+   virtual void setEnabled(bool b);
+    
+   static CCComController* create(void);
+};
 
-CCComponent::~CCComponent(void)
-{
-}
+NS_CC_EXT_END
 
-bool CCComponent::init()
-{
-    return true;
-}
-
-void CCComponent::onEnter()
-{
-}
-
-void CCComponent::onExit(bool bCleanUp/* = true*/)
-{
-}
-
-void CCComponent::update(float delta)
-{
-}
-
-bool CCComponent::serialize(void *ar)
-{
-	return true;
-}
-
-CCComponent* CCComponent::create(void)
-{
-    CCComponent * pRet = new CCComponent();
-    if (pRet != NULL && pRet->init())
-    {
-        pRet->autorelease();
-    }
-    else
-    {
-        CC_SAFE_DELETE(pRet);
-    }
-	return pRet;
-}
-
-const char* CCComponent::getName() const
-{
-    return m_strName.c_str();
-}
-
-void  CCComponent::setName(const char *pName)
-{
-	m_strName.assign(pName);
-}
-
-CCNode* CCComponent::getOwner() const
-{
-    return m_pOwner;
-}
-
-void CCComponent::setOwner(CCNode *pOwner)
-{
-    m_pOwner = pOwner;
-}
-
-bool CCComponent::isEnabled() const
-{
-    return m_bEnabled;
-}
-
-void CCComponent::setEnabled(bool b)
-{
-    m_bEnabled = b;
-}
-
-NS_CC_END
+#endif  // __FUNDATION__CCCOMPONENT_H__

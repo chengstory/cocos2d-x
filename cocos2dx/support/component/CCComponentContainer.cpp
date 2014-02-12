@@ -78,7 +78,7 @@ bool CCComponentContainer::add(CCComponent *pCom)
     return bRet;
 }
 
-bool CCComponentContainer::remove(const char *pName)
+bool CCComponentContainer::remove(const char *pName, bool bCleanUp/* = true*/)
 {
     bool bRet = false;
     CCAssert(pName != NULL, "Argument must be non-nil");
@@ -94,15 +94,48 @@ bool CCComponentContainer::remove(const char *pName)
         }
         CCComponent *com = dynamic_cast<CCComponent*>(pRetObject);
         CC_BREAK_IF(!com);
-        com->onExit();
+        com->onExit(bCleanUp);
         com->setOwner(NULL);
         HASH_DEL(m_pComponents->m_pElements, pElement);
-        pElement->getObject()->release();
+		if (bCleanUp)
+		{
+			pElement->getObject()->release();
+		}
         CC_SAFE_DELETE(pElement);
         bRet = true;
     } while(0);
     return bRet;
  }
+
+bool CCComponentContainer::remove(CCComponent *pCom, bool bCleanUp/* = true*/)
+{
+	bool bRet = false;
+	do 
+	{ 
+		CC_BREAK_IF(!m_pComponents);
+		CCDictElement *pElement = NULL;
+		CCDictElement *tmp = NULL;
+		HASH_ITER(hh, m_pComponents->m_pElements, pElement, tmp)
+		{
+			if (pElement->getObject() == pCom)
+			{
+				pCom->onExit(bCleanUp);
+				pCom->setOwner(NULL);
+				HASH_DEL(m_pComponents->m_pElements, pElement);
+				if (bCleanUp)
+				{
+					pElement->getObject()->release();
+				}
+				CC_SAFE_DELETE(pElement);
+			}
+			
+		}
+		bRet = true;
+	} while (0);
+
+	return bRet;
+}
+
 
 void CCComponentContainer::removeAll()
 {
@@ -143,5 +176,8 @@ bool CCComponentContainer::isEmpty() const
 {
     return (bool)(!(m_pComponents && m_pComponents->count()));
 }
+
+
+
 
 NS_CC_END
