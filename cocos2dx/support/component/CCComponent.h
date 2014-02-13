@@ -50,7 +50,7 @@ public:
      *  @js NA
      *  @lua NA
      */
-    virtual void onExit(bool bCleanUp = true);
+    virtual void onExit();
     virtual void update(float delta);
     virtual bool serialize(void* r);
     virtual bool isEnabled() const;
