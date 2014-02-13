@@ -78,7 +78,7 @@ bool CCComponentContainer::add(CCComponent *pCom)
     return bRet;
 }
 
-bool CCComponentContainer::remove(const char *pName, bool bCleanUp/* = true*/)
+bool CCComponentContainer::remove(const char *pName)
 {
     bool bRet = false;
     CCAssert(pName != NULL, "Argument must be non-nil");
@@ -94,48 +94,40 @@ bool CCComponentContainer::remove(const char *pName, bool bCleanUp/* = true*/)
         }
         CCComponent *com = dynamic_cast<CCComponent*>(pRetObject);
         CC_BREAK_IF(!com);
-        com->onExit(bCleanUp);
+        com->onExit();
         com->setOwner(NULL);
         HASH_DEL(m_pComponents->m_pElements, pElement);
-		if (bCleanUp)
-		{
-			pElement->getObject()->release();
-		}
+        pElement->getObject()->release();
         CC_SAFE_DELETE(pElement);
         bRet = true;
     } while(0);
     return bRet;
  }
 
-bool CCComponentContainer::remove(CCComponent *pCom, bool bCleanUp/* = true*/)
+bool CCComponentContainer::remove(CCComponent *pCom)
 {
-	bool bRet = false;
-	do 
-	{ 
-		CC_BREAK_IF(!m_pComponents);
-		CCDictElement *pElement = NULL;
-		CCDictElement *tmp = NULL;
-		HASH_ITER(hh, m_pComponents->m_pElements, pElement, tmp)
-		{
-			if (pElement->getObject() == pCom)
-			{
-				pCom->onExit(bCleanUp);
-				pCom->setOwner(NULL);
-				HASH_DEL(m_pComponents->m_pElements, pElement);
-				if (bCleanUp)
-				{
-					pElement->getObject()->release();
-				}
-				CC_SAFE_DELETE(pElement);
-			}
-			
-		}
-		bRet = true;
-	} while (0);
-
-	return bRet;
+    bool bRet = false;
+    do 
+    { 
+        CC_BREAK_IF(!m_pComponents);
+        CCDictElement *pElement = NULL;
+        CCDictElement *tmp = NULL;
+        HASH_ITER(hh, m_pComponents->m_pElements, pElement, tmp)
+        {
+            if (pElement->getObject() == pCom)
+            {
+                pCom->onExit();
+                pCom->setOwner(NULL);
+                HASH_DEL(m_pComponents->m_pElements, pElement);
+                pElement->getObject()->release();
+                CC_SAFE_DELETE(pElement);
+                break;
+            }
+        }
+        bRet = true;
+    } while (0);
+    return bRet;
 }
-
 
 void CCComponentContainer::removeAll()
 {

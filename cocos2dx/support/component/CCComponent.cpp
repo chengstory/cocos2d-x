@@ -47,7 +47,7 @@ void CCComponent::onEnter()
 {
 }
 
-void CCComponent::onExit(bool bCleanUp/* = true*/)
+void CCComponent::onExit()
 {
 }
 
