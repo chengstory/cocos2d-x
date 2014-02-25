@@ -60,6 +60,15 @@ void LabelBMFont::initRenderer()
     _labelBMFontRenderer = cocos2d::CCLabelBMFont::create();
     CCNodeRGBA::addChild(_labelBMFontRenderer, LABELBMFONT_RENDERER_Z, -1);
 }
+//reset render node
+void LabelBMFont::resetRender()
+{
+    if (_labelBMFontRenderer!= nullptr)
+    {
+        CCNodeRGBA::removeChild(_labelBMFontRenderer);
+    }
+    this->initRenderer();
+}
 
 void LabelBMFont::setFntFile(const char *fileName)
 {

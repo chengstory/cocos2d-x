@@ -624,6 +624,9 @@ public:
     /*temp action*/
     void setActionTag(int tag);
 	int getActionTag();
+
+    //reset render node
+    virtual void resetRender(){};
 protected:
     //call back function called when size changed.
     virtual void onSizeChanged();
