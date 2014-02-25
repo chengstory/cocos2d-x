@@ -68,6 +68,9 @@ public:
      * Returns the "class name" of widget.
      */
     virtual std::string getDescription() const;
+
+    //reset render node
+    virtual void resetRender();
 protected:
     virtual void initRenderer();
     virtual void onSizeChanged();
