@@ -1169,10 +1169,11 @@ void Layout::doLayout()
                                 
                             case RELATIVE_LOCATION_ABOVE_LEFTALIGN:
                                 finalPosY += mg.bottom;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)
+                                //if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)
+                                if (0)
                                 {
                                     finalPosY += relativeWidgetMargin.top;
                                 }
@@ -1180,10 +1181,11 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_ABOVE_RIGHTALIGN:
                                 finalPosY += mg.bottom;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
+                                /*if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
                                     && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
                                     && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)
+                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)*/
+                                if (0)
                                 {
                                     finalPosY += relativeWidgetMargin.top;
                                 }
@@ -1191,10 +1193,11 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_ABOVE_CENTER:
                                 finalPosY += mg.bottom;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)
+                                //if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_CENTER_HORIZONTAL
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT)
+                                if (0)
                                 {
                                     finalPosY += relativeWidgetMargin.top;
                                 }
@@ -1202,10 +1205,11 @@ void Layout::doLayout()
                                 
                             case RELATIVE_LOCATION_LEFT_OF_TOPALIGN:
                                 finalPosX -= mg.right;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_CENTER_VERTICAL)
+                                //if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
+                                //    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX -= relativeWidgetMargin.left;
                                 }
@@ -1213,10 +1217,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_LEFT_OF_BOTTOMALIGN:
                                 finalPosX -= mg.right;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX -= relativeWidgetMargin.left;
                                 }
@@ -1224,10 +1225,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_LEFT_OF_CENTER:
                                 finalPosX -= mg.right;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_LEFT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_NONE
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX -= relativeWidgetMargin.left;
                                 }
@@ -1235,9 +1233,7 @@ void Layout::doLayout()
                                 
                             case RELATIVE_LOCATION_RIGHT_OF_TOPALIGN:
                                 finalPosX += mg.left;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX += relativeWidgetMargin.right;
                                 }
@@ -1245,9 +1241,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_RIGHT_OF_BOTTOMALIGN:
                                 finalPosX += mg.left;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX += relativeWidgetMargin.right;
                                 }
@@ -1255,9 +1249,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_RIGHT_OF_CENTER:
                                 finalPosX += mg.left;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_TOP_RIGHT
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_CENTER_VERTICAL)
+                                if (0)
                                 {
                                     finalPosX += relativeWidgetMargin.right;
                                 }
@@ -1265,9 +1257,7 @@ void Layout::doLayout()
                                 
                             case RELATIVE_LOCATION_BELOW_LEFTALIGN:
                                 finalPosY -= mg.top;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_BOTTOM_CENTER_HORIZONTAL)
+                                if (0)
                                 {
                                     finalPosY -= relativeWidgetMargin.bottom;
                                 }
@@ -1275,9 +1265,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_BELOW_RIGHTALIGN:
                                 finalPosY -= mg.top;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_BOTTOM_CENTER_HORIZONTAL)
+                                if (0)
                                 {
                                     finalPosY -= relativeWidgetMargin.bottom;
                                 }
@@ -1285,9 +1273,7 @@ void Layout::doLayout()
                                 break;
                             case RELATIVE_LOCATION_BELOW_CENTER:
                                 finalPosY -= mg.top;
-                                if (relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_LEFT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_RIGHT_BOTTOM
-                                    && relativeWidgetLP->getAlign() != RELATIVE_ALIGN_PARENT_BOTTOM_CENTER_HORIZONTAL)
+                                if (0)
                                 {
                                     finalPosY -= relativeWidgetMargin.bottom;
                                 }
