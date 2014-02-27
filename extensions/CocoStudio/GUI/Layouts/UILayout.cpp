@@ -137,6 +137,12 @@ void Layout::addChild(CCNode *child, int zOrder, int tag)
     _doLayoutDirty = true;
 }
 
+void Layout::removeChild(CCNode *child, bool cleanup)
+{
+    Widget::removeChild(child, cleanup);
+    _doLayoutDirty = true;
+}
+
 bool Layout::isClippingEnabled()
 {
     return _clippingEnabled;
