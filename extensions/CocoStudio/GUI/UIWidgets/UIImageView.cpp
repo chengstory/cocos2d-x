@@ -85,16 +85,12 @@ void ImageView::loadTexture(const char *fileName, TextureResType texType)
             {
                 extension::CCScale9Sprite* imageRendererScale9 = STATIC_CAST_SCALE9SPRITE;
                 imageRendererScale9->initWithFile(fileName);
-                imageRendererScale9->setColor(getColor());
-                imageRendererScale9->setOpacity(getOpacity());
                 imageRendererScale9->setCapInsets(_capInsets);
             }
             else
             {
                 CCSprite* imageRenderer = STATIC_CAST_CCSPRITE;
                 imageRenderer->initWithFile(fileName);
-                imageRenderer->setColor(getColor());
-                imageRenderer->setOpacity(getOpacity());
             }
             break;
         case UI_TEX_TYPE_PLIST:
@@ -102,24 +98,20 @@ void ImageView::loadTexture(const char *fileName, TextureResType texType)
             {
                 extension::CCScale9Sprite* imageRendererScale9 = STATIC_CAST_SCALE9SPRITE;
                 imageRendererScale9->initWithSpriteFrameName(fileName);
-                imageRendererScale9->setColor(getColor());
-                imageRendererScale9->setOpacity(getOpacity());
                 imageRendererScale9->setCapInsets(_capInsets);
             }
             else
             {
                 CCSprite* imageRenderer = STATIC_CAST_CCSPRITE;
                 imageRenderer->initWithSpriteFrameName(fileName);
-                imageRenderer->setColor(getColor());
-                imageRenderer->setOpacity(getOpacity());
             }
             break;
         default:
             break;
     }
     _imageTextureSize = _imageRenderer->getContentSize();
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_imageRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_imageRenderer)->setOpacity(getOpacity()); 
     updateAnchorPoint();
     imageTextureScaleChangedWithSize();
 }
@@ -322,6 +314,26 @@ void ImageView::copySpecialProperties(Widget *widget)
         loadTexture(imageView->_textureFile.c_str(), imageView->_imageTexType);
         setCapInsets(imageView->_capInsets);
     }
+}
+
+void ImageView::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _backGroundImagePrptocol = dynamic_cast<CCRGBAProtocol*>(_imageRenderer);
+    if (_backGroundImagePrptocol)
+    {
+        _backGroundImagePrptocol->setOpacity(opacity);
+    } 
+}
+
+void ImageView::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _backGroundImagePrptocol = dynamic_cast<CCRGBAProtocol*>(_imageRenderer);
+    if (_backGroundImagePrptocol)
+    {
+        _backGroundImagePrptocol->setColor(color);
+    }  
 }
 
 }

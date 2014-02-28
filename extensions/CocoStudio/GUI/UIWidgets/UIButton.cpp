@@ -213,9 +213,9 @@ void Button::loadTextureNormal(const char* normal,TextureResType texType)
                 break;
         }
     }
+    dynamic_cast<CCRGBAProtocol*>(_buttonNormalRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_buttonNormalRenderer)->setOpacity(getOpacity());
     _normalTextureSize = _buttonNormalRenderer->getContentSize();
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
     updateAnchorPoint();
     normalTextureScaleChangedWithSize();
     _normalTextureLoaded = true;
@@ -261,8 +261,8 @@ void Button::loadTexturePressed(const char* selected,TextureResType texType)
         }
     }
     _pressedTextureSize = _buttonClickedRenderer->getContentSize();
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_buttonClickedRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_buttonClickedRenderer)->setOpacity(getOpacity());
     updateAnchorPoint();
     pressedTextureScaleChangedWithSize();
     _pressedTextureLoaded = true;
@@ -308,8 +308,8 @@ void Button::loadTextureDisabled(const char* disabled,TextureResType texType)
         }
     }
     _disabledTextureSize = _buttonDisableRenderer->getContentSize();
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_buttonDisableRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_buttonDisableRenderer)->setOpacity(getOpacity());
     updateAnchorPoint();
     disabledTextureScaleChangedWithSize();
     _disabledTextureLoaded = true;
@@ -625,7 +625,7 @@ const char* Button::getTitleText() const
 void Button::setTitleColor(const ccColor3B& color)
 {
     _titleColor = color;
-    _titleRenderer->updateDisplayedColor(color);
+    _titleRenderer->setColor(color);
 }
 
 const ccColor3B& Button::getTitleColor() const
@@ -651,12 +651,6 @@ void Button::setTitleFontName(const char* fontName)
 const char* Button::getTitleFontName() const
 {
     return _titleRenderer->getFontName();
-}
-
-void Button::setColor(const ccColor3B &color)
-{
-    Widget::setColor(color);
-    setTitleColor(_titleColor);
 }
 
 std::string Button::getDescription() const
@@ -688,6 +682,47 @@ void Button::copySpecialProperties(Widget *widget)
         setTitleColor(button->getTitleColor());
         setPressedActionEnabled(button->_pressedActionEnabled);
     }
+}
+
+void Button::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _buttonNormalRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonNormalRenderer);
+    if (_buttonNormalRendererProtocol)
+    {
+        _buttonNormalRendererProtocol->setOpacity(opacity);
+    } 
+    CCRGBAProtocol* _buttonClickedRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonClickedRenderer);
+    if (_buttonClickedRendererProtocol)
+    {
+        _buttonClickedRendererProtocol->setOpacity(opacity);
+    } 
+    CCRGBAProtocol* _buttonDisableRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonDisableRenderer);
+    if (_buttonDisableRendererProtocol)
+    {
+        _buttonDisableRendererProtocol->setOpacity(opacity);
+    } 
+}
+
+void Button::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _buttonNormalRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonNormalRenderer);
+    if (_buttonNormalRendererProtocol)
+    {
+        _buttonNormalRendererProtocol->setColor(color);
+    } 
+    CCRGBAProtocol* _buttonClickedRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonClickedRenderer);
+    if (_buttonClickedRendererProtocol)
+    {
+        _buttonClickedRendererProtocol->setColor(color);
+    } 
+    CCRGBAProtocol* _buttonDisableRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_buttonDisableRenderer);
+    if (_buttonDisableRendererProtocol)
+    {
+        _buttonDisableRendererProtocol->setColor(color);
+    } 
+    //setTitleColor(_titleColor);
 }
 
 }

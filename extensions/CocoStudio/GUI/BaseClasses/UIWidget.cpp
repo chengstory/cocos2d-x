@@ -97,8 +97,6 @@ bool Widget::init()
         _nodes = CCArray::create();
         CC_SAFE_RETAIN(_nodes);
         initRenderer();
-        setCascadeColorEnabled(true);
-        setCascadeOpacityEnabled(true);
         setBright(true);
         ignoreContentAdaptWithSize(true);
         setAnchorPoint(CCPoint(0.5f, 0.5f));

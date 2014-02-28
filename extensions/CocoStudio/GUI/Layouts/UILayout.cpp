@@ -537,15 +537,14 @@ void Layout::setBackGroundImage(const char* fileName,TextureResType texType)
     if (_backGroundScale9Enabled)
     {
         extension::CCScale9Sprite* bgiScale9 = static_cast<extension::CCScale9Sprite*>(_backGroundImage);
-        bgiScale9->setColor(getColor());
-        bgiScale9->setOpacity(getOpacity());
     }
     else
     {
         CCSprite* bgiScale9 = static_cast<CCSprite*>(_backGroundImage);
-        bgiScale9->setColor(getColor());
-        bgiScale9->setOpacity(getOpacity());
     }
+    dynamic_cast<CCRGBAProtocol*>(_backGroundImage)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundImage)->setOpacity(getOpacity());
+
     _backGroundImageTextureSize = _backGroundImage->getContentSize();
     _backGroundImage->setPosition(CCPoint(_size.width/2.0f, _size.height/2.0f));
 }
@@ -1334,5 +1333,26 @@ void Layout::copySpecialProperties(Widget *widget)
         setClippingType(layout->_clippingType);
     }
 }
+
+void Layout::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _backGroundImagePrptocol = dynamic_cast<CCRGBAProtocol*>(_backGroundImage);
+    if (_backGroundImagePrptocol)
+    {
+        _backGroundImagePrptocol->setOpacity(opacity);
+    }    
+}
+
+void Layout::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _backGroundImagePrptocol = dynamic_cast<CCRGBAProtocol*>(_backGroundImage);
+    if (_backGroundImagePrptocol)
+    {
+        _backGroundImagePrptocol->setColor(color);
+    }  
+}
+
 }
 NS_CC_END

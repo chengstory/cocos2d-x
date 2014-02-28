@@ -127,6 +127,9 @@ void CheckBox::loadTextureBackGround(const char *backGround,TextureResType texTy
         default:
             break;
     }
+
+    dynamic_cast<CCRGBAProtocol*>(_backGroundBoxRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundBoxRenderer)->setOpacity(getOpacity());    
     updateDisplayedColor(getColor());
     updateDisplayedOpacity(getOpacity());
     updateAnchorPoint();
@@ -152,8 +155,8 @@ void CheckBox::loadTextureBackGroundSelected(const char *backGroundSelected,Text
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundSelectedBoxRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundSelectedBoxRenderer)->setOpacity(getOpacity()); 
     updateAnchorPoint();
     backGroundSelectedTextureScaleChangedWithSize();
 }
@@ -177,8 +180,8 @@ void CheckBox::loadTextureFrontCross(const char *cross,TextureResType texType)
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_frontCrossRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_frontCrossRenderer)->setOpacity(getOpacity()); 
     updateAnchorPoint();
     frontCrossTextureScaleChangedWithSize();
 }
@@ -202,8 +205,8 @@ void CheckBox::loadTextureBackGroundDisabled(const char *backGroundDisabled,Text
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundBoxDisabledRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_backGroundBoxDisabledRenderer)->setOpacity(getOpacity()); 
     updateAnchorPoint();
     backGroundDisabledTextureScaleChangedWithSize();
 }
@@ -227,8 +230,8 @@ void CheckBox::loadTextureFrontCrossDisabled(const char *frontCrossDisabled,Text
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_frontCrossDisabledRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_frontCrossDisabledRenderer)->setOpacity(getOpacity()); 
     updateAnchorPoint();
     frontCrossDisabledTextureScaleChangedWithSize();
 }
@@ -508,6 +511,66 @@ void CheckBox::copySpecialProperties(Widget *widget)
         loadTextureFrontCrossDisabled(checkBox->_frontCrossDisabledFileName.c_str(), checkBox->_frontCrossDisabledTexType);
         setSelectedState(checkBox->_isSelected);
     }
+}
+
+void CheckBox::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _backGroundBoxRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundBoxRenderer);
+    if (_backGroundBoxRendererProtocol)
+    {
+        _backGroundBoxRendererProtocol->setOpacity(opacity);
+    }  
+    CCRGBAProtocol* _backGroundSelectedBoxRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundSelectedBoxRenderer);
+    if (_backGroundSelectedBoxRendererProtocol)
+    {
+        _backGroundSelectedBoxRendererProtocol->setOpacity(opacity);
+    }  
+    CCRGBAProtocol* _backGroundBoxDisabledRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundBoxDisabledRenderer);
+    if (_backGroundBoxDisabledRendererProtocol)
+    {
+        _backGroundBoxDisabledRendererProtocol->setOpacity(opacity);
+    }  
+    CCRGBAProtocol* _frontCrossRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_frontCrossRenderer);
+    if (_frontCrossRendererProtocol)
+    {
+        _frontCrossRendererProtocol->setOpacity(opacity);
+    }  
+    CCRGBAProtocol* _frontCrossDisabledRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_frontCrossDisabledRenderer);
+    if (_frontCrossDisabledRendererProtocol)
+    {
+        _frontCrossDisabledRendererProtocol->setOpacity(opacity);
+    }  
+}
+
+void CheckBox::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _backGroundBoxRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundBoxRenderer);
+    if (_backGroundBoxRendererProtocol)
+    {
+        _backGroundBoxRendererProtocol->setColor(color);
+    }  
+    CCRGBAProtocol* _backGroundSelectedBoxRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundSelectedBoxRenderer);
+    if (_backGroundSelectedBoxRendererProtocol)
+    {
+        _backGroundSelectedBoxRendererProtocol->setColor(color);
+    }  
+    CCRGBAProtocol* _backGroundBoxDisabledRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_backGroundBoxDisabledRenderer);
+    if (_backGroundBoxDisabledRendererProtocol)
+    {
+        _backGroundBoxDisabledRendererProtocol->setColor(color);
+    }  
+    CCRGBAProtocol* _frontCrossRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_frontCrossRenderer);
+    if (_frontCrossRendererProtocol)
+    {
+        _frontCrossRendererProtocol->setColor(color);
+    }  
+    CCRGBAProtocol* _frontCrossDisabledRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_frontCrossDisabledRenderer);
+    if (_frontCrossDisabledRendererProtocol)
+    {
+        _frontCrossDisabledRendererProtocol->setColor(color);
+    }  
 }
 
 }

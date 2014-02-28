@@ -71,6 +71,9 @@ public:
 
     //reset render node
     virtual void resetRender();
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
 protected:
     virtual void initRenderer();
     virtual void onSizeChanged();

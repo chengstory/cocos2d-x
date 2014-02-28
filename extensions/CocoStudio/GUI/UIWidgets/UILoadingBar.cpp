@@ -140,8 +140,8 @@ void LoadingBar::loadTexture(const char* texture,TextureResType texType)
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setOpacity(getOpacity());
     _barRendererTextureSize = _barRenderer->getContentSize();
     
     switch (_barType)
@@ -348,6 +348,26 @@ void LoadingBar::copySpecialProperties(Widget *widget)
         setCapInsets(loadingBar->_capInsets);
         setPercent(loadingBar->_percent);
     }
+}
+
+void LoadingBar::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _barRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_barRenderer);
+    if (_barRendererProtocol)
+    {
+        _barRendererProtocol->setOpacity(opacity);
+    }
+}
+
+void LoadingBar::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _barRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_barRenderer);
+    if (_barRendererProtocol)
+    {
+        _barRendererProtocol->setColor(color);
+    }  
 }
 
 }

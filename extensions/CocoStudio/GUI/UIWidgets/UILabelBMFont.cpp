@@ -168,6 +168,25 @@ void LabelBMFont::copySpecialProperties(Widget *widget)
     }
 }
 
+void LabelBMFont::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _labelBMFontRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_labelBMFontRenderer);
+    if (_labelBMFontRendererProtocol)
+    {
+        _labelBMFontRendererProtocol->setOpacity(opacity);
+    }  
+}
+
+void LabelBMFont::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _labelBMFontRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_labelBMFontRenderer);
+    if (_labelBMFontRendererProtocol)
+    {
+        _labelBMFontRendererProtocol->setColor(color);
+    }  
+}
 }
 
 NS_CC_END

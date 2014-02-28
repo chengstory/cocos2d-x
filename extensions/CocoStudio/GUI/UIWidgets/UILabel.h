@@ -168,6 +168,9 @@ public:
 
     void setTextVerticalAlignment(CCVerticalTextAlignment alignment);
     CCVerticalTextAlignment getTextVerticalAlignment();
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
 protected:
     virtual bool init();
     virtual void initRenderer();

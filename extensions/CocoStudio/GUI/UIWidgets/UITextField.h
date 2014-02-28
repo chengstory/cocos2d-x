@@ -156,6 +156,10 @@ public:
     virtual CCNode* getVirtualRenderer();
     void attachWithIME();
     virtual void onEnter();
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
+
 protected:
     virtual void initRenderer();
     // event

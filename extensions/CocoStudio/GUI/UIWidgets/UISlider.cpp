@@ -132,8 +132,8 @@ void Slider::loadBarTexture(const char* fileName, TextureResType texType)
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setOpacity(getOpacity());
     barRendererScaleChangedWithSize();
 }
 
@@ -170,8 +170,8 @@ void Slider::loadProgressBarTexture(const char *fileName, TextureResType texType
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_progressBarRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_progressBarRenderer)->setOpacity(getOpacity());
     _progressBarRenderer->setAnchorPoint(CCPoint(0.0f, 0.5f));
     _progressBarTextureSize = _progressBarRenderer->getContentSize();
     progressBarRendererScaleChangedWithSize();
@@ -291,8 +291,8 @@ void Slider::loadSlidBallTextureNormal(const char* normal,TextureResType texType
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallNormalRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallNormalRenderer)->setOpacity(getOpacity());
 }
 
 void Slider::loadSlidBallTexturePressed(const char* pressed,TextureResType texType)
@@ -314,8 +314,8 @@ void Slider::loadSlidBallTexturePressed(const char* pressed,TextureResType texTy
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallPressedRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallPressedRenderer)->setOpacity(getOpacity());
 }
 
 void Slider::loadSlidBallTextureDisabled(const char* disabled,TextureResType texType)
@@ -337,8 +337,8 @@ void Slider::loadSlidBallTextureDisabled(const char* disabled,TextureResType tex
         default:
             break;
     }
-    updateDisplayedColor(getColor());
-    updateDisplayedOpacity(getOpacity());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallDisabledRenderer)->setColor(getColor());
+    dynamic_cast<CCRGBAProtocol*>(_slidBallDisabledRenderer)->setOpacity(getOpacity());
 }
 
 void Slider::setPercent(int percent)
@@ -554,6 +554,46 @@ void Slider::copySpecialProperties(Widget *widget)
         loadSlidBallTexturePressed(slider->_slidBallPressedTextureFile.c_str(), slider->_ballPTexType);
         loadSlidBallTextureDisabled(slider->_slidBallDisabledTextureFile.c_str(), slider->_ballDTexType);
         setPercent(slider->getPercent());
+    }
+}
+
+void Slider::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setOpacity(opacity);
+    dynamic_cast<CCRGBAProtocol*>(_progressBarRenderer)->setOpacity(opacity);
+    dynamic_cast<CCRGBAProtocol*>(_slidBallNormalRenderer)->setOpacity(opacity);
+    dynamic_cast<CCRGBAProtocol*>(_slidBallPressedRenderer)->setOpacity(opacity);
+    dynamic_cast<CCRGBAProtocol*>(_slidBallDisabledRenderer)->setOpacity(opacity);
+}
+
+void Slider::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _barRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_barRenderer);
+    if (_barRendererProtocol)
+    {
+        _barRendererProtocol->setColor(color);
+    }
+    CCRGBAProtocol* _progressBarRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_progressBarRenderer);
+    if (_progressBarRendererProtocol)
+    {
+        _progressBarRendererProtocol->setColor(color);
+    }
+    CCRGBAProtocol* _slidBallNormalRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_slidBallNormalRenderer);
+    if (_slidBallNormalRendererProtocol)
+    {
+        _slidBallNormalRendererProtocol->setColor(color);
+    }
+    CCRGBAProtocol* _slidBallPressedRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_slidBallPressedRenderer);
+    if (_slidBallPressedRendererProtocol)
+    {
+        _slidBallPressedRendererProtocol->setColor(color);
+    }
+    CCRGBAProtocol* _slidBallDisabledRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_slidBallDisabledRenderer);
+    if (_slidBallDisabledRendererProtocol)
+    {
+        _slidBallDisabledRendererProtocol->setColor(color);
     }
 }
 

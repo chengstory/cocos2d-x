@@ -185,6 +185,7 @@ public:
     void setTitleFontName(const char* fontName);
     const char* getTitleFontName() const;
 
+    virtual void setOpacity(GLubyte opacity);
 protected:
     virtual bool init();
     virtual void initRenderer();

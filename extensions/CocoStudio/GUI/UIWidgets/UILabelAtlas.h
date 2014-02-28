@@ -101,6 +101,9 @@ public:
      * Returns the "class name" of widget.
      */
     virtual std::string getDescription() const;
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
     
 protected:
     virtual void initRenderer();

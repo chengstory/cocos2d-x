@@ -201,6 +201,25 @@ void LabelAtlas::copySpecialProperties(Widget *widget)
         setProperty(labelAtlas->_stringValue, labelAtlas->_charMapFileName, labelAtlas->_itemWidth, labelAtlas->_itemHeight, labelAtlas->_startCharMap);
     }
 }
-    
+
+void LabelAtlas::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _laberAtlasRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_laberAtlasRenderer);
+    if (_laberAtlasRendererProtocol)
+    {
+        _laberAtlasRendererProtocol->setOpacity(opacity);
+    }  
+}
+
+void LabelAtlas::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _laberAtlasRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_laberAtlasRenderer);
+    if (_laberAtlasRendererProtocol)
+    {
+        _laberAtlasRendererProtocol->setColor(color);
+    }  
+}
 }
 NS_CC_END

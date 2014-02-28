@@ -111,6 +111,9 @@ public:
     
     virtual const CCSize& getContentSize() const;
     virtual CCNode* getVirtualRenderer();
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
 protected:
     virtual void initRenderer();
     virtual void onSizeChanged();
