@@ -236,13 +236,13 @@ void Slider::setCapInsets(const CCRect &capInsets)
     setCapInsetProgressBarRebderer(capInsets);
 }
 
-CCRect& Slider::getCapInsets()
+CCRect Slider::getCapInsets()
 {
     if (!_scale9Enabled)
     {
         return CCRectMake(0,0,0,0);
     }
-    static_cast<extension::CCScale9Sprite*>(_barRenderer)->getCapInsets();
+    return static_cast<extension::CCScale9Sprite*>(_barRenderer)->getCapInsets();
 }
 
 void Slider::setCapInsetsBarRenderer(const CCRect &capInsets)
