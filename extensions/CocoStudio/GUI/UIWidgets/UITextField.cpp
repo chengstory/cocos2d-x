@@ -618,6 +618,26 @@ void TextField::copySpecialProperties(Widget *widget)
     }
 }
 
+void TextField::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _textFieldRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_textFieldRenderer);
+    if (_textFieldRendererProtocol)
+    {
+        _textFieldRendererProtocol->setOpacity(opacity);
+    }
+}
+
+void TextField::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _textFieldRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_textFieldRenderer);
+    if (_textFieldRendererProtocol)
+    {
+        _textFieldRendererProtocol->setColor(color);
+    } 
+}
+
 }
 
 NS_CC_END

@@ -222,6 +222,8 @@ public:
      * @param tag       A interger to identify the node easily. Please refer to setTag(int)
      */
     virtual void addChild(CCNode* child, int zOrder, int tag);
+
+    virtual void removeChild(CCNode* child, bool cleanup = true);
     
     virtual void visit();
     
@@ -233,6 +235,9 @@ public:
     virtual void onExit();
     
     virtual bool hitTest(const CCPoint &pt);
+
+    virtual void setOpacity(GLubyte opacity);
+    virtual void setColor(const ccColor3B& color);
 protected:
     //override "init" method of widget.
     virtual bool init();

@@ -171,6 +171,7 @@ public:
     
     void requestRefreshView();
     
+    void refreshView();
 protected:
     virtual void addChild(CCNode* child) {ScrollView::addChild(child);};
     virtual void addChild(CCNode * child, int zOrder) {ScrollView::addChild(child, zOrder);};
@@ -192,7 +193,7 @@ protected:
     virtual void copyClonedWidgetChildren(Widget* model);
     void selectedItemEvent();
     virtual void interceptTouchEvent(int handleState,Widget* sender,const CCPoint &touchPoint);
-    void refreshView();
+    
 protected:
     
     Widget* _model;

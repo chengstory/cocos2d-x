@@ -297,6 +297,26 @@ void Label::copySpecialProperties(Widget *widget)
     }
 }
 
+void Label::setOpacity(GLubyte opacity)
+{
+    _displayedOpacity = _realOpacity = opacity;
+    CCRGBAProtocol* _labelRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_labelRenderer);
+    if (_labelRendererProtocol)
+    {
+        _labelRendererProtocol->setOpacity(opacity);
+    } 
+}
+
+void Label::setColor(const ccColor3B& color)
+{
+    _displayedColor = _realColor = color;
+    CCRGBAProtocol* _labelRendererProtocol = dynamic_cast<CCRGBAProtocol*>(_labelRenderer);
+    if (_labelRendererProtocol)
+    {
+        _labelRendererProtocol->setColor(color);
+    }  
+}
+
 }
 
 NS_CC_END
