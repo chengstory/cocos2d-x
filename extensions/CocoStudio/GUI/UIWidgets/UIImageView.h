@@ -84,7 +84,7 @@ public:
      */
     void setCapInsets(const CCRect &capInsets);
 
-    CCRect& getCapInsets();
+    CCRect getCapInsets();
     
     //override "setFlipX" method of widget.
     virtual void setFlipX(bool flipX);

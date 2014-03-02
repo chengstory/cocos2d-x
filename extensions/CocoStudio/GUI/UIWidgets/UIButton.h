@@ -100,7 +100,7 @@ public:
      */
     void setCapInsets(const CCRect &capInsets);
 
-    CCRect& getCapInsets();
+    CCRect getCapInsets();
     /**
      * Sets capinsets for button, if button is using scale9 renderer.
      *

@@ -322,7 +322,7 @@ void Button::setCapInsets(const CCRect &capInsets)
     setCapInsetsDisabledRenderer(capInsets);
 }
 
-CCRect& Button::getCapInsets()
+CCRect Button::getCapInsets()
 {
     if(!_scale9Enabled)
     {
