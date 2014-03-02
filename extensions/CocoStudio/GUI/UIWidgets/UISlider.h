@@ -86,7 +86,7 @@ public:
      */
     void setCapInsets(const CCRect &capInsets);
 
-    CCRect& getCapInsets();
+    CCRect getCapInsets();
     
     /**
      * Sets capinsets for slider, if slider is using scale9 renderer.

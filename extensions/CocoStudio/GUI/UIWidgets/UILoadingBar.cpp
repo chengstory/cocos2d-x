@@ -194,6 +194,7 @@ void LoadingBar::setScale9Enabled(bool enabled)
         ignoreContentAdaptWithSize(_prevIgnoreSize);
     }
     setCapInsets(_capInsets);
+    setPercent(_percent);
 }
 
 bool LoadingBar::isScale9Enabled()
@@ -210,7 +211,7 @@ void LoadingBar::setCapInsets(const CCRect &capInsets)
     }
     static_cast<extension::CCScale9Sprite*>(_barRenderer)->setCapInsets(capInsets);
 }
-CCRect& LoadingBar::getCapInsets()
+CCRect LoadingBar::getCapInsets()
 {
     if (!_scale9Enabled)
     {

@@ -231,7 +231,7 @@ void ImageView::setCapInsets(const CCRect &capInsets)
     STATIC_CAST_SCALE9SPRITE->setCapInsets(capInsets);
 }
 
-CCRect& ImageView::getCapInsets()
+CCRect ImageView::getCapInsets()
 {
     if(!_scale9Enabled)
     {

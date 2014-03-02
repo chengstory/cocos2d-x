@@ -115,7 +115,7 @@ public:
      */
     void setCapInsets(const CCRect &capInsets);
 
-    CCRect& getCapInsets();
+    CCRect getCapInsets();
     
     //override "ignoreContentAdaptWithSize" method of widget.
     virtual void ignoreContentAdaptWithSize(bool ignore);
