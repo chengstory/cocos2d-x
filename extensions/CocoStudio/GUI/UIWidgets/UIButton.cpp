@@ -377,7 +377,10 @@ void Button::onPressStateChangedToNormal()
             _buttonClickedRenderer->setScale(_pressedTextureScaleXInSize, _pressedTextureScaleYInSize);
         }
     }
-    else
+	/* pipu */
+	else if (_pressedActionEnabled)
+    //else
+	/**/
     {
         _buttonNormalRenderer->stopAllActions();
         CCAction *zoomAction = CCScaleTo::create(0.05f, _normalTextureScaleXInSize, _normalTextureScaleYInSize);

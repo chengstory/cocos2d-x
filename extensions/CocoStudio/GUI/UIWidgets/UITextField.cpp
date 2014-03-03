@@ -335,6 +335,9 @@ void TextField::setText(const std::string& text)
     if (isPasswordEnabled())
     {
         _textFieldRenderer->setPasswordText(content);
+		/* pipu */
+		_textFieldRenderer->setString("");
+		/**/
         _textFieldRenderer->insertText(content, strlen(content));
     }
     else
@@ -407,6 +410,10 @@ bool TextField::isMaxLengthEnabled()
 void TextField::setMaxLength(int length)
 {
     _textFieldRenderer->setMaxLength(length);
+
+	/* pipu */
+	setText(getStringValue());
+	/**/
 }
 
 int TextField::getMaxLength()
@@ -429,6 +436,10 @@ void TextField::setPasswordStyleText(const char *styleText)
     _textFieldRenderer->setPasswordStyleText(styleText);
     
     _passwordStyleText = styleText;
+
+	/* pipu */
+	setText(getStringValue());
+	/**/
 }
 const char* TextField::getPasswordStyleText()
 {
