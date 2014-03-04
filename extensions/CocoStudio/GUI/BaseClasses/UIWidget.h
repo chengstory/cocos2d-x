@@ -627,6 +627,12 @@ public:
 
     //reset render node
     virtual void resetRender(){};
+        /**
+     * Returns custom size of widget
+     *
+     * @return size
+     */
+    const CCSize& getCustomSize() const;
 protected:
     //call back function called when size changed.
     virtual void onSizeChanged();
