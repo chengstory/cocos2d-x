@@ -313,6 +313,11 @@ void TextField::initRenderer()
     CCNodeRGBA::addChild(_textFieldRenderer, TEXTFIELD_RENDERER_Z, -1);
 }
 
+void TextField::setTextAreaSize(const CCSize &size)
+{
+    _textFieldRenderer->setDimensions(size);
+}
+
 void TextField::setTouchSize(const CCSize &size)
 {
     _useTouchArea = true;
