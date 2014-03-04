@@ -107,6 +107,7 @@ public:
     TextField();
     virtual ~TextField();
     static TextField* create();
+    void setTextAreaSize(const CCSize &size);
     void setTouchSize(const CCSize &size);
     CCSize& getTouchSize();
 
