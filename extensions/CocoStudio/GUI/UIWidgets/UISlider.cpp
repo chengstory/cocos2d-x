@@ -135,6 +135,9 @@ void Slider::loadBarTexture(const char* fileName, TextureResType texType)
     dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setColor(getColor());
     dynamic_cast<CCRGBAProtocol*>(_barRenderer)->setOpacity(getOpacity());
     barRendererScaleChangedWithSize();
+	/* pipu */
+	progressBarRendererScaleChangedWithSize();
+	/**/
 }
 
 void Slider::loadProgressBarTexture(const char *fileName, TextureResType texType)
@@ -481,7 +484,7 @@ void Slider::progressBarRendererScaleChangedWithSize()
         {
             CCSize ptextureSize = _progressBarTextureSize;
             float pscaleX = _size.width / ptextureSize.width;
-            float pscaleY = _size.height / ptextureSize.height;
+            float pscaleY = _size.height / ptextureSize.height;			
             _progressBarRenderer->setScaleX(pscaleX);
             _progressBarRenderer->setScaleY(pscaleY);
         }
@@ -491,6 +494,9 @@ void Slider::progressBarRendererScaleChangedWithSize()
         if (_scale9Enabled)
         {
             static_cast<extension::CCScale9Sprite*>(_progressBarRenderer)->setPreferredSize(_size);
+			/* pipu */
+			_progressBarTextureSize = _progressBarRenderer->getContentSize();
+			/**/
         }
         else
         {
