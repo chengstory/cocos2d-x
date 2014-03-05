@@ -558,7 +558,7 @@ void Layout::setBackGroundImageCapInsets(const CCRect &capInsets)
     }
 }
 
-CCRect& Layout::getBackGroundImageCapInsets()
+CCRect Layout::getBackGroundImageCapInsets()
 {
     if (_backGroundScale9Enabled && _backGroundImage)
     {

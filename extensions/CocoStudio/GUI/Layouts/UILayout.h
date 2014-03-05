@@ -91,7 +91,7 @@ public:
      */
     void setBackGroundImageCapInsets(const CCRect& capInsets);
 
-    CCRect& getBackGroundImageCapInsets();
+    CCRect getBackGroundImageCapInsets();
     
     /**
      * Sets Color Type for layout.
