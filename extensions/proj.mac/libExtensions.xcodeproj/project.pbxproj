@@ -437,18 +437,7 @@
 		95FB536C192079590032362E /* TriggerObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FB52CE192079590032362E /* TriggerObj.cpp */; };
 		95FB536D192079590032362E /* TriggerObj.h in Headers */ = {isa = PBXBuildFile; fileRef = 95FB52CF192079590032362E /* TriggerObj.h */; };
 		95FB536F192079600032362E /* ExtensionExport.h in Headers */ = {isa = PBXBuildFile; fileRef = 95FB536E192079600032362E /* ExtensionExport.h */; };
-		95FB581219209D7C0032362E /* libcocos2dx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 171F41B3184E16ED00C6D00F /* libcocos2dx.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		171F41B2184E16ED00C6D00F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 171F41AE184E16EC00C6D00F /* cocos2dx.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1551A33F158F2AB200E66CFE;
-			remoteInfo = cocos2dx;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1551A33F158F2AB200E66CFE /* libExtensions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libExtensions.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -724,7 +713,6 @@
 		171F400B184E101C00C6D00F /* CCPhysicsDebugNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhysicsDebugNode.h; sourceTree = "<group>"; };
 		171F400C184E101C00C6D00F /* CCPhysicsSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPhysicsSprite.cpp; sourceTree = "<group>"; };
 		171F400D184E101C00C6D00F /* CCPhysicsSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhysicsSprite.h; sourceTree = "<group>"; };
-		171F41AE184E16EC00C6D00F /* cocos2dx.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cocos2dx.xcodeproj; path = ../../cocos2dx/proj.mac/cocos2dx.xcodeproj; sourceTree = "<group>"; };
 		95FB5210192079590032362E /* CCActionEaseEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCActionEaseEx.cpp; sourceTree = "<group>"; };
 		95FB5211192079590032362E /* CCActionEaseEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionEaseEx.h; sourceTree = "<group>"; };
 		95FB5212192079590032362E /* CCActionFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCActionFrame.cpp; sourceTree = "<group>"; };
@@ -891,7 +879,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95FB581219209D7C0032362E /* libcocos2dx.a in Frameworks */,
 				1A94D35116C2072800D79D09 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -902,7 +889,6 @@
 		1551A334158F2AB200E66CFE = {
 			isa = PBXGroup;
 			children = (
-				171F41AE184E16EC00C6D00F /* cocos2dx.xcodeproj */,
 				171F3EFF184E101B00C6D00F /* extensions */,
 				171F3D53184E0F2200C6D00F /* chipmunk */,
 				171F3C69184E0DEB00C6D00F /* Box2D */,
@@ -1399,14 +1385,6 @@
 				171F400D184E101C00C6D00F /* CCPhysicsSprite.h */,
 			);
 			path = physics_nodes;
-			sourceTree = "<group>";
-		};
-		171F41AF184E16EC00C6D00F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				171F41B3184E16ED00C6D00F /* libcocos2dx.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		95FB520E192079590032362E /* CocoStudio */ = {
@@ -2131,28 +2109,12 @@
 			mainGroup = 1551A334158F2AB200E66CFE;
 			productRefGroup = 1551A340158F2AB200E66CFE /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 171F41AF184E16EC00C6D00F /* Products */;
-					ProjectRef = 171F41AE184E16EC00C6D00F /* cocos2dx.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				1551A33E158F2AB200E66CFE /* libExtensions */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		171F41B3184E16ED00C6D00F /* libcocos2dx.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libcocos2dx.a;
-			remoteRef = 171F41B2184E16ED00C6D00F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1551A33B158F2AB200E66CFE /* Sources */ = {
@@ -2371,6 +2333,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2395,6 +2358,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
