@@ -324,7 +324,6 @@ static EAGLView *view;
 
 - (id) initWithFrame:(NSRect)frameRect drawView:(NSView*) v
 {
-    self=[super init];
 	if (!v)
 	{
 		return NULL;
@@ -339,12 +338,11 @@ static EAGLView *view;
 		0
 	};
     
-	NSOpenGLPixelFormat* pixelFormat= [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
-	NSOpenGLContext* openGLContext = [[NSOpenGLContext  alloc] initWithFormat:pixelFormat shareContext:nil];
+	pixelFormat= [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+	openGLContext = [[NSOpenGLContext  alloc] initWithFormat:pixelFormat shareContext:nil];
     
     if(openGLContext)
     {
-        [self setOpenGLContext:openGLContext];
         [self setDrawView:drawView];
         [openGLContext  makeCurrentContext];
         [drawView setNeedsDisplay:YES];
@@ -354,7 +352,6 @@ static EAGLView *view;
     
     frameZoomFactor_ = 1.0f;
 	view = self;
-    drawView=self;
 	return self;
 }
 
@@ -362,7 +359,7 @@ static EAGLView *view;
 {
     NSView* glView=[[self openGLContext] view];
     if (glView != self)
-		[[self openGLContext]  setView:self];
+		[[self openGLContext]  setView:drawView];
 }
 
 -(NSView*) getDrawView
@@ -370,6 +367,10 @@ static EAGLView *view;
     return drawView;
 }
 
+- (NSOpenGLContext*) openGLContext
+{
+    return openGLContext;
+}
 
 #pragma mark EAGLView - Mouse events
 

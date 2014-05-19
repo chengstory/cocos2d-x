@@ -68,13 +68,15 @@ THE SOFTWARE.
  
  Only available for Mac OS X
  */
-@interface EAGLView:NSOpenGLView {
+@interface EAGLView: NSView {
 	id<MacEventDelegate> eventDelegate_;
 
 	BOOL isFullScreen_;
 	NSWindow		*fullScreenWindow_;
 	
     NSView* drawView;
+    NSOpenGLPixelFormat* pixelFormat;
+    NSOpenGLContext* openGLContext;
     
 	// cache
 	NSWindow		*windowGLView_;
