@@ -55,6 +55,14 @@
 #include "CocoStudio/Armature/utils/CCTweenFunction.h"
 #include "CocoStudio/Armature/external_tool/sigslot.h"
 
+
+#include "CocoStudio/TimelineAction/CCFrame.h"
+#include "CocoStudio/TimelineAction/CCNodeCache.h"
+#include "CocoStudio/TimelineAction/CCTimeLine.h"
+#include "CocoStudio/TimelineAction/CCTimelineAction.h"
+#include "CocoStudio/TimelineAction/CCTimelineActionCache.h"
+
+
 #include "CocoStudio/Trigger/TriggerBase.h"
 
 #include "CocoStudio/Components/CCComBase.h"

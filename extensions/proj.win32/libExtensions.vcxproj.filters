@@ -100,6 +100,9 @@
     <Filter Include="CocoStudio\Reader\WidgetReader">
       <UniqueIdentifier>{d0949a0d-a150-443d-9b5a-84d8e367d5e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CocoStudio\TimelineAction">
+      <UniqueIdentifier>{7d36560c-4b62-47f8-8bd5-94592ebba754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GUI\CCScrollView\CCScrollView.cpp">
@@ -524,6 +527,21 @@
     </ClCompile>
     <ClCompile Include="..\CocoStudio\GUI\UIWidgets\UIRichText.cpp">
       <Filter>CocoStudio\GUI\UIWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CocoStudio\TimelineAction\CCFrame.cpp">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CocoStudio\TimelineAction\CCNodeCache.cpp">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CocoStudio\TimelineAction\CCTimeLine.cpp">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CocoStudio\TimelineAction\CCTimelineAction.cpp">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CocoStudio\TimelineAction\CCTimelineActionCache.cpp">
+      <Filter>CocoStudio\TimelineAction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -956,6 +974,21 @@
       <Filter>CocoStudio\GUI\UIWidgets</Filter>
     </ClInclude>
     <ClInclude Include="..\ExtensionExport.h" />
+    <ClInclude Include="..\CocoStudio\TimelineAction\CCFrame.h">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CocoStudio\TimelineAction\CCNodeCache.h">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CocoStudio\TimelineAction\CCTimeLine.h">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CocoStudio\TimelineAction\CCTimelineAction.h">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CocoStudio\TimelineAction\CCTimelineActionCache.h">
+      <Filter>CocoStudio\TimelineAction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\spine\Animation.h">
