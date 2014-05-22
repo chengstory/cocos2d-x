@@ -32,7 +32,7 @@ namespace animation {
 // Frame
 Frame::Frame()
     : _frameIndex(0)
-    , _tween(false)
+    , _tween(true)
     , _node(nullptr)
 {
 }
