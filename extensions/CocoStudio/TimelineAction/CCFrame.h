@@ -152,6 +152,11 @@ public:
     inline void setPosition(const cocos2d::CCPoint& position) { _position = position; }
     inline cocos2d::CCPoint getPosition() const { return _position; }
 
+    inline void setX(float x) { _position.x = x; }
+    inline void setY(float y) { _position.y = y; }
+
+    inline float getX() { return _position.x; }
+    inline float getY() { return _position.y; }
 protected:
     cocos2d::CCPoint _position;
     float _betweenX;

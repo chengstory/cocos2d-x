@@ -67,6 +67,9 @@ bool Timeline::init()
 
 void Timeline::gotoFrame(int frameIndex)
 {
+    if(_frames->count() == 0)
+        return;
+
     updateCurrentKeyFrame(frameIndex);
 
     if (_currentKeyFrame)

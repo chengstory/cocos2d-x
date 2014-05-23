@@ -77,6 +77,9 @@ public:
     /** Resume the animation. */
     virtual void resume();
 
+    /** Whether or not Action is playing. */
+    virtual bool isPlaying();
+
     /** Set the animation speed, this will speed up or slow down the speed. */
     virtual void  setTimeSpeed(float speed);
     /** Get current animation speed. */
