@@ -111,6 +111,14 @@ void TimelineAction::resume()
     _playing = true;
 }
 
+<<<<<<< HEAD
+=======
+bool TimelineAction::isPlaying()
+{
+    return _playing;
+}
+
+>>>>>>> 6c828b18bfc9d14bc493c8184ead572a65cdf189
 void TimelineAction::setTimeSpeed(float speed)
 {
     _timeSpeed = speed;
@@ -167,6 +175,7 @@ void TimelineAction::step(float delta)
 void TimelineAction::foreachNodeDescendant(CCNode* parent)
 {
     int actionTag = parent->getTag();
+<<<<<<< HEAD
     CCArray* timelines = this->_timelineMap[actionTag];
 
     CCObject* object = nullptr;
@@ -174,6 +183,19 @@ void TimelineAction::foreachNodeDescendant(CCNode* parent)
     {
         Timeline* timeline = static_cast<Timeline*>(object);
         timeline->setNode(parent);
+=======
+
+    CCObject* object = nullptr;
+
+    if(_timelineMap.find(actionTag) != _timelineMap.end())
+    {
+        CCArray* timelines = this->_timelineMap[actionTag];
+        CCARRAY_FOREACH (timelines, object)
+        {
+            Timeline* timeline = static_cast<Timeline*>(object);
+            timeline->setNode(parent);
+        }
+>>>>>>> 6c828b18bfc9d14bc493c8184ead572a65cdf189
     }
 
     CCArray* children = parent->getChildren();
