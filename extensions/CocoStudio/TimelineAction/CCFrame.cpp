@@ -316,8 +316,8 @@ ScaleFrame* ScaleFrame::create()
 }
 
 ScaleFrame::ScaleFrame()
-    : _scaleX(0)
-    , _scaleY(0)
+    : _scaleX(1)
+    , _scaleY(1)
 {
 }
 
