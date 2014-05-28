@@ -51,7 +51,8 @@ void LabelAtlasReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapi
             {
                 std::string tp_c = jsonPath;
                 const char* cmfPath = DICTOOL->getStringValue_json(cmftDic, "path");
-                const char* cmf_tp = tp_c.append(cmfPath).c_str();
+				std::string cmfFullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(cmfPath);
+                const char* cmf_tp = cmfFullPath.c_str(); //tp_c.append(cmfPath).c_str();
                 labelAtlas->setProperty(DICTOOL->getStringValue_json(options, "stringValue"),
                                         cmf_tp,
                                         DICTOOL->getIntValue_json(options, "itemWidth"),

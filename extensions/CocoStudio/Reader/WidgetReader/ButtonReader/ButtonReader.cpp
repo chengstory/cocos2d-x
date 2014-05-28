@@ -52,8 +52,13 @@ void ButtonReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_n = jsonPath;
             const char* normalFileName = DICTOOL->getStringValue_json(normalDic, "path");
-            const char* normalFileName_tp = (normalFileName && (strcmp(normalFileName, "") != 0))?tp_n.append(normalFileName).c_str():NULL;
-            button->loadTextureNormal(normalFileName_tp);
+			std::string normalFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(normalFileName);
+            const char* normalFileName_tp = NULL; //normalFilePath.c_str(); //(normalFileName && (strcmp(normalFileName, "") != 0))?tp_n.append(normalFileName).c_str():NULL;
+            if (normalFileName && (strcmp(normalFileName, "") != 0))
+            {
+				normalFileName_tp = normalFilePath.c_str();
+            }
+			button->loadTextureNormal(normalFileName_tp);
             break;
         }
         case 1:
@@ -73,8 +78,13 @@ void ButtonReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_p = jsonPath;
             const char* pressedFileName = DICTOOL->getStringValue_json(pressedDic, "path");
-            const char* pressedFileName_tp = (pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
-            button->loadTexturePressed(pressedFileName_tp);
+			std::string pressedFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(pressedFileName);
+            const char* pressedFileName_tp = NULL; //pressedFilePath.c_str();// (pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
+            if (pressedFileName && (strcmp(pressedFileName, "") != 0))
+            {
+				pressedFileName_tp = pressedFilePath.c_str();
+            }
+			button->loadTexturePressed(pressedFileName_tp);
             break;
         }
         case 1:
@@ -94,8 +104,13 @@ void ButtonReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_d = jsonPath;
             const char* disabledFileName = DICTOOL->getStringValue_json(disabledDic, "path");
-            const char* disabledFileName_tp = (disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
-            button->loadTextureDisabled(disabledFileName_tp);
+			std::string disabledFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(disabledFileName);
+            const char* disabledFileName_tp = NULL; //disabledFilePath.c_str(); //(disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
+            if (disabledFileName && (strcmp(disabledFileName, "") != 0))
+            {
+				disabledFileName_tp = disabledFilePath.c_str(); 
+            }
+			button->loadTextureDisabled(disabledFileName_tp);
             break;
         }
         case 1:

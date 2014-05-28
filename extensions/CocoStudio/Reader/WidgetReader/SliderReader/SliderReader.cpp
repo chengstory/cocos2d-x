@@ -54,7 +54,13 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
                 {
                     std::string tp_b = jsonPath;
                     const char* imageFileName = DICTOOL->getStringValue_json(imageFileNameDic, "path");
-                    const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+					std::string imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
+                    const char* imageFileName_tp = NULL;
+					if (imageFileName && (strcmp(imageFileName, "") != 0))
+					{
+						imageFileName_tp = imageFilePath.c_str();
+					}
+					//	(imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
                     slider->loadBarTexture(imageFileName_tp);
                     break;
                 }

@@ -234,6 +234,56 @@ cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char *fileName)
     return widget;
 }
 
+cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char* fileName, std::string JsonRes)
+{
+	unsigned char *pBytes = NULL;
+	std::string jsonpath;
+	rapidjson::Document jsonDict;
+	jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
+	int pos = jsonpath.find_last_of('/');
+	m_strFilePath = JsonRes;
+	unsigned long size = 0;
+	pBytes = CCFileUtils::sharedFileUtils()->getFileData(jsonpath.c_str(),"r" , &size);
+	if(NULL == pBytes || strcmp((const char*)pBytes, "") == 0)
+	{
+		printf("read json file[%s] error!\n", fileName);
+		return NULL;
+	}
+	CCData *data = new CCData(pBytes, size);
+	std::string load_str = std::string((const char *)data->getBytes(), data->getSize() );
+	CC_SAFE_DELETE(data);
+	jsonDict.Parse<0>(load_str.c_str());
+	if (jsonDict.HasParseError())
+	{
+		CCLOG("GetParseError %s\n",jsonDict.GetParseError());
+	}
+	cocos2d::ui::Widget* widget = NULL;
+	const char* fileVersion = DICTOOL->getStringValue_json(jsonDict, "version");
+	WidgetPropertiesReader * pReader = NULL;
+	if (fileVersion)
+	{
+		int versionInteger = getVersionInteger(fileVersion);
+		if (versionInteger < 250)
+		{
+			pReader = new WidgetPropertiesReader0250();
+			widget = pReader->createWidget(jsonDict, m_strFilePath.c_str(), fileName);
+		}
+		else
+		{
+			pReader = new WidgetPropertiesReader0300();
+			widget = pReader->createWidget(jsonDict, m_strFilePath.c_str(), fileName);
+		}
+	}
+	else
+	{
+		pReader = new WidgetPropertiesReader0250();
+		widget = pReader->createWidget(jsonDict, m_strFilePath.c_str(), fileName);
+	}
+
+	CC_SAFE_DELETE(pReader);
+	CC_SAFE_DELETE_ARRAY(pBytes);
+	return widget;
+}
 
 
 cocos2d::ui::Widget* WidgetPropertiesReader0250::createWidget(const rapidjson::Value& data, const char* fullPath, const char* fileName)
