@@ -45,9 +45,12 @@ void LabelBMFontReader::setPropsFromJsonDictionary(ui::Widget *widget, const rap
         {
             std::string tp_c = jsonPath;
             const char* cmfPath = DICTOOL->getStringValue_json(cmftDic, "path");
-			std::string cmfFullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(cmfPath);
-            const char* cmf_tp = cmfFullPath.c_str(); //tp_c.append(cmfPath).c_str();
-            labelBMFont->setFntFile(cmf_tp);
+            if (cmfPath && (strcmp(cmfPath, "") != 0))
+            {
+                std::string cmfFullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(cmfPath);
+                const char* cmf_tp = cmfFullPath.c_str(); //tp_c.append(cmfPath).c_str();
+                labelBMFont->setFntFile(cmf_tp);
+            }
             break;
         }
         case 1:

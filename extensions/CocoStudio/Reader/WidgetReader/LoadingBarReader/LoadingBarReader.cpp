@@ -45,15 +45,10 @@ void LoadingBarReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapi
             {
                 std::string tp_i = jsonPath;
                 const char* imageFileName = DICTOOL->getStringValue_json(imageFileNameDic, "path");
-				std::string imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
-                const char* imageFileName_tp = imageFilePath.c_str(); //NULL;
-             /*   if (imageFileName && (strcmp(imageFileName, "") != 0))
-                {
-                    imageFileName_tp = tp_i.append(imageFileName).c_str();
-                    loadingBar->loadTexture(imageFileName_tp);
-                }*/
 				if (imageFileName && (strcmp(imageFileName, "") != 0))
 				{
+                    std::string imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
+                    const char* imageFileName_tp = imageFilePath.c_str(); //NULL;
 					loadingBar->loadTexture(imageFileName_tp);
 				}
 				
