@@ -39,18 +39,18 @@ Timeline* Timeline::create()
         return object;
     }
     CC_SAFE_DELETE(object);
-    return nullptr;
+    return NULL;
 }
 
 Timeline::Timeline()
-    : _frames(nullptr)
-    , _currentKeyFrame(nullptr)
+    : _frames(NULL)
+    , _currentKeyFrame(NULL)
     , _currentKeyFrameIndex(0)
     , _fromIndex(0)
     , _toIndex(0)
     , _betweenDuration(0)
     , _actionTag(0)
-    , _node(nullptr)
+    , _node(NULL)
 {
 }
 
@@ -84,7 +84,7 @@ Timeline* Timeline::clone()
     Timeline* timeline = Timeline::create();
     timeline->_actionTag = _actionTag;
 
-    CCObject* object = nullptr;
+    CCObject* object = NULL;
     CCARRAY_FOREACH(_frames, object)
     {
         Frame* frame = static_cast<Frame*>(object);
@@ -97,7 +97,7 @@ Timeline* Timeline::clone()
 
 void Timeline::setNode(cocos2d::CCNode* node)
 {
-    CCObject* object = nullptr;
+    CCObject* object = NULL;
     CCARRAY_FOREACH(_frames, object)
     {
         Frame* frame = static_cast<Frame*>(object);
@@ -115,8 +115,8 @@ void Timeline::updateCurrentKeyFrame(int frameIndex)
     //! If play to current frame's front or back, then find current frame again
     if (frameIndex < _currentKeyFrameIndex || frameIndex >= _currentKeyFrameIndex + _betweenDuration)
     {
-        Frame *from = nullptr;
-        Frame *to = nullptr;
+        Frame *from = NULL;
+        Frame *to = NULL;
 
         do 
         {

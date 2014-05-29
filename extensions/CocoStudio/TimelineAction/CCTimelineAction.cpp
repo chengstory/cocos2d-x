@@ -38,11 +38,11 @@ TimelineAction* TimelineAction::create()
         return object;
     }
     CC_SAFE_DELETE(object);
-    return nullptr;
+    return NULL;
 }
 
 TimelineAction::TimelineAction()
-    : _timelineList(nullptr)
+    : _timelineList(NULL)
     , _duration(0)
     , _time(0)
     , _timeSpeed(1)
@@ -55,7 +55,7 @@ TimelineAction::TimelineAction()
 
 TimelineAction::~TimelineAction()
 {
-    std::map<int, cocos2d::CCArray*>::const_iterator i = _timelineMap.cbegin();
+    std::map<int, cocos2d::CCArray*>::const_iterator i = _timelineMap.begin();
     for (; i != _timelineMap.end(); i++)
     {
         CCArray* timelines = i->second;
@@ -132,10 +132,10 @@ TimelineAction* TimelineAction::clone() const
     newAction->setDuration(_duration);
     newAction->setTimeSpeed(_timeSpeed);
     
-    std::map<int, cocos2d::CCArray*>::const_iterator i = _timelineMap.cbegin();
+    std::map<int, cocos2d::CCArray*>::const_iterator i = _timelineMap.begin();
     for (; i != _timelineMap.end(); i++)
     {
-        CCObject* object = nullptr;
+        CCObject* object = NULL;
         CCARRAY_FOREACH(i->second, object)
         {      
             Timeline* timeline = static_cast<Timeline*>(object);
@@ -173,7 +173,7 @@ void TimelineAction::foreachNodeDescendant(CCNode* parent)
 {
     int actionTag = parent->getTag();
 
-    CCObject* object = nullptr;
+    CCObject* object = NULL;
 
     if(_timelineMap.find(actionTag) != _timelineMap.end())
     {
