@@ -235,6 +235,9 @@ Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
 
     // get frame type 
     const char* frameType = DICTOOL->getStringValue_json(json, FRAME_TYPE);
+	if(frameType == NULL)
+		return NULL;
+
     FrameCreateCallFunc* func = static_cast<FrameCreateCallFunc*>(_funcs->objectForKey(frameType));
 
     if(frameType && func)

@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "CCNodeCache.h"
 #include "CCTimelineActionCache.h"
 #include "CCFrame.h"
+#include "../Reader/GUIReader.h"
+#include "../GUI/BaseClasses/UIWidget.h"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -33,16 +35,33 @@ namespace cocostudio {
 namespace animation {
 
 
-static const char* NodeType_Node     = "Node";
-static const char* NodeType_Sprite   = "Sprite";
-static const char* NodeType_Particle = "Particle";
+static const char* ClassName_Node     = "Node";
+static const char* ClassName_Sprite   = "Sprite";
+static const char* ClassName_Particle = "Particle";
 
+static const char* ClassName_Button     = "Button";
+static const char* ClassName_CheckBox   = "CheckBox";
+static const char* ClassName_ImageView  = "ImageView";
+static const char* ClassName_TextAtlas  = "TextAtlas";
+static const char* ClassName_TextBMFont = "TextBMFont";
+static const char* ClassName_Text       = "Text";
+static const char* ClassName_LoadingBar = "LoadingBar";
+static const char* ClassName_TextField  = "TextField";
+static const char* ClassName_Slider     = "Slider";
+static const char* ClassName_Layout     = "Layout";
+static const char* ClassName_ScrollView = "ScrollView";
+static const char* ClassName_ListView   = "ListView";
+static const char* ClassName_PageView   = "PageView";
+static const char* ClassName_Widget     = "Widget";
 
-static const char* NODE        = "node";
+static const char* NODE        = "nodeTree";
 static const char* CHILDREN    = "children";
-static const char* NODETYPE    = "nodeType";
+static const char* NODETYPE    = "classname";
 static const char* FILE_PATH   = "filePath";
+static const char* PLIST_FILE  = "plistFile";
 static const char* ACTION_TAG  = "actionTag";
+
+static const char* OPTIONS     = "options";
 
 static const char* X                = "x";
 static const char* Y                = "y";
@@ -142,9 +161,26 @@ void NodeCache::init()
     _nodes = new cocos2d::CCDictionary();
 
     
-    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSimpleNode)), NodeType_Node);
-    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSprite)),     NodeType_Sprite);
-    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadParticle)),   NodeType_Particle);
+    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSimpleNode)), ClassName_Node);
+    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSprite)),     ClassName_Sprite);
+    _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadParticle)),   ClassName_Particle);
+
+
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Button);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_CheckBox);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_ImageView);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_TextAtlas);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_TextBMFont);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Text);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_LoadingBar);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Slider);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Layout);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_ScrollView);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_ListView);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_PageView);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Widget);
+
+	_guiReader = new WidgetPropertiesReader0300();
 }
 
 cocos2d::CCNode* NodeCache::createNode(const std::string& filename)
@@ -196,18 +232,18 @@ cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json)
     NodeCreateCallFunc* func = static_cast<NodeCreateCallFunc*>(_funcs->objectForKey(nodeType));
     if (func != NULL)
     {
-        node = func->excute(json);
+		const rapidjson::Value& options = DICTOOL->getSubDictionary_json(json, OPTIONS);
+        node = func->excute(options);
     }
-
-    int tag = DICTOOL->getIntValue_json(json, ACTION_TAG);
-    node->setTag(tag);
 
     int length = DICTOOL->getArrayCount_json(json, CHILDREN, 0);
     for (int i = 0; i<length; i++)
     {
         const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
         cocos2d::CCNode* child = loadNode(dic);
-        node->addChild(child);
+		if (child) {
+			node->addChild(child);
+		}
     }
 
     return node;
@@ -230,6 +266,7 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
     GLubyte red         = (GLubyte)DICTOOL->getIntValue_json(json, RED, 255);
     GLubyte green       = (GLubyte)DICTOOL->getIntValue_json(json, GREEN, 255);
     GLubyte blue        = (GLubyte)DICTOOL->getIntValue_json(json, BLUE, 255);
+	int tag				= DICTOOL->getIntValue_json(json, ACTION_TAG);
 
     if(x != 0 || y != 0)
         node->setPosition(CCPoint(x, y));
@@ -259,6 +296,7 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
             rgbaProtocaol->setColor(ccc3(red, green, blue));
     }
 
+	node->setTag(tag);
 }
 
 
@@ -306,7 +344,28 @@ CCNode* NodeCache::loadSprite(const rapidjson::Value& json)
 
 CCNode* NodeCache::loadParticle(const rapidjson::Value& json)
 {
-    return NULL;
+	const char* filePath = DICTOOL->getStringValue_json(json, PLIST_FILE);
+
+	CCParticleSystemQuad* particle = CCParticleSystemQuad::create(filePath);
+
+	initNode(particle, json);
+
+	return particle;
+}
+
+CCNode* NodeCache::loadWidget(const rapidjson::Value& json)
+{
+	const char* classname = DICTOOL->getStringValue_json(json, NODETYPE);
+
+	std::string readerName = classname;
+	readerName.append("Reader");
+
+	ui::Widget* widget = ObjectFactory::getInstance()->createGUI(classname);
+	WidgetReaderProtocol* reader = ObjectFactory::getInstance()->createWidgetReaderProtocol(readerName);
+
+	_guiReader->setPropsForAllWidgetFromJsonDictionary(reader, widget, json);
+
+	return widget;
 }
 
 }

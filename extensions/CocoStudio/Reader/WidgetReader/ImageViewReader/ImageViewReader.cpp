@@ -46,9 +46,10 @@ void ImageViewReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapid
             std::string tp_i = jsonPath;
             const char* imageFileName = DICTOOL->getStringValue_json(imageFileNameDic, "path");
             const char* imageFileName_tp = NULL;
+			std::string imageFilePath;
 			if (imageFileName && (strcmp(imageFileName, "") != 0))
 			{
-                std::string imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
+                imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
 				imageFileName_tp = imageFilePath.c_str();
 				imageView->loadTexture(imageFileName_tp);
 			}
