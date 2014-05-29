@@ -72,12 +72,12 @@ NodeCreateCallFunc* NodeCreateCallFunc::create(CCObject* target, NodeCreateCallb
         return func;
     }
     CC_SAFE_DELETE(func);
-    return nullptr;
+    return NULL;
 }
 
 NodeCreateCallFunc::NodeCreateCallFunc()
-    : _target(nullptr)
-    , _callback(nullptr)
+    : _target(NULL)
+    , _callback(NULL)
 {
 }
 
@@ -107,7 +107,7 @@ CCNode* NodeCreateCallFunc::excute(const rapidjson::Value& json)
 
 // NodeCache
 
-static NodeCache* _sharedNodeCache = nullptr;
+static NodeCache* _sharedNodeCache = NULL;
 
 NodeCache* NodeCache::getInstance()
 {
@@ -141,7 +141,7 @@ void NodeCache::init()
     _funcs = new cocos2d::CCDictionary();
     _nodes = new cocos2d::CCDictionary();
 
-    using namespace std::placeholders;
+    
     _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSimpleNode)), NodeType_Node);
     _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadSprite)),     NodeType_Sprite);
     _funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadParticle)),   NodeType_Particle);
@@ -150,7 +150,7 @@ void NodeCache::init()
 cocos2d::CCNode* NodeCache::createNode(const std::string& filename)
 {
     cocos2d::CCNode* node = static_cast<cocos2d::CCNode*>(_nodes->objectForKey(filename.c_str()));
-    if (node == nullptr)
+    if (node == NULL)
     {
         node = loadNodeWithFile(filename);
 
@@ -189,12 +189,12 @@ cocos2d::CCNode* NodeCache::loadNodeWithContent(const std::string& content)
 
 cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json)
 {
-    cocos2d::CCNode* node = nullptr;
+    cocos2d::CCNode* node = NULL;
 
     std::string nodeType = DICTOOL->getStringValue_json(json, NODETYPE);
 
     NodeCreateCallFunc* func = static_cast<NodeCreateCallFunc*>(_funcs->objectForKey(nodeType));
-    if (func != nullptr)
+    if (func != NULL)
     {
         node = func->excute(json);
     }
@@ -266,7 +266,7 @@ CCNode* NodeCache::loadSimpleNode(const rapidjson::Value& json)
 {
     const char* filePath = DICTOOL->getStringValue_json(json, FILE_PATH);
 
-    CCNode* node = nullptr;
+    CCNode* node = NULL;
     if(filePath)
     {
         node = createNode(filePath);
@@ -285,7 +285,7 @@ CCNode* NodeCache::loadSprite(const rapidjson::Value& json)
 {
     const char* filePath = DICTOOL->getStringValue_json(json, FILE_PATH);
 
-    CCSprite *sprite = nullptr;
+    CCSprite *sprite = NULL;
     CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(filePath);
     if(!spriteFrame)
     {
@@ -306,7 +306,7 @@ CCNode* NodeCache::loadSprite(const rapidjson::Value& json)
 
 CCNode* NodeCache::loadParticle(const rapidjson::Value& json)
 {
-    return nullptr;
+    return NULL;
 }
 
 }

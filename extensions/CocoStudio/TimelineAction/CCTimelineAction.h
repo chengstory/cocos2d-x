@@ -86,7 +86,7 @@ public:
     virtual float getTimeSpeed();
 
     /** */
-    void setFrameEventCallFunc(std::function<void(FrameEvent*)> listener);
+//    void setFrameEventCallFunc(std::function<void(FrameEvent*)> listener);
 
     /** duration of the whole action*/
     virtual void setDuration(int duration) { _duration = duration; }
@@ -113,7 +113,7 @@ public:
     /** Returns a reverse of TimelineAction. 
      *  Not implement yet.
      */
-    virtual TimelineAction* reverse() const { return nullptr; }
+    virtual TimelineAction* reverse() const { return NULL; }
 
     virtual void step(float delta); 
     virtual void startWithTarget(cocos2d::CCNode *target);  
