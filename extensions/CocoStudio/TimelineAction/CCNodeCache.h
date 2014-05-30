@@ -40,7 +40,7 @@ namespace cocostudio {
 namespace animation {
 
 
-typedef cocos2d::CCNode* (cocos2d::CCObject::*NodeCreateCallback)(const rapidjson::Value& json);
+typedef cocos2d::CCNode* (cocos2d::CCObject::*NodeCreateCallback)(const rapidjson::Value& json, cocos2d::CCNode* parent);
 #define NodeCreateCallback_selector(_SELECTOR) (NodeCreateCallback)(&_SELECTOR)
 
 class CC_EX_DLL NodeCreateCallFunc : public cocos2d::CCObject
@@ -51,7 +51,7 @@ public:
     NodeCreateCallFunc();
     ~NodeCreateCallFunc();
     bool init(CCObject* target, NodeCreateCallback callback);
-    cocos2d::CCNode* excute(const rapidjson::Value& json);
+    cocos2d::CCNode* excute(const rapidjson::Value& json, cocos2d::CCNode* parent);
     
 protected:
     CCObject* _target;
@@ -76,14 +76,14 @@ public:
     cocos2d::CCNode* loadNodeWithContent(const std::string& content);
 protected:
 
-    cocos2d::CCNode* loadNode(const rapidjson::Value& json);
+    cocos2d::CCNode* loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent = NULL);
 
     void initNode(cocos2d::CCNode* node, const rapidjson::Value& json);
 
-    cocos2d::CCNode* loadSimpleNode(const rapidjson::Value& json);
-    cocos2d::CCNode* loadSprite(const rapidjson::Value& json);
-    cocos2d::CCNode* loadParticle(const rapidjson::Value& json);
-	cocos2d::CCNode* loadWidget(const rapidjson::Value& json);
+    cocos2d::CCNode* loadSimpleNode(const rapidjson::Value& json, cocos2d::CCNode* parent);
+    cocos2d::CCNode* loadSprite(const rapidjson::Value& json, cocos2d::CCNode* parent);
+    cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
+	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
 
 
     cocos2d::CCDictionary* _funcs;  // <std::string, NodeCreateCallFunc*>

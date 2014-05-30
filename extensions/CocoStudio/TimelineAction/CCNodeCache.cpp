@@ -42,8 +42,8 @@ static const char* ClassName_Particle = "Particle";
 static const char* ClassName_Button     = "Button";
 static const char* ClassName_CheckBox   = "CheckBox";
 static const char* ClassName_ImageView  = "ImageView";
-static const char* ClassName_TextAtlas  = "TextAtlas";
-static const char* ClassName_TextBMFont = "TextBMFont";
+static const char* ClassName_LabelAtlas = "LabelAtlas";
+static const char* ClassName_LabelBMFont= "LabelBMFont";
 static const char* ClassName_Text       = "Text";
 static const char* ClassName_LoadingBar = "LoadingBar";
 static const char* ClassName_TextField  = "TextField";
@@ -53,6 +53,10 @@ static const char* ClassName_ScrollView = "ScrollView";
 static const char* ClassName_ListView   = "ListView";
 static const char* ClassName_PageView   = "PageView";
 static const char* ClassName_Widget     = "Widget";
+static const char* ClassName_Panel      = "Panel";
+static const char* ClassName_Label      = "Label";
+
+
 
 static const char* NODE        = "nodeTree";
 static const char* CHILDREN    = "children";
@@ -117,9 +121,9 @@ bool NodeCreateCallFunc::init(CCObject* target, NodeCreateCallback callback)
     return true;
 }
 
-CCNode* NodeCreateCallFunc::excute(const rapidjson::Value& json)
+CCNode* NodeCreateCallFunc::excute(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
-    return (_target->*_callback)(json);
+    return (_target->*_callback)(json, parent);
 }
 
 
@@ -169,8 +173,8 @@ void NodeCache::init()
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Button);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_CheckBox);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_ImageView);
-	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_TextAtlas);
-	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_TextBMFont);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_LabelAtlas);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_LabelBMFont);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Text);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_LoadingBar);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Slider);
@@ -179,6 +183,10 @@ void NodeCache::init()
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_ListView);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_PageView);
 	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Widget);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Panel);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_Label);
+	_funcs->setObject(NodeCreateCallFunc::create(this, NodeCreateCallback_selector(NodeCache::loadWidget)),   ClassName_TextField);
+	
 
 	_guiReader = new WidgetPropertiesReader0300();
 }
@@ -223,7 +231,7 @@ cocos2d::CCNode* NodeCache::loadNodeWithContent(const std::string& content)
     return loadNode(subJson);
 }
 
-cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json)
+cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
     cocos2d::CCNode* node = NULL;
 
@@ -233,15 +241,15 @@ cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json)
     if (func != NULL)
     {
 		const rapidjson::Value& options = DICTOOL->getSubDictionary_json(json, OPTIONS);
-        node = func->excute(options);
+        node = func->excute(options, parent);
     }
 
     int length = DICTOOL->getArrayCount_json(json, CHILDREN, 0);
     for (int i = 0; i<length; i++)
     {
         const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
-        cocos2d::CCNode* child = loadNode(dic);
-		if (child) {
+        cocos2d::CCNode* child = loadNode(dic, node);
+		if (child && child->getParent() == NULL) {
 			node->addChild(child);
 		}
     }
@@ -300,7 +308,7 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
 }
 
 
-CCNode* NodeCache::loadSimpleNode(const rapidjson::Value& json)
+CCNode* NodeCache::loadSimpleNode(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
     const char* filePath = DICTOOL->getStringValue_json(json, FILE_PATH);
 
@@ -319,30 +327,38 @@ CCNode* NodeCache::loadSimpleNode(const rapidjson::Value& json)
     return node;
 }
 
-CCNode* NodeCache::loadSprite(const rapidjson::Value& json)
+CCNode* NodeCache::loadSprite(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
     const char* filePath = DICTOOL->getStringValue_json(json, FILE_PATH);
 
     CCSprite *sprite = NULL;
-    CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(filePath);
-    if(!spriteFrame)
-    {
-        sprite = CCSprite::create(filePath);
-    }
-    else
-    {
-        sprite = CCSprite::createWithSpriteFrame(spriteFrame);
-    }
 
-    if(!sprite)
-        CCLOG("create sprite with file name : %s  failed.", filePath);
+	if(filePath != NULL)
+	{
+		CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(filePath);
+		if(!spriteFrame)
+		{
+			sprite = CCSprite::create(filePath);
+		}
+		else
+		{
+			sprite = CCSprite::createWithSpriteFrame(spriteFrame);
+		}
+
+		if(sprite == NULL)
+			CCLOG("create sprite with file name : %s  failed.", filePath);
+	}
+	else
+	{
+		sprite = CCSprite::create();
+	}
 
     initNode(sprite, json);
 
     return sprite;
 }
 
-CCNode* NodeCache::loadParticle(const rapidjson::Value& json)
+CCNode* NodeCache::loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
 	const char* filePath = DICTOOL->getStringValue_json(json, PLIST_FILE);
 
@@ -353,17 +369,31 @@ CCNode* NodeCache::loadParticle(const rapidjson::Value& json)
 	return particle;
 }
 
-CCNode* NodeCache::loadWidget(const rapidjson::Value& json)
+CCNode* NodeCache::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
 	const char* classname = DICTOOL->getStringValue_json(json, NODETYPE);
 
+	bool isPanel = false;
 	std::string readerName = classname;
+	if (readerName == "Panel")
+	{
+		readerName = "Layout";
+		isPanel = true;
+	}
 	readerName.append("Reader");
 
 	ui::Widget* widget = ObjectFactory::getInstance()->createGUI(classname);
 	WidgetReaderProtocol* reader = ObjectFactory::getInstance()->createWidgetReaderProtocol(readerName);
 
 	_guiReader->setPropsForAllWidgetFromJsonDictionary(reader, widget, json);
+
+
+	if (isPanel)
+	{
+		ui::TouchGroup* group = ui::TouchGroup::create();
+		group->addWidget(widget);
+		parent->addChild(group);
+	}
 
 	return widget;
 }
