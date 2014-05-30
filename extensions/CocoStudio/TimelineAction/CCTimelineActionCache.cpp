@@ -86,12 +86,12 @@ FrameCreateCallFunc* FrameCreateCallFunc::create(CCObject* target, FrameCreateCa
         return func;
     }
     CC_SAFE_DELETE(func);
-    return nullptr;
+    return NULL;
 }
 
 FrameCreateCallFunc::FrameCreateCallFunc()
-    : _target(nullptr)
-    , _callback(nullptr)
+    : _target(NULL)
+    , _callback(NULL)
 {
 }
 
@@ -121,7 +121,7 @@ Frame* FrameCreateCallFunc::excute(const rapidjson::Value& json)
 
 // TimelineActionCache
 
-static TimelineActionCache* _sharedActionCache = nullptr;
+static TimelineActionCache* _sharedActionCache = NULL;
 
 TimelineActionCache* TimelineActionCache::getInstance()
 {
@@ -155,7 +155,7 @@ void TimelineActionCache::init()
     _funcs = new cocos2d::CCDictionary();
     _timelineActions = new cocos2d::CCDictionary();
 
-    using namespace std::placeholders;
+    
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadVisibleFrame)),     FrameType_VisibleFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadPositionFrame)),    FrameType_PositionFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadScaleFrame)),       FrameType_ScaleFrame);
@@ -175,7 +175,7 @@ void TimelineActionCache::removeAction(const std::string& fileName)
 TimelineAction* TimelineActionCache::createAction(const std::string& fileName)
 {
     TimelineAction* action = static_cast<TimelineAction*>(_timelineActions->objectForKey(fileName));
-    if (action == nullptr)
+    if (action == NULL)
     {
         action = loadAnimationActionWithFile(fileName);
     }
@@ -231,10 +231,13 @@ TimelineAction* TimelineActionCache::loadAnimationActionWithContent(const std::s
 
 Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
 {
-    Timeline* timeline = nullptr;
+    Timeline* timeline = NULL;
 
     // get frame type 
     const char* frameType = DICTOOL->getStringValue_json(json, FRAME_TYPE);
+	if(frameType == NULL)
+		return NULL;
+
     FrameCreateCallFunc* func = static_cast<FrameCreateCallFunc*>(_funcs->objectForKey(frameType));
 
     if(frameType && func)
@@ -250,7 +253,7 @@ Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
         {
             const rapidjson::Value& dic = DICTOOL->getSubDictionary_json(json, FRAMES, i);
 
-            Frame* frame = nullptr;
+            Frame* frame = NULL;
             frame = func->excute(dic);
 
             int frameIndex = DICTOOL->getIntValue_json(dic, FRAME_INDEX);

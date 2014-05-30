@@ -234,8 +234,6 @@ cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char *fileName)
     return widget;
 }
 
-
-
 cocos2d::ui::Widget* WidgetPropertiesReader0250::createWidget(const rapidjson::Value& data, const char* fullPath, const char* fileName)
 {
     m_strFilePath = fullPath;

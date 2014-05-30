@@ -28,6 +28,14 @@ THE SOFTWARE.
 #include "CCTimeLine.h"
 #include "../Json/DictionaryHelper.h"
 
+namespace cocos2d
+{
+	namespace extension
+	{
+		class WidgetPropertiesReader0300;
+	}
+}
+
 namespace cocostudio {
 namespace animation {
 
@@ -75,10 +83,13 @@ protected:
     cocos2d::CCNode* loadSimpleNode(const rapidjson::Value& json);
     cocos2d::CCNode* loadSprite(const rapidjson::Value& json);
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json);
+	cocos2d::CCNode* loadWidget(const rapidjson::Value& json);
 
 
     cocos2d::CCDictionary* _funcs;  // <std::string, NodeCreateCallFunc*>
     cocos2d::CCDictionary* _nodes;  // <std::string, cocos2d::CCNode*>
+
+	cocos2d::extension::WidgetPropertiesReader0300* _guiReader;
 };
 
 }
