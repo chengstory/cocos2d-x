@@ -87,7 +87,8 @@ void TimelineAction::gotoFrameAndPlay(int startIndex, int endIndex, bool loop)
 {
     _endFrame = endIndex;
     _loop = loop;
-    _time =_currentFrame = startIndex;
+    _currentFrame = startIndex;
+    _time = _currentFrame*_frameInternal;
 
     resume();
     gotoFrame(_currentFrame);

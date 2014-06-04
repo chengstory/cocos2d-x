@@ -138,12 +138,14 @@ void Timeline::binarySearchKeyFrame(int frameIndex)
         if (frameIndex < frames[0]->getFrameIndex())
         {
             from = to = frames[0];
+            _currentKeyFrameIndex = 0;
+            _betweenDuration = frames[0]->getFrameIndex();
             break;
         }
         else if(frameIndex >= frames[length - 1]->getFrameIndex())
         {
             from = to = frames[length - 1];
-            _currentKeyFrameIndex = 0;
+            _currentKeyFrameIndex = frames[length - 1]->getFrameIndex();
             _betweenDuration = 0;
             break;
         }
