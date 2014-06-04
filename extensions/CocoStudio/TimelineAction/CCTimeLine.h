@@ -44,7 +44,8 @@ public:
 
     virtual bool init();
 
-    virtual void gotoFrame(int frameIndex);
+    virtual void gotoFrame  (int frameIndex);
+    virtual void stepToFrame(int frameIndex);
 
     virtual cocos2d::CCArray* getFrames() { return _frames; }
 
@@ -58,6 +59,9 @@ public:
 
 
 protected:
+    virtual void apply(int frameIndex);
+
+    virtual void binarySearchKeyFrame (int frameIndex);
     virtual void updateCurrentKeyFrame(int frameIndex);
 
     cocos2d::CCArray* _frames; // <Frame*>

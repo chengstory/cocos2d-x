@@ -70,13 +70,17 @@ void Timeline::gotoFrame(int frameIndex)
     if(_frames->count() == 0)
         return;
 
-    updateCurrentKeyFrame(frameIndex);
+    binarySearchKeyFrame(frameIndex);
+    apply(frameIndex);
+}
 
-    if (_currentKeyFrame)
-    {
-        float currentPercent = _betweenDuration == 0 ? 0 : (frameIndex - _currentKeyFrameIndex) / (float)_betweenDuration;
-        _currentKeyFrame->apply(currentPercent);
-    }
+void Timeline::stepToFrame(int frameIndex)
+{
+    if(_frames->count() == 0)
+        return;
+
+    updateCurrentKeyFrame(frameIndex);
+    apply(frameIndex);
 }
 
 Timeline* Timeline::clone()
@@ -110,13 +114,73 @@ cocos2d::CCNode* Timeline::getNode()
     return _node;
 }
 
+void Timeline::apply(int frameIndex)
+{
+    if (_currentKeyFrame)
+    {
+        float currentPercent = _betweenDuration == 0 ? 0 : (frameIndex - _currentKeyFrameIndex) / (float)_betweenDuration;
+        _currentKeyFrame->apply(currentPercent);
+    }
+}
+
+void Timeline::binarySearchKeyFrame(int frameIndex)
+{
+    Frame *from = NULL;
+    Frame *to   = NULL;
+
+    int step = 2;
+    int target = 0;
+    long length = _frames->count();
+    Frame **frames = (Frame **)_frames->data->arr;
+
+    do 
+    {
+        if (frameIndex < frames[0]->getFrameIndex())
+        {
+            from = to = frames[0];
+            break;
+        }
+        else if(frameIndex >= frames[length - 1]->getFrameIndex())
+        {
+            from = to = frames[length - 1];
+            _currentKeyFrameIndex = 0;
+            _betweenDuration = 0;
+            break;
+        }
+
+        int target = -1;
+        int low=0,high=length-1,mid;
+        while(low<=high){ 
+            mid=(low+high)/2;
+            if(frameIndex >= frames[mid]->getFrameIndex() && frameIndex < frames[mid+1]->getFrameIndex()) 
+            {
+                target = mid;
+                break;
+            }
+            if(frames[mid]->getFrameIndex()>frameIndex)
+                high=mid-1; 
+            else
+                low=mid+1;
+        }
+
+        from = frames[target];
+        to   = frames[target+1];
+
+        _currentKeyFrameIndex = from->getFrameIndex();
+        _betweenDuration = to->getFrameIndex() - from->getFrameIndex();
+    } while (0);
+
+    _currentKeyFrame = from;
+    _currentKeyFrame->onEnter(to);
+}
+
 void Timeline::updateCurrentKeyFrame(int frameIndex)
 {
     //! If play to current frame's front or back, then find current frame again
     if (frameIndex < _currentKeyFrameIndex || frameIndex >= _currentKeyFrameIndex + _betweenDuration)
     {
         Frame *from = NULL;
-        Frame *to = NULL;
+        Frame *to   = NULL;
 
         do 
         {
@@ -127,12 +191,14 @@ void Timeline::updateCurrentKeyFrame(int frameIndex)
             if (frameIndex < frames[0]->getFrameIndex())
             {
                 from = to = frames[0];
+                _currentKeyFrameIndex = 0;
+                _betweenDuration = frames[0]->getFrameIndex();
                 break;
             }
             else if(frameIndex >= frames[length - 1]->getFrameIndex())
             {
                 from = to = frames[length - 1];
-                _currentKeyFrameIndex = 0;
+                _currentKeyFrameIndex = frames[length - 1]->getFrameIndex();
                 _betweenDuration = 0;
                 break;
             }
