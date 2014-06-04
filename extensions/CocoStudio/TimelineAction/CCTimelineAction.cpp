@@ -87,7 +87,8 @@ void TimelineAction::gotoFrameAndPlay(int startIndex, int endIndex, bool loop)
 {
     _endFrame = endIndex;
     _loop = loop;
-    _time =_currentFrame = startIndex;
+    _currentFrame = startIndex;
+    _time = _currentFrame*_frameInternal;
 
     resume();
     gotoFrame(_currentFrame);
@@ -165,7 +166,7 @@ void TimelineAction::step(float delta)
             return;
     }
 
-    gotoFrame(_currentFrame);
+    stepToFrame(_currentFrame);
 }
 
 
@@ -237,6 +238,16 @@ void TimelineAction::gotoFrame(int frameIndex)
     for(int i = 0; i<size; i++)
     {      
         timelines[i]->gotoFrame(frameIndex);
+    }
+}
+
+void TimelineAction::stepToFrame(int frameIndex)
+{
+    int size = _timelineList->count();
+    Timeline** timelines = (Timeline**)_timelineList->data->arr;
+    for(int i = 0; i<size; i++)
+    {      
+        timelines[i]->stepToFrame(frameIndex);
     }
 }
 
