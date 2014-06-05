@@ -83,6 +83,51 @@ Frame* VisibleFrame::clone()
 }
 
 
+// TextureFrame
+TextureFrame* TextureFrame::create()
+{
+    TextureFrame* frame = new TextureFrame();
+    if (frame)
+    {
+        frame->autorelease();
+        return frame;
+    }
+    CC_SAFE_DELETE(frame);
+    return NULL;
+}
+
+TextureFrame::TextureFrame()
+    : _texture("")
+{
+}
+
+void TextureFrame::setNode(cocos2d::CCNode* node)
+{
+    Frame::setNode(node);
+
+    _sprite = dynamic_cast<CCSprite*>(node);
+}
+
+void TextureFrame::onEnter(Frame *nextFrame)
+{
+    if(_sprite)
+    {
+        _sprite->initWithFile(_texture.c_str());
+    }
+}
+
+
+Frame* TextureFrame::clone()
+{
+    TextureFrame* frame = TextureFrame::create();
+    frame->setTexture(_texture);
+
+    frame->cloneProperty(this);
+
+    return frame;
+}
+
+
 // RotationFrame
 RotationFrame* RotationFrame::create()
 {

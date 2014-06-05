@@ -35,14 +35,14 @@ class CC_EX_DLL Frame : public cocos2d::CCObject
 {
 public:
 
-    inline void setFrameIndex(unsigned int frameIndex) { _frameIndex = frameIndex; }
-    inline unsigned int getFrameIndex()const { return _frameIndex; }
+    virtual void setFrameIndex(unsigned int frameIndex) { _frameIndex = frameIndex; }
+    virtual unsigned int getFrameIndex()const { return _frameIndex; }
 
-    inline void setNode(cocos2d::CCNode* node) { _node = node; }
-    inline cocos2d::CCNode* getTimelineNode() const { return _node; }
+    virtual void setNode(cocos2d::CCNode* node) { _node = node; }
+    virtual cocos2d::CCNode* getNode() const { return _node; }
 
-    inline void setTween(bool tween) { _tween = tween; }
-    inline bool isTween()const { return _tween; }
+    virtual void setTween(bool tween) { _tween = tween; }
+    virtual bool isTween()const { return _tween; }
 
     virtual void onEnter(Frame *nextFrame) = 0;
     virtual void apply(float percent) {}
@@ -79,6 +79,28 @@ public:
 protected:
     bool _visible;
 };
+
+
+class CC_EX_DLL TextureFrame : public Frame
+{
+public:
+    static TextureFrame* create();
+
+    TextureFrame();
+
+    virtual void setNode(cocos2d::CCNode* node);
+
+    virtual void onEnter(Frame *nextFrame) override;
+    virtual Frame* clone() override;
+
+    inline void setTexture(std::string texture) { _texture = texture;}
+    inline std::string getTexture() const { return _texture; }
+
+protected:
+    cocos2d::CCSprite* _sprite;
+    std::string _texture;
+};
+
 
 
 class CC_EX_DLL RotationFrame : public Frame
@@ -263,7 +285,6 @@ protected:
     int _betweenGreen;
     int _betweenBlue;
 };
-
 
 }
 }
