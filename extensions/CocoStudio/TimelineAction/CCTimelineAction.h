@@ -121,7 +121,8 @@ public:
 protected:
     void foreachNodeDescendant(cocos2d::CCNode* parent);
 
-    virtual void gotoFrame(int frameIndex);
+    virtual void gotoFrame  (int frameIndex);
+    virtual void stepToFrame(int frameIndex);
 
     std::map<int, cocos2d::CCArray*> _timelineMap; // <int, cocos2d::Vector<Timeline*>>
     cocos2d::CCArray* _timelineList;      // cocos2d::Vector<Timeline*>
