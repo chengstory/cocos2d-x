@@ -249,7 +249,17 @@ cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json, cocos2d::CCNo
     {
         const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
         cocos2d::CCNode* child = loadNode(dic, node);
-		if (child && child->getParent() == NULL) {
+		if (child && child->getParent() == NULL) 
+		{
+			if(cocos2d::ui::Layout* layout = dynamic_cast<cocos2d::ui::Layout*>(child))
+			{
+				if(dynamic_cast<ui::Widget*>(node) == NULL)
+				{
+					ui::TouchGroup* group = ui::TouchGroup::create();
+					group->addWidget(layout);
+					child = group;
+				}
+			}	
 			node->addChild(child);
 		}
     }
@@ -373,12 +383,10 @@ CCNode* NodeCache::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* par
 {
 	const char* classname = DICTOOL->getStringValue_json(json, NODETYPE);
 
-	bool isPanel = false;
 	std::string readerName = classname;
 	if (readerName == "Panel")
 	{
 		readerName = "Layout";
-		isPanel = true;
 	}
 	readerName.append("Reader");
 
@@ -386,14 +394,6 @@ CCNode* NodeCache::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* par
 	WidgetReaderProtocol* reader = ObjectFactory::getInstance()->createWidgetReaderProtocol(readerName);
 
 	_guiReader->setPropsForAllWidgetFromJsonDictionary(reader, widget, json);
-
-
-	if (isPanel)
-	{
-		ui::TouchGroup* group = ui::TouchGroup::create();
-		group->addWidget(widget);
-		parent->addChild(group);
-	}
 
 	return widget;
 }
