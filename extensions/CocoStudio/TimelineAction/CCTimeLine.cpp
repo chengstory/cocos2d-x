@@ -133,10 +133,15 @@ void Timeline::binarySearchKeyFrame(int frameIndex)
     long length = _frames->count();
     Frame **frames = (Frame **)_frames->data->arr;
 
+    bool needEnterFrame = false;
+
     do 
     {
         if (frameIndex < frames[0]->getFrameIndex())
         {
+            if(_currentKeyFrameIndex >= frames[0]->getFrameIndex())
+                needEnterFrame = true;
+
             from = to = frames[0];
             _currentKeyFrameIndex = 0;
             _betweenDuration = frames[0]->getFrameIndex();
@@ -144,7 +149,7 @@ void Timeline::binarySearchKeyFrame(int frameIndex)
         }
         else if(frameIndex >= frames[length - 1]->getFrameIndex())
         {
-            from = to = frames[length - 1];
+            from = to = frames[length - 1]; 
             _currentKeyFrameIndex = frames[length - 1]->getFrameIndex();
             _betweenDuration = 0;
             break;
@@ -168,11 +173,14 @@ void Timeline::binarySearchKeyFrame(int frameIndex)
         from = frames[target];
         to   = frames[target+1];
 
+        if(target == 0 && _currentKeyFrameIndex<from->getFrameIndex())
+            needEnterFrame = true;
+
         _currentKeyFrameIndex = from->getFrameIndex();
         _betweenDuration = to->getFrameIndex() - from->getFrameIndex();
     } while (0);
 
-    if(_currentKeyFrame != from)
+    if(needEnterFrame || _currentKeyFrame != from)
     {
         _currentKeyFrame = from;
         _currentKeyFrame->onEnter(to);
