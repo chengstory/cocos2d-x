@@ -286,6 +286,40 @@ protected:
     int _betweenBlue;
 };
 
+class CC_EX_DLL EventFrame : public Frame
+{
+public:
+    static EventFrame* create();
+
+    EventFrame();
+
+    virtual void onEnter(Frame *nextFrame) override;
+    virtual Frame* clone() override;
+
+    inline void setEvent(std::string event) { _event = event;}
+    inline std::string getEvent() const { return _event; }
+
+protected:
+    std::string _event;
+};
+
+class CC_EX_DLL ZOrderFrame : public Frame
+{
+public:
+    static ZOrderFrame* create();
+
+    ZOrderFrame();
+
+    virtual void onEnter(Frame *nextFrame) override;
+    virtual Frame* clone() override;
+
+    inline void setZOrder(int zorder) { _zorder = zorder;}
+    inline int getZOrder() const { return _zorder; }
+
+protected:
+    int _zorder;
+};
+
 }
 }
 
