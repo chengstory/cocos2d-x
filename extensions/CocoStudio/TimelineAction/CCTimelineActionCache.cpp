@@ -73,6 +73,7 @@ static const char* ALPHA            = "alpha";
 static const char* RED              = "red";
 static const char* GREEN            = "green";
 static const char* BLUE             = "blue";
+static const char* Value            = "value";
 
 
 
@@ -294,8 +295,8 @@ Frame* TimelineActionCache::loadScaleFrame(const rapidjson::Value& json)
 {
    ScaleFrame* frame = ScaleFrame::create();
 
-   float scalex = DICTOOL->getFloatValue_json(json, SCALE_X);
-   float scaley = DICTOOL->getFloatValue_json(json, SCALE_Y);
+   float scalex = DICTOOL->getFloatValue_json(json, X);
+   float scaley = DICTOOL->getFloatValue_json(json, Y);
 
    frame->setScaleX(scalex);
    frame->setScaleY(scaley);
@@ -307,8 +308,8 @@ Frame* TimelineActionCache::loadSkewFrame(const rapidjson::Value& json)
 {
     SkewFrame* frame = SkewFrame::create();
 
-    float skewx = DICTOOL->getFloatValue_json(json, SKEW_X);
-    float skewy = DICTOOL->getFloatValue_json(json, SKEW_Y);
+    float skewx = DICTOOL->getFloatValue_json(json, X);
+    float skewy = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setSkewX(skewx);
     frame->setSkewY(skewy);
@@ -320,8 +321,8 @@ Frame* TimelineActionCache::loadRotationSkewFrame(const rapidjson::Value& json)
 {
     RotationSkewFrame* frame = RotationSkewFrame::create();
 
-    float skewx = DICTOOL->getFloatValue_json(json, ROTATION_SKEW_X);
-    float skewy = DICTOOL->getFloatValue_json(json, ROTATION_SKEW_Y);
+    float skewx = DICTOOL->getFloatValue_json(json, X);
+    float skewy = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setSkewX(skewx);
     frame->setSkewY(skewy);
@@ -343,8 +344,8 @@ Frame* TimelineActionCache::loadAnchorPointFrame (const rapidjson::Value& json)
 {
     AnchorPointFrame* frame = AnchorPointFrame::create();
 
-    float anchorx = DICTOOL->getFloatValue_json(json, ANCHOR_X);
-    float anchory = DICTOOL->getFloatValue_json(json, ANCHOR_Y);
+    float anchorx = DICTOOL->getFloatValue_json(json, X);
+    float anchory = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setAnchorPoint(CCPoint(anchorx, anchory));
 
