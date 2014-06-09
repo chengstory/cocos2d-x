@@ -28,7 +28,8 @@ NS_CC_BEGIN
 
 namespace ui {
 
-static const int LABELATLAS_RENDERER_Z = (-1);
+static const int LABELATLAS_RENDERER_Z = (0);
+//static const int LABELATLAS_RENDERER_Z = (-1);
 
 UICCLabelAtlas::UICCLabelAtlas()
 {
