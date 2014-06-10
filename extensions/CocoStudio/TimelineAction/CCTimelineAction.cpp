@@ -110,9 +110,6 @@ void TimelineAction::pause()
 void TimelineAction::resume()
 {
     _playing = true;
-
-    if (_currentFrame >= _endFrame)
-        _currentFrame = _time = 0;
 }
 
 bool TimelineAction::isPlaying()
