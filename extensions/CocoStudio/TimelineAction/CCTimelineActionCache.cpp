@@ -274,7 +274,7 @@ Frame* TimelineActionCache::loadVisibleFrame(const rapidjson::Value& json)
 {
     VisibleFrame* frame = VisibleFrame::create();
 
-    bool visible = DICTOOL->getBooleanValue_json(json, VISIBLE);
+    bool visible = DICTOOL->getBooleanValue_json(json, Value);
     frame->setVisible(visible);
 
     return frame;
