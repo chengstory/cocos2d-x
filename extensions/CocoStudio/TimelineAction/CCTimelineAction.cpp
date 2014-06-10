@@ -164,10 +164,7 @@ void TimelineAction::step(float delta)
     {
         _playing = _loop;
         if(!_playing)
-        {
             _currentFrame = _time = _endFrame;
-            return;
-        }
         else           
             _currentFrame = _time = 0;
     }
