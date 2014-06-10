@@ -28,10 +28,15 @@
 NS_CC_BEGIN
 
 namespace ui {
-    
+
+static const int BASEBAR_RENDERER_Z = (0);
+static const int PROGRESSBAR_RENDERER_Z = (0);
+static const int SLIDBALL_RENDERER_Z = (0);
+/*
 static const int BASEBAR_RENDERER_Z = (-3);
 static const int PROGRESSBAR_RENDERER_Z = (-2);
 static const int SLIDBALL_RENDERER_Z = (-1);
+ */
     
 IMPLEMENT_CLASS_GUI_INFO(Slider)
 
@@ -198,8 +203,10 @@ void Slider::setScale9Enabled(bool able)
     _scale9Enabled = able;
     CCNode::removeChild(_barRenderer, true);
     CCNode::removeChild(_progressBarRenderer, true);
+    CCNode::removeChild(_slidBallRenderer, true);
     _barRenderer = NULL;
     _progressBarRenderer = NULL;
+    _slidBallRenderer = NULL;
     if (_scale9Enabled)
     {
         _barRenderer = extension::CCScale9Sprite::create();
@@ -210,10 +217,23 @@ void Slider::setScale9Enabled(bool able)
         _barRenderer = CCSprite::create();
         _progressBarRenderer = CCSprite::create();
     }
+    _slidBallRenderer = CCNode::create();
+    _slidBallNormalRenderer = CCSprite::create();
+    _slidBallPressedRenderer = CCSprite::create();
+    _slidBallDisabledRenderer = CCSprite::create();
+    _slidBallRenderer->addChild(_slidBallNormalRenderer);
+    _slidBallRenderer->addChild(_slidBallPressedRenderer);
+    _slidBallRenderer->addChild(_slidBallDisabledRenderer);
+    loadSlidBallTextureNormal(_slidBallNormalTextureFile.c_str(), _ballNTexType);
+    loadSlidBallTexturePressed(_slidBallPressedTextureFile.c_str(), _ballPTexType);
+    loadSlidBallTextureDisabled(_slidBallDisabledTextureFile.c_str(), _ballDTexType);
+    
     loadBarTexture(_textureFile.c_str(), _barTexType);
     loadProgressBarTexture(_progressBarTextureFile.c_str(), _progressBarTexType);
     CCNode::addChild(_barRenderer, BASEBAR_RENDERER_Z, -1);
     CCNode::addChild(_progressBarRenderer, PROGRESSBAR_RENDERER_Z, -1);
+    CCNode::addChild(_slidBallRenderer, SLIDBALL_RENDERER_Z, -1);
+    
     if (_scale9Enabled)
     {
         bool ignoreBefore = _ignoreSize;
