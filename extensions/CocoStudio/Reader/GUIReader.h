@@ -41,7 +41,7 @@ typedef void (CCObject::*SEL_ParseEvent)(const std::string&, CCObject*, const ra
  *   @js NA
  *   @lua NA
  */
-class CC_EX_DLL GUIReader : public CCObject
+class GUIReader : public CCObject
 {
 public:
 	/**
@@ -62,11 +62,13 @@ public:
 	static void purge();
     
     cocos2d::ui::Widget* widgetFromJsonFile(const char* fileName);
-    
     int getVersionInteger(const char* str);
     void storeFileDesignSize(const char* fileName, const cocos2d::CCSize &size);
     const cocos2d::CCSize getFileDesignSize(const char* fileName) const;
     
+    /* peterson new */
+    void setFilePath(const std::string& strFilePath) { m_strFilePath = strFilePath; };
+    /**/
     const std::string& getFilePath() const { return m_strFilePath; };
     
     void registerTypeAndCallBack(const std::string& classType,

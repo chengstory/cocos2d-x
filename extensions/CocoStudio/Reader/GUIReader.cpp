@@ -234,6 +234,8 @@ cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char *fileName)
     return widget;
 }
 
+
+
 cocos2d::ui::Widget* WidgetPropertiesReader0250::createWidget(const rapidjson::Value& data, const char* fullPath, const char* fileName)
 {
     m_strFilePath = fullPath;
@@ -1075,12 +1077,8 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromJsonDictionary(const 
             readerName = "WidgetReader";
         }
         reader = ObjectFactory::getInstance()->createWidgetReaderProtocol(readerName);
-		if (reader == NULL || widget == NULL)
-		{
-			return NULL;
-		}
         setPropsForAllWidgetFromJsonDictionary(reader, widget, uiOptions);
-      
+        
         // 2nd., custom widget parse with custom reader
         const char* customProperty = DICTOOL->getStringValue_json(uiOptions, "customProperty");
         rapidjson::Document customJsonDict;
@@ -1093,6 +1091,7 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromJsonDictionary(const 
     }
     
     int childrenCount = DICTOOL->getArrayCount_json(data, "children");
+    CCLOG("childrenCount = %d", childrenCount);
     for (int i = 0; i < childrenCount; i++)
     {
         const rapidjson::Value& subData = DICTOOL->getDictionaryFromArray_json(data, "children", i);

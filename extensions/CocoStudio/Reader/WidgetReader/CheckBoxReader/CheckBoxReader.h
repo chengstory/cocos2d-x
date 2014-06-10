@@ -29,7 +29,7 @@
 
 NS_CC_EXT_BEGIN
 
-class CC_EX_DLL CheckBoxReader : public WidgetReader
+class CheckBoxReader : public WidgetReader
 {
 public:
     DECLARE_CLASS_WIDGET_READER_INFO
