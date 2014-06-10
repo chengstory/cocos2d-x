@@ -31,7 +31,8 @@ namespace animation {
 
 // Frame
 Frame::Frame()
-    : _frameIndex(0)
+    : _nextFrame(NULL)
+    , _frameIndex(0)
     , _tween(true)
     , _node(NULL)
 {
@@ -39,6 +40,11 @@ Frame::Frame()
 
 Frame::~Frame()
 {
+}
+
+void Frame::onEnter(Frame *nextFrame)
+{
+    _nextFrame = nextFrame;
 }
 
 void Frame::cloneProperty(Frame* frame)
@@ -68,7 +74,11 @@ VisibleFrame::VisibleFrame()
 
 void VisibleFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     _node->setVisible(_visible);
+    Frame::onEnter(nextFrame);
 }
 
 
@@ -110,10 +120,15 @@ void TextureFrame::setNode(cocos2d::CCNode* node)
 
 void TextureFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if(_sprite)
     {
         _sprite->initWithFile(_texture.c_str());
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 
@@ -148,6 +163,9 @@ RotationFrame::RotationFrame()
 
 void RotationFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if (!_tween)
     {
         _node->setRotation(_rotation);
@@ -156,6 +174,8 @@ void RotationFrame::onEnter(Frame *nextFrame)
     {
         _betwennRotation = static_cast<RotationFrame*>(nextFrame)->_rotation - _rotation;
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 void RotationFrame::apply(float percent)
@@ -200,6 +220,9 @@ SkewFrame::SkewFrame()
 
 void SkewFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if (!_tween)
     {
         _node->setSkewX(_skewX);
@@ -210,6 +233,8 @@ void SkewFrame::onEnter(Frame *nextFrame)
         _betweenSkewX = static_cast<SkewFrame*>(nextFrame)->_skewX - _skewX;
         _betweenSkewY = static_cast<SkewFrame*>(nextFrame)->_skewY - _skewY;
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 void SkewFrame::apply(float percent)
@@ -257,6 +282,9 @@ RotationSkewFrame::RotationSkewFrame()
 
 void RotationSkewFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if (!_tween)
     {
         _node->setRotationX(_skewX);
@@ -267,6 +295,8 @@ void RotationSkewFrame::onEnter(Frame *nextFrame)
         _betweenSkewX = static_cast<RotationSkewFrame*>(nextFrame)->_skewX - _skewX;
         _betweenSkewY = static_cast<RotationSkewFrame*>(nextFrame)->_skewY - _skewY;
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 void RotationSkewFrame::apply(float percent)
@@ -313,6 +343,9 @@ PositionFrame::PositionFrame()
 
 void PositionFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if (!_tween)
     {
         _node->setPosition(_position);
@@ -322,6 +355,8 @@ void PositionFrame::onEnter(Frame *nextFrame)
         _betweenX = static_cast<PositionFrame*>(nextFrame)->_position.x - _position.x;
         _betweenY = static_cast<PositionFrame*>(nextFrame)->_position.y - _position.y;
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 void PositionFrame::apply(float percent)
@@ -368,6 +403,9 @@ ScaleFrame::ScaleFrame()
 
 void ScaleFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if (!_tween)
     {
         _node->setScaleX(_scaleX);
@@ -378,6 +416,8 @@ void ScaleFrame::onEnter(Frame *nextFrame)
         _betweenScaleX = static_cast<ScaleFrame*>(nextFrame)->_scaleX - _scaleX;
         _betweenScaleY = static_cast<ScaleFrame*>(nextFrame)->_scaleY - _scaleY;
     }
+
+    Frame::onEnter(nextFrame);
 }
 
 void ScaleFrame::apply(float percent)
@@ -424,7 +464,12 @@ AnchorPointFrame::AnchorPointFrame()
 
 void AnchorPointFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     _node->setAnchorPoint(_anchorPoint);
+
+    Frame::onEnter(nextFrame);
 }
 
 
@@ -461,6 +506,7 @@ InnerActionFrame::InnerActionFrame()
 
 void InnerActionFrame::onEnter(Frame *nextFrame)
 {
+    Frame::onEnter(nextFrame);
 }
 
 
@@ -497,6 +543,9 @@ ColorFrame::ColorFrame()
 
 void ColorFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     CCRGBAProtocol *rgbaProtocaol = dynamic_cast<CCRGBAProtocol *>(_node);
 
     if(!rgbaProtocaol)
@@ -523,6 +572,8 @@ void ColorFrame::onEnter(Frame *nextFrame)
 
     rgbaProtocaol->setCascadeColorEnabled(true);
     rgbaProtocaol->setCascadeOpacityEnabled(true);
+
+    Frame::onEnter(nextFrame);
 }
 
 void ColorFrame::apply(float percent)
@@ -579,6 +630,10 @@ EventFrame::EventFrame()
 
 void EventFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
+    Frame::onEnter(nextFrame);
 }
 
 
@@ -613,8 +668,13 @@ ZOrderFrame::ZOrderFrame()
 
 void ZOrderFrame::onEnter(Frame *nextFrame)
 {
+    if(nextFrame == _nextFrame)
+        return;
+
     if(_node)
         _node->setZOrder(_zorder);
+
+    Frame::onEnter(nextFrame);
 }
 
 

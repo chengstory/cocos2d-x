@@ -44,7 +44,10 @@ public:
     virtual void setTween(bool tween) { _tween = tween; }
     virtual bool isTween()const { return _tween; }
 
-    virtual void onEnter(Frame *nextFrame) = 0;
+    virtual void setNextFrame(Frame* nextFrame) { _nextFrame = nextFrame; }
+    virtual Frame* getNextFrame() { return _nextFrame; }
+
+    virtual void onEnter(Frame *nextFrame);
     virtual void apply(float percent) {}
 
     virtual Frame* clone() = 0;
@@ -56,6 +59,7 @@ protected:
 protected:
     friend class Timeline;
 
+    Frame*          _nextFrame;
     unsigned int    _frameIndex;
     bool            _tween;
 
