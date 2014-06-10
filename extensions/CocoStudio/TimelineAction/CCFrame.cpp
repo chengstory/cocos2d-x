@@ -33,8 +33,7 @@ namespace animation {
 
 // Frame
 Frame::Frame()
-    : _nextFrame(NULL)
-    , _frameIndex(0)
+    : _frameIndex(0)
     , _tween(true)
     , _timeline(NULL)
     , _node(NULL)
@@ -43,14 +42,6 @@ Frame::Frame()
 
 Frame::~Frame()
 {
-}
-
-void Frame::onEnter(Frame *nextFrame)
-{
-    if (nextFrame == NULL)
-        _nextFrame = this;
-    else
-        _nextFrame = nextFrame;
 }
 
 void Frame::cloneProperty(Frame* frame)
@@ -80,11 +71,6 @@ VisibleFrame::VisibleFrame()
 
 void VisibleFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     _node->setVisible(_visible);
 }
 
@@ -127,11 +113,6 @@ void TextureFrame::setNode(cocos2d::CCNode* node)
 
 void TextureFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     if(_sprite)
     {
         _sprite->initWithFile(_texture.c_str());
@@ -170,18 +151,13 @@ RotationFrame::RotationFrame()
 
 void RotationFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     if (!_tween)
     {
         _node->setRotation(_rotation);
     }
     else
     {
-        _betwennRotation = static_cast<RotationFrame*>(_nextFrame)->_rotation - _rotation;
+        _betwennRotation = static_cast<RotationFrame*>(nextFrame)->_rotation - _rotation;
     }
 }
 
@@ -227,20 +203,16 @@ SkewFrame::SkewFrame()
 
 void SkewFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setSkewX(_skewX);
         _node->setSkewY(_skewY);
     }
-    else
+    
+    if(_tween)
     {
-        _betweenSkewX = static_cast<SkewFrame*>(_nextFrame)->_skewX - _skewX;
-        _betweenSkewY = static_cast<SkewFrame*>(_nextFrame)->_skewY - _skewY;
+        _betweenSkewX = static_cast<SkewFrame*>(nextFrame)->_skewX - _skewX;
+        _betweenSkewY = static_cast<SkewFrame*>(nextFrame)->_skewY - _skewY;
     }
 
 }
@@ -290,20 +262,16 @@ RotationSkewFrame::RotationSkewFrame()
 
 void RotationSkewFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setRotationX(_skewX);
         _node->setRotationY(_skewY);
     }
-    else
+    
+    if(_tween)
     {
-        _betweenSkewX = static_cast<RotationSkewFrame*>(_nextFrame)->_skewX - _skewX;
-        _betweenSkewY = static_cast<RotationSkewFrame*>(_nextFrame)->_skewY - _skewY;
+        _betweenSkewX = static_cast<RotationSkewFrame*>(nextFrame)->_skewX - _skewX;
+        _betweenSkewY = static_cast<RotationSkewFrame*>(nextFrame)->_skewY - _skewY;
     }
 }
 
@@ -351,19 +319,15 @@ PositionFrame::PositionFrame()
 
 void PositionFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setPosition(_position);
     }
-    else
+
+    if(_tween)
     {
-        _betweenX = static_cast<PositionFrame*>(_nextFrame)->_position.x - _position.x;
-        _betweenY = static_cast<PositionFrame*>(_nextFrame)->_position.y - _position.y;
+        _betweenX = static_cast<PositionFrame*>(nextFrame)->_position.x - _position.x;
+        _betweenY = static_cast<PositionFrame*>(nextFrame)->_position.y - _position.y;
     }
 }
 
@@ -411,20 +375,16 @@ ScaleFrame::ScaleFrame()
 
 void ScaleFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setScaleX(_scaleX);
         _node->setScaleY(_scaleY);
     }
-    else
+    
+    if(_tween)
     {
-        _betweenScaleX = static_cast<ScaleFrame*>(_nextFrame)->_scaleX - _scaleX;
-        _betweenScaleY = static_cast<ScaleFrame*>(_nextFrame)->_scaleY - _scaleY;
+        _betweenScaleX = static_cast<ScaleFrame*>(nextFrame)->_scaleX - _scaleX;
+        _betweenScaleY = static_cast<ScaleFrame*>(nextFrame)->_scaleY - _scaleY;
     }
 }
 
@@ -472,12 +432,7 @@ AnchorPointFrame::AnchorPointFrame()
 
 void AnchorPointFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
     _node->setAnchorPoint(_anchorPoint);
-
-    Frame::onEnter(nextFrame);
 }
 
 
@@ -514,7 +469,6 @@ InnerActionFrame::InnerActionFrame()
 
 void InnerActionFrame::onEnter(Frame *nextFrame)
 {
-    Frame::onEnter(nextFrame);
 }
 
 
@@ -551,17 +505,12 @@ ColorFrame::ColorFrame()
 
 void ColorFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     CCRGBAProtocol *rgbaProtocaol = dynamic_cast<CCRGBAProtocol *>(_node);
 
     if(!rgbaProtocaol)
         return;
 
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         if(_alpha != rgbaProtocaol->getOpacity())
             rgbaProtocaol->setOpacity(_alpha);
@@ -570,11 +519,12 @@ void ColorFrame::onEnter(Frame *nextFrame)
         if((color.r != _color.r) || (color.g != _color.g) || (color.b != _color.b))
             rgbaProtocaol->setColor(_color);
     }
-    else
+    
+    if(_tween)
     {
-        _betweenAlpha = static_cast<ColorFrame*>(_nextFrame)->_alpha - _alpha;
+        _betweenAlpha = static_cast<ColorFrame*>(nextFrame)->_alpha - _alpha;
 
-        const cocos2d::ccColor3B& color = static_cast<ColorFrame*>(_nextFrame)->_color;
+        const cocos2d::ccColor3B& color = static_cast<ColorFrame*>(nextFrame)->_color;
         _betweenRed   = color.r - _color.r;
         _betweenGreen = color.g - _color.g;
         _betweenBlue  = color.b - _color.b;
@@ -639,11 +589,6 @@ EventFrame::EventFrame()
 
 void EventFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     if (_timeline)
     {
         _timeline->getTimelineAction()->emitFrameEvent(this);
@@ -682,11 +627,6 @@ ZOrderFrame::ZOrderFrame()
 
 void ZOrderFrame::onEnter(Frame *nextFrame)
 {
-    if(nextFrame == _nextFrame)
-        return;
-
-    Frame::onEnter(nextFrame);
-
     if(_node)
         _node->setZOrder(_zorder);
 }
