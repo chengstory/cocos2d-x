@@ -88,6 +88,10 @@ protected:
     Frame* loadAnchorPointFrame (const rapidjson::Value& json);
     Frame* loadInnerActionFrame (const rapidjson::Value& json);
     Frame* loadColorFrame       (const rapidjson::Value& json);
+    Frame* loadTextureFrame     (const rapidjson::Value& json);
+    Frame* loadEventFrame       (const rapidjson::Value& json);
+    Frame* loadZOrderFrame      (const rapidjson::Value& json);
+
 
 protected:
 
