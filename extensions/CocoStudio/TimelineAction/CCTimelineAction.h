@@ -31,13 +31,9 @@ THE SOFTWARE.
 namespace cocostudio {
 namespace animation {
 
-typedef struct _FrameEvent
-{
-    cocos2d::CCNode* node;
-    int eventTag;
-    int originFrameIndex;
-    int currentFrameIndex;
-}FrameEvent;
+typedef void (cocos2d::CCObject::*SEL_FrameEventCallFunc)(Frame *);
+
+#define frameEvent_selector(_SELECTOR) (SEL_FrameEventCallFunc)(&_SELECTOR)
 
 class CC_EX_DLL TimelineAction : public cocos2d::CCAction
 {
@@ -85,25 +81,31 @@ public:
     /** Get current animation speed. */
     virtual float getTimeSpeed();
 
-    /** */
-//    void setFrameEventCallFunc(std::function<void(FrameEvent*)> listener);
-
     /** duration of the whole action*/
     virtual void setDuration(int duration) { _duration = duration; }
     virtual int  getDuration() { return _duration; }
 
     /** End frame of this action.
-      * When action play to this frame, if action is not loop, then it will stop, 
-      * or it will play from start frame again. */
+     * When action play to this frame, if action is not loop, then it will stop, 
+     * or it will play from start frame again. */
     virtual void setEndFrame(int endFrame) { _endFrame = endFrame; }
     virtual int  getEndFrame() { return _endFrame; }
 
     /** Get current frame. */
     virtual int  getCurrentFrame() { return _currentFrame; }
 
-    void addTimeline(Timeline* timeline);
-    void removeTimeline(Timeline* timeline);
+    /** add Timeline to TimelineAction */
+    virtual void addTimeline(Timeline* timeline);
+    virtual void removeTimeline(Timeline* timeline);
 
+    /**
+     * Set action's frame event callback function
+     */
+    void setFrameEventCallFunc  (CCObject *target, SEL_FrameEventCallFunc callFunc);
+    void clearFrameEventCallFunc();
+
+    /** emit frame event, call it when enter a frame*/
+    void emitFrameEvent(Frame* frame);
 
     /** Inherit from cocos2d::Action. */
 
@@ -135,6 +137,10 @@ protected:
     int     _currentFrame;
     int     _endFrame;
     bool    _loop;
+
+
+    SEL_FrameEventCallFunc _frameEventCallFunc;
+    cocos2d::CCObject*     _frameEventTarget;
 };
 
 }

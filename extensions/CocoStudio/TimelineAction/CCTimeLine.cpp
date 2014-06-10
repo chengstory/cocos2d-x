@@ -23,6 +23,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "CCTimeLine.h"
+#include "CCTimelineAction.h"
 #include "CCFrame.h"
 
 using namespace cocos2d;
@@ -50,6 +51,7 @@ Timeline::Timeline()
     , _toIndex(0)
     , _betweenDuration(0)
     , _actionTag(0)
+    , _timelineAction(NULL)
     , _node(NULL)
 {
 }
@@ -93,10 +95,28 @@ Timeline* Timeline::clone()
     {
         Frame* frame = static_cast<Frame*>(object);
         Frame* newFrame = frame->clone();
-        timeline->getFrames()->addObject(newFrame);
+        timeline->addFrame(newFrame);
     }
 
     return timeline;
+}
+
+void Timeline::addFrame(Frame* frame)
+{
+    _frames->addObject(frame);
+    frame->setTimeline(this);
+}
+
+void Timeline::insertFrame(Frame* frame, int index)
+{
+    _frames->insertObject(frame, index);
+    frame->setTimeline(this);
+}
+
+void Timeline::removeFrame(Frame* frame)
+{
+    _frames->removeObject(frame);
+    frame->setTimeline(NULL);
 }
 
 void Timeline::setNode(cocos2d::CCNode* node)
@@ -173,7 +193,11 @@ void Timeline::binarySearchKeyFrame(int frameIndex)
     } while (0);
 
     _currentKeyFrame = from;
-    _currentKeyFrame->onEnter(to);
+
+    if(from == to)
+        _currentKeyFrame->onEnter(NULL);
+    else
+        _currentKeyFrame->onEnter(to);
 }
 
 void Timeline::updateCurrentKeyFrame(int frameIndex)

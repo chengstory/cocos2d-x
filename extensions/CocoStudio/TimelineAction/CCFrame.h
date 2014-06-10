@@ -38,6 +38,9 @@ public:
     virtual void setFrameIndex(unsigned int frameIndex) { _frameIndex = frameIndex; }
     virtual unsigned int getFrameIndex()const { return _frameIndex; }
 
+    virtual void setTimeline(Timeline* timeline) { _timeline = timeline; }
+    virtual Timeline* getTimeline() { return _timeline; }
+
     virtual void setNode(cocos2d::CCNode* node) { _node = node; }
     virtual cocos2d::CCNode* getNode() const { return _node; }
 
@@ -63,6 +66,7 @@ protected:
     unsigned int    _frameIndex;
     bool            _tween;
 
+    Timeline* _timeline;
     cocos2d::CCNode*  _node;
 };
 

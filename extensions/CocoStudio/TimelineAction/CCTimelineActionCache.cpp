@@ -263,7 +263,7 @@ Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
             bool tween = DICTOOL->getBooleanValue_json(dic, TWEEN, false);
             frame->setTween(tween);
 
-            timeline->getFrames()->addObject(frame);
+            timeline->addFrame(frame);
         }
     }
 

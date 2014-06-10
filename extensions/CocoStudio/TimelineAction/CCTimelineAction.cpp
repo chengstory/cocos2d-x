@@ -50,6 +50,8 @@ TimelineAction::TimelineAction()
     , _playing(false)
     , _currentFrame(0)
     , _endFrame(0)
+    , _frameEventCallFunc(NULL)
+    , _frameEventTarget(NULL)
 {
 }
 
@@ -219,6 +221,7 @@ void TimelineAction::addTimeline(Timeline* timeline)
     {
         _timelineList->addObject(timeline);
         _timelineMap[tag]->addObject(timeline);
+        timeline->setTimelineAction(this);
     }
 }
 
@@ -231,7 +234,28 @@ void TimelineAction::removeTimeline(Timeline* timeline)
         {
             _timelineMap[tag]->removeObject(timeline);
             _timelineList->removeObject(timeline);
+            timeline->setTimelineAction(NULL);
         }
+    }
+}
+
+void TimelineAction::setFrameEventCallFunc  (CCObject *target, SEL_FrameEventCallFunc callFunc)
+{
+    _frameEventTarget   = target;
+    _frameEventCallFunc = callFunc;
+}
+
+void TimelineAction::clearFrameEventCallFunc()
+{
+    _frameEventTarget   = NULL;
+    _frameEventCallFunc = NULL;
+}
+
+void TimelineAction::emitFrameEvent(Frame* frame)
+{
+    if (_frameEventTarget != NULL && _frameEventCallFunc != NULL)
+    {
+        (_frameEventTarget->*_frameEventCallFunc)(frame);
     }
 }
 
