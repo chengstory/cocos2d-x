@@ -148,6 +148,11 @@ void NodeCache::destroyInstance()
     CC_SAFE_DELETE(_sharedNodeCache);
 }
 
+NodeCache::NodeCache()
+    : _recordJsonPath(true)
+{
+}
+
 NodeCache::~NodeCache()
 {
     CC_SAFE_DELETE(_funcs);
@@ -196,6 +201,12 @@ cocos2d::CCNode* NodeCache::createNode(const std::string& filename)
     cocos2d::CCNode* node = static_cast<cocos2d::CCNode*>(_nodes->objectForKey(filename.c_str()));
     if (node == NULL)
     {
+        if(_recordJsonPath)
+        {
+            std::string jsonPath = filename.substr(0, filename.find_last_of('/') + 1);
+            cocos2d::extension::GUIReader::shareReader()->setFilePath(jsonPath);
+        }
+        
         node = loadNodeWithFile(filename);
 
 //         if(cache)
@@ -240,28 +251,43 @@ cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json, cocos2d::CCNo
     NodeCreateCallFunc* func = static_cast<NodeCreateCallFunc*>(_funcs->objectForKey(nodeType));
     if (func != NULL)
     {
-		const rapidjson::Value& options = DICTOOL->getSubDictionary_json(json, OPTIONS);
-        node = func->excute(options, parent);
+        if (isUiWidget(nodeType))
+        {
+            node = func->excute(json, parent);
+        }
+        else
+        {
+            const rapidjson::Value& options = DICTOOL->getSubDictionary_json(json, OPTIONS);
+            node = func->excute(options, parent);
+        }
     }
 
-    int length = DICTOOL->getArrayCount_json(json, CHILDREN, 0);
-    for (int i = 0; i<length; i++)
+    if (node)
     {
-        const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
-        cocos2d::CCNode* child = loadNode(dic, node);
-		if (child && child->getParent() == NULL) 
-		{
-			if(cocos2d::ui::Layout* layout = dynamic_cast<cocos2d::ui::Layout*>(child))
-			{
-				if(dynamic_cast<ui::Widget*>(node) == NULL)
-				{
-					ui::TouchGroup* group = ui::TouchGroup::create();
-					group->addWidget(layout);
-					child = group;
-				}
-			}	
-			node->addChild(child);
-		}
+        cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(node);
+        if (widget)
+        {
+            cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
+            group->addWidget(widget);
+            parent->addChild(group);
+        }
+        else
+        {
+            int length = DICTOOL->getArrayCount_json(json, CHILDREN, 0);
+            for (int i = 0; i < length; i++)
+            {
+                const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
+                cocos2d::CCNode* child = loadNode(dic, node);
+                if (child && child->getParent() == NULL)
+                {
+                    node->addChild(child);
+                }
+            }
+        }
+    }
+    else
+    {
+        CCLOG("Not supported NodeType: %s", nodeType.c_str());
     }
 
     return node;
@@ -381,21 +407,27 @@ CCNode* NodeCache::loadParticle(const rapidjson::Value& json, cocos2d::CCNode* p
 
 CCNode* NodeCache::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
-	const char* classname = DICTOOL->getStringValue_json(json, NODETYPE);
+    WidgetPropertiesReader* pReader = new WidgetPropertiesReader0300();
+    cocos2d::ui::Widget* widget = pReader->widgetFromJsonDictionary(json);
 
-	std::string readerName = classname;
-	if (readerName == "Panel")
-	{
-		readerName = "Layout";
-	}
-	readerName.append("Reader");
+    return widget;
+}
 
-	ui::Widget* widget = ObjectFactory::getInstance()->createGUI(classname);
-	WidgetReaderProtocol* reader = ObjectFactory::getInstance()->createWidgetReaderProtocol(readerName);
-
-	_guiReader->setPropsForAllWidgetFromJsonDictionary(reader, widget, json);
-
-	return widget;
+bool NodeCache::isUiWidget(const std::string &type)
+{
+    return (type == ClassName_Button
+        || type == ClassName_CheckBox
+        || type == ClassName_ImageView
+        || type == ClassName_Layout
+        || type == ClassName_ListView
+        || type == ClassName_LoadingBar
+        || type == ClassName_PageView
+        || type == ClassName_Panel
+        || type == ClassName_Text
+        || type == ClassName_LabelAtlas
+        || type == ClassName_LabelBMFont
+        || type == ClassName_TextField
+        || type == ClassName_Widget);
 }
 
 }

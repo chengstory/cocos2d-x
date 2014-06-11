@@ -64,7 +64,8 @@ class CC_EX_DLL NodeCache : public cocos2d::CCObject
 public:
     static NodeCache* getInstance();
     static void destroyInstance();
-
+    
+    NodeCache();
     virtual ~NodeCache();
     void purge();
 
@@ -74,6 +75,9 @@ public:
 
     cocos2d::CCNode* loadNodeWithFile(const std::string& fileName);
     cocos2d::CCNode* loadNodeWithContent(const std::string& content);
+
+    void setRecordJsonPath(bool record) { _recordJsonPath = record; }
+    bool isRecordJsonPath() { return _recordJsonPath; }
 protected:
 
     cocos2d::CCNode* loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent = NULL);
@@ -85,11 +89,13 @@ protected:
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
 	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
 
+    bool isUiWidget(const std::string& type);
 
     cocos2d::CCDictionary* _funcs;  // <std::string, NodeCreateCallFunc*>
     cocos2d::CCDictionary* _nodes;  // <std::string, cocos2d::CCNode*>
 
 	cocos2d::extension::WidgetPropertiesReader0300* _guiReader;
+    bool _recordJsonPath;
 };
 
 }

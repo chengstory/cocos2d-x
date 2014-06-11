@@ -188,7 +188,8 @@ cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char *fileName)
 	unsigned char *pBytes = NULL;
 	std::string jsonpath;
 	rapidjson::Document jsonDict;
-    jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
+    jsonpath = fileName;
+//  jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
     int pos = jsonpath.find_last_of('/');
 	m_strFilePath = jsonpath.substr(0,pos+1);
     unsigned long size = 0;
