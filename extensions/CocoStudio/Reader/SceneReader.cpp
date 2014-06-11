@@ -147,7 +147,7 @@ cocos2d::CCNode* SceneReader::createNodeWithSceneFile(const char* pszFileName, A
 					}
 
 					stExpCocoNode *pGameObjects = tpChildArray[11].GetChildArray();
-					int length = pGameObjects[11].GetChildNum();
+					int length = tpChildArray[11].GetChildNum();
 					for (int i = 0; i < length; ++i)
 					{
 						createObject(&tCocoLoader, &pGameObjects[i], _pNode, eAttachComponent);
