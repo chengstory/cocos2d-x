@@ -397,7 +397,7 @@ cocos2d::CCNode* SceneReader::createObject(CocoLoader *pCocoLoader, stExpCocoNod
 		stExpCocoNode *pGameObjects = pNodeArray[12].GetChildArray();
 		if (pGameObjects != NULL)
 		{
-			int length = pGameObjects->GetChildNum();
+			int length = pNodeArray[12].GetChildNum();
 			for (int i = 0; i < length; ++i)
 			{
 				createObject(pCocoLoader, &pGameObjects[i], gb, eAttachComponent);
@@ -473,7 +473,7 @@ void SceneReader::setPropertyFromJsonDict(CocoLoader *pCocoLoader, stExpCocoNode
 		else if (key == "y")
 		{
 			y = atof(value.c_str());
-			node->setPositionX(y);
+			node->setPositionY(y);
 		}
 		else if (key == "visible")
 		{
