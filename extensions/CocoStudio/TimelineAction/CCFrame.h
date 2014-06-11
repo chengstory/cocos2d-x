@@ -38,6 +38,9 @@ public:
     virtual void setFrameIndex(unsigned int frameIndex) { _frameIndex = frameIndex; }
     virtual unsigned int getFrameIndex()const { return _frameIndex; }
 
+    virtual void setTimeline(Timeline* timeline) { _timeline = timeline; }
+    virtual Timeline* getTimeline() { return _timeline; }
+
     virtual void setNode(cocos2d::CCNode* node) { _node = node; }
     virtual cocos2d::CCNode* getNode() const { return _node; }
 
@@ -59,6 +62,7 @@ protected:
     unsigned int    _frameIndex;
     bool            _tween;
 
+    Timeline* _timeline;
     cocos2d::CCNode*  _node;
 };
 
@@ -284,6 +288,40 @@ protected:
     int _betweenRed;
     int _betweenGreen;
     int _betweenBlue;
+};
+
+class CC_EX_DLL EventFrame : public Frame
+{
+public:
+    static EventFrame* create();
+
+    EventFrame();
+
+    virtual void onEnter(Frame *nextFrame) override;
+    virtual Frame* clone() override;
+
+    inline void setEvent(std::string event) { _event = event;}
+    inline std::string getEvent() const { return _event; }
+
+protected:
+    std::string _event;
+};
+
+class CC_EX_DLL ZOrderFrame : public Frame
+{
+public:
+    static ZOrderFrame* create();
+
+    ZOrderFrame();
+
+    virtual void onEnter(Frame *nextFrame) override;
+    virtual Frame* clone() override;
+
+    inline void setZOrder(int zorder) { _zorder = zorder;}
+    inline int getZOrder() const { return _zorder; }
+
+protected:
+    int _zorder;
 };
 
 }
