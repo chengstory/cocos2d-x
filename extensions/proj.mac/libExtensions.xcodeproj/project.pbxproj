@@ -278,6 +278,8 @@
 		171F4150184E101D00C6D00F /* CCPhysicsSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 171F400C184E101C00C6D00F /* CCPhysicsSprite.cpp */; };
 		171F4151184E101D00C6D00F /* CCPhysicsSprite.h in Headers */ = {isa = PBXBuildFile; fileRef = 171F400D184E101C00C6D00F /* CCPhysicsSprite.h */; };
 		1A94D35116C2072800D79D09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1551A342158F2AB200E66CFE /* Foundation.framework */; };
+		43B90FAD19481C7D00F7F815 /* CocoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FAB19481C7D00F7F815 /* CocoLoader.cpp */; };
+		43B90FAE19481C7D00F7F815 /* CocoLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B90FAC19481C7D00F7F815 /* CocoLoader.h */; };
 		43F4352A192C932000AD6D05 /* CCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43F43520192C932000AD6D05 /* CCFrame.cpp */; };
 		43F4352B192C932000AD6D05 /* CCFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 43F43521192C932000AD6D05 /* CCFrame.h */; };
 		43F4352C192C932000AD6D05 /* CCNodeCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43F43522192C932000AD6D05 /* CCNodeCache.cpp */; };
@@ -723,6 +725,8 @@
 		171F400B184E101C00C6D00F /* CCPhysicsDebugNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhysicsDebugNode.h; sourceTree = "<group>"; };
 		171F400C184E101C00C6D00F /* CCPhysicsSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPhysicsSprite.cpp; sourceTree = "<group>"; };
 		171F400D184E101C00C6D00F /* CCPhysicsSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhysicsSprite.h; sourceTree = "<group>"; };
+		43B90FAB19481C7D00F7F815 /* CocoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoLoader.cpp; sourceTree = "<group>"; };
+		43B90FAC19481C7D00F7F815 /* CocoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoLoader.h; sourceTree = "<group>"; };
 		43F43520192C932000AD6D05 /* CCFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCFrame.cpp; sourceTree = "<group>"; };
 		43F43521192C932000AD6D05 /* CCFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFrame.h; sourceTree = "<group>"; };
 		43F43522192C932000AD6D05 /* CCNodeCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCNodeCache.cpp; sourceTree = "<group>"; };
@@ -1671,6 +1675,8 @@
 		95FB5288192079590032362E /* Json */ = {
 			isa = PBXGroup;
 			children = (
+				43B90FAB19481C7D00F7F815 /* CocoLoader.cpp */,
+				43B90FAC19481C7D00F7F815 /* CocoLoader.h */,
 				95FB5289192079590032362E /* DictionaryHelper.cpp */,
 				95FB528A192079590032362E /* DictionaryHelper.h */,
 				95FB528B192079590032362E /* rapidjson */,
@@ -2084,6 +2090,7 @@
 				95FB5341192079590032362E /* rapidjson.h in Headers */,
 				171F3D2E184E0DEC00C6D00F /* b2ContactSolver.h in Headers */,
 				171F3CFB184E0DEC00C6D00F /* b2Collision.h in Headers */,
+				43B90FAE19481C7D00F7F815 /* CocoLoader.h in Headers */,
 				171F4082184E101C00C6D00F /* CCLayerGradientLoader.h in Headers */,
 				171F3D0F184E0DEC00C6D00F /* b2GrowableStack.h in Headers */,
 				171F3DC0184E0F2300C6D00F /* cpRatchetJoint.h in Headers */,
@@ -2204,6 +2211,7 @@
 				171F406C184E101C00C6D00F /* CCBReader.cpp in Sources */,
 				171F413B184E101D00C6D00F /* CCEditBoxImplWin.cpp in Sources */,
 				95FB532B192079590032362E /* UILabel.cpp in Sources */,
+				43B90FAD19481C7D00F7F815 /* CocoLoader.cpp in Sources */,
 				171F3DD7184E0F2300C6D00F /* cpPivotJoint.c in Sources */,
 				171F414E184E101D00C6D00F /* CCPhysicsDebugNode.cpp in Sources */,
 				171F411D184E101C00C6D00F /* CCControlHuePicker.cpp in Sources */,

@@ -1,28 +1,47 @@
+/****************************************************************************
+ Copyright (c) 2013 cocos2d-x.org
+ 
+ http://www.cocos2d-x.org
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ ****************************************************************************/
+
 #ifndef _COCOLOADER_H
 #define _COCOLOADER_H
-//=========================================================================
-//File:CocoLoader.h
-//Author: Bianan@chukong-inc.com
-//Desc:加载Coco的导出文件的类
-//=========================================================================
 
 #include <stdio.h>
 #include <vector>
 #include <cstdio>
 #include <stdint.h>
+#include "ExtensionMacros.h"
 #include "../Json/rapidjson/rapidjson.h"
 #include "../Json/rapidjson/document.h"
 
-using namespace std;
-using namespace rapidjson;
-//const	char* kTypeNames[] = { "Null", "False", "True", "Object", "Array", "String", "Number" };
 #pragma pack (4)
-//导出用节点属性描述
+
+NS_CC_EXT_BEGIN
+
 struct  stExpCocoAttribDesc
 {
-	Type		m_Type;					//对应的类型
-	uint64_t	m_szName;				//对应的名称
-	uint64_t	m_szDefaultValue;		//对应的默认值
+    rapidjson::Type		m_Type;
+	uint64_t	m_szName;
+	uint64_t	m_szDefaultValue;		
 public:
 	//重建
 	void	ReBuild(char* pStringMemoryAddr)
@@ -30,17 +49,22 @@ public:
 		m_szName = m_szName + (uint64_t)pStringMemoryAddr;
 		m_szDefaultValue = m_szDefaultValue + (uint64_t)pStringMemoryAddr;
 	}
-}
-;
-//导出用Coco类描述节点
+};
+
 struct  stExpCocoObjectDesc
 {
-	uint32_t		m_nAttribNum;			//属性数量
-	uint64_t		m_szName;				//对应的名称字符串的位置,默认为0
-	uint64_t		m_pAttribDescArray;		//属性数组
+	uint32_t		m_nAttribNum;
+	uint64_t		m_szName;
+	uint64_t		m_pAttribDescArray;
+    
 public:
-	//重建
-	void	ReBuild(char* pAttribMemoryAddr,char* pStringMemoryAddr)
+    stExpCocoObjectDesc()
+    {
+        m_nAttribNum = 0;
+        m_szName = 0;
+        m_pAttribDescArray = 0;
+    }
+	void ReBuild(char* pAttribMemoryAddr,char* pStringMemoryAddr)
 	{
 		m_szName = m_szName + (uint64_t)pStringMemoryAddr;
 		m_pAttribDescArray = m_pAttribDescArray + (uint64_t)pAttribMemoryAddr;
@@ -51,62 +75,32 @@ public:
 		}
 	}
 	
-	//取得索引
-	void	GetAttribIndexArray(vector<string>&	vAttribVec_In,vector<int>& vIndexVec_Out)
-	{
-		vector<string>::iterator tIter;
-		for(tIter = vAttribVec_In.begin(); tIter != vAttribVec_In.end(); tIter++)
-		{
-			bool bFind = false;
-			stExpCocoAttribDesc* tpAttribDescArray = (stExpCocoAttribDesc*)m_pAttribDescArray;
-			for(int i = 0 ; i < m_nAttribNum ; i++)
-			{
-				if( 0 == strcmp((char*)tpAttribDescArray[i].m_szName,tIter->c_str()))
-				{
-					bFind = true;
-					vIndexVec_Out.push_back(i);
-					break;
-				}
-			}
-			if(false == bFind)
-			{
-				vIndexVec_Out.push_back(-1);
-			}
-		}
-	}
 };
 
 class CocoLoader;
-//Coco节点类型
+
 struct  stExpCocoNode
 {
 protected:
-	int32_t						m_ObjIndex;				//对应的物体索引
-	int32_t						m_AttribIndex;			//属性的物体索引
-	uint32_t					m_ChildNum;				//子节点数量
-	uint64_t					m_szValue;				//对应的默认值
-	uint64_t					m_ChildArray;			//对应的子节点数组
+	int32_t						m_ObjIndex;
+	int32_t						m_AttribIndex;
+	uint32_t					m_ChildNum;
+	uint64_t					m_szValue;
+	uint64_t					m_ChildArray;
+    
 public:
-
-	//取类型
-	Type				GetType(CocoLoader*		pCoco);
-	//取名称
-	char*				GetName(CocoLoader*		pCoco);
-	//取值
+    rapidjson::Type				GetType(CocoLoader*	pCoco);
+	char*				GetName(CocoLoader*	pCoco);
 	char*				GetValue();
-	//取得子结点数量
 	int					GetChildNum();
-	//取得子结点数组
 	stExpCocoNode*		GetChildArray();
+    
 public:
-	//重建
 	inline  void	ReBuild(char* pCocoNodeAddr,char* pStringMemoryAddr);
-	//打印
-	void	WriteJson(CocoLoader*		pCoco,void*	pFileName = NULL,int vLayer = 0,bool bEndNode = false,bool bParentNodeIsArray = false);
-}
-;
+	void	WriteJson(CocoLoader* pCoco, void* pFileName = NULL, int vLayer = 0, bool bEndNode = false, bool bParentNodeIsArray = false);
+};
 
-//二进制头文件
+
 struct		stCocoFileHeader
 {
 	char			m_FileDesc[32];
@@ -119,35 +113,29 @@ struct		stCocoFileHeader
 	
 };
 
-//CocoLoader
+
 class CocoLoader
 {
-	//头信息
+private:
 	stCocoFileHeader*			m_pFileHeader;
-	//根结点
 	stExpCocoNode*				m_pRootNode;
-	//类结点容器
 	stExpCocoObjectDesc*		m_pObjectDescArray;
 
 public:
-	//构造
 	CocoLoader();
-	//析构
 	~CocoLoader();
 
 public:
-
-	//从二进制文件中读取
 	bool					ReadCocoBinBuff(char* pBinBuff);
-	//头信息
 	stCocoFileHeader*		GetFileHeader(){return m_pFileHeader;}
-	//根结点
 	stExpCocoNode*			GetRootCocoNode(){return	m_pRootNode;}
-	//类结点容器
 	stExpCocoObjectDesc*	GetCocoObjectDescArray(){return	m_pObjectDescArray;}
-	//取得相应的类描述 
 	stExpCocoObjectDesc*	GetCocoObjectDesc(const char* szObjDesc);
 			
 };
+
+NS_CC_EXT_END
+
+
 #pragma pack ()
 #endif

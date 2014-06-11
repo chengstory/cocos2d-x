@@ -160,14 +160,10 @@ void TimelineAction::step(float delta)
 
     if (_currentFrame > _endFrame)
     {
+        _currentFrame = _time = 0;
         _playing = _loop;
         if(!_playing)
-        {
-            _currentFrame = _time = _endFrame;
             return;
-        }
-        else           
-            _currentFrame = _time = 0;
     }
 
     stepToFrame(_currentFrame);
