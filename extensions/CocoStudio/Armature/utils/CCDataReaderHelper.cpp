@@ -366,7 +366,15 @@ void CCDataReaderHelper::addDataFromFile(const char *filePath)
 
     unsigned long size;
     std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(filePath);
-    unsigned char *pBytes = CCFileUtils::sharedFileUtils()->getFileData(fullPath.c_str() , "r", &size);
+    unsigned char *pBytes = NULL;
+	if (str.compare(".csb"))
+	{
+		pBytes = CCFileUtils::sharedFileUtils()->getFileData(fullPath.c_str() , "rb", &size);
+	}
+	else
+	{
+		pBytes = CCFileUtils::sharedFileUtils()->getFileData(fullPath.c_str() , "r", &size);
+	}
 
     DataInfo dataInfo;
     dataInfo.filename = filePathStr;
@@ -382,6 +390,10 @@ void CCDataReaderHelper::addDataFromFile(const char *filePath)
     {
         CCDataReaderHelper::addDataFromJsonCache(load_str.c_str(), &dataInfo);
     }
+	else if(str.compare(".csb") == 0)
+	{
+		CCDataReaderHelper::addDataFromBinaryCache(load_str.c_str(), &dataInfo);
+	}
 	CC_SAFE_DELETE_ARRAY(pBytes);
 }
 
@@ -1772,6 +1784,956 @@ void CCDataReaderHelper::decodeNode(CCBaseData *node, const rapidjson::Value &js
             node->isUseColorInfo = true;
         }
     }
+}
+
+
+void CCDataReaderHelper::addDataFromBinaryCache(const char *fileContent, DataInfo *dataInfo)
+{
+	CocoLoader tCocoLoader;
+	if (tCocoLoader.ReadCocoBinBuff((char*)fileContent))
+	{
+		stExpCocoNode *tpRootCocoNode = tCocoLoader.GetRootCocoNode();
+		rapidjson::Type tType = tpRootCocoNode->GetType(&tCocoLoader);
+		if (rapidjson::kObjectType  == tType)
+		{
+			stExpCocoNode *tpChildArray = tpRootCocoNode->GetChildArray();
+			int nCount = tpRootCocoNode->GetChildNum();
+
+			dataInfo->contentScale = 1.0f;
+			int length = 0;
+			for (int i = 0; i < nCount; ++i)
+			{
+				std::string key = tpChildArray[i].GetName(&tCocoLoader);
+				if (key.compare(CONTENT_SCALE) == 0)
+				{
+					std::string value = tpChildArray[i].GetValue();
+					dataInfo->contentScale = atof(value.c_str());
+				}
+				else if (key.compare(ARMATURE_DATA) == 0)
+				{
+					stExpCocoNode *pArmatureData = tpChildArray[i].GetChildArray();
+					length = tpChildArray[i].GetChildNum();
+					for (int i = 0; i < length; ++i)
+					{
+						CCArmatureData *armatureData = decodeArmature(&tCocoLoader, &pArmatureData[i], dataInfo);
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_lock(&s_addDataMutex);
+						}
+						CCArmatureDataManager::sharedArmatureDataManager()->addArmatureData(armatureData->name.c_str(), armatureData, dataInfo->filename.c_str());
+						armatureData->release();
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_unlock(&s_addDataMutex);
+						}
+					}
+				}
+				else if (key.compare(ANIMATION_DATA) == 0)
+				{
+					stExpCocoNode *pAnimationData = tpChildArray[i].GetChildArray();
+					length = tpChildArray[i].GetChildNum();
+					for (int i = 0; i < length; ++i)
+					{
+						CCAnimationData *animationData = decodeAnimation(&tCocoLoader, &pAnimationData[i], dataInfo);
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_lock(&s_addDataMutex);
+						}
+						CCArmatureDataManager::sharedArmatureDataManager()->addAnimationData(animationData->name.c_str(), animationData, dataInfo->filename.c_str());
+						animationData->release();
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_unlock(&s_addDataMutex);
+						}
+					}
+				}
+				else if (key.compare(TEXTURE_DATA) == 0)
+				{
+					stExpCocoNode *pAnimationData = tpChildArray[i].GetChildArray();
+					length = tpChildArray[i].GetChildNum();
+					for (int i = 0; i < length; ++i)
+					{
+						CCTextureData *textureData = decodeTexture(&tCocoLoader, &pAnimationData[i]);
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_lock(&s_addDataMutex);
+						}
+						CCArmatureDataManager::sharedArmatureDataManager()->addTextureData(textureData->name.c_str(), textureData, dataInfo->filename.c_str());
+						textureData->release();
+						if (dataInfo->asyncStruct)
+						{
+							pthread_mutex_unlock(&s_addDataMutex);
+						}
+					}
+				}
+			}
+			// Auto losprite file
+			bool autoLoad = dataInfo->asyncStruct == NULL ? CCArmatureDataManager::sharedArmatureDataManager()->isAutoLoadSpriteFile() : dataInfo->asyncStruct->autoLoadSpriteFile;
+			if (autoLoad)
+			{
+				length = tpChildArray[3].GetChildNum();//DICTOOL->getArrayCount_json(json, CONFIG_FILE_PATH); // json[CONFIG_FILE_PATH].IsNull() ? 0 : json[CONFIG_FILE_PATH].Size();
+				stExpCocoNode *pConfigFilePath = tpChildArray[3].GetChildArray();
+				for (int i = 0; i < length; i++)
+				{
+					const char *path = pConfigFilePath[i].GetValue(); //DICTOOL->getStringValueFromArray_json(json, CONFIG_FILE_PATH, i); // json[CONFIG_FILE_PATH][i].IsNull() ? NULL : json[CONFIG_FILE_PATH][i].GetString();
+					if (path == NULL)
+					{
+						CCLOG("load CONFIG_FILE_PATH error.");
+						return;
+					}
+
+					std::string filePath = path;
+					filePath = filePath.erase(filePath.find_last_of("."));
+
+					if (dataInfo->asyncStruct)
+					{
+						dataInfo->configFileQueue.push(filePath);
+					}
+					else
+					{
+						std::string plistPath = filePath + ".plist";
+						std::string pngPath =  filePath + ".png";
+
+						CCArmatureDataManager::sharedArmatureDataManager()->addSpriteFrameFromFile((dataInfo->baseFilePath + plistPath).c_str(), (dataInfo->baseFilePath + pngPath).c_str(), dataInfo->filename.c_str());
+					}
+				}
+			}
+		}
+	}
+}
+
+CCArmatureData* CCDataReaderHelper::decodeArmature(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCArmatureData *armatureData = new CCArmatureData();
+	armatureData->init();
+
+	const char *name = pCocoNode[2].GetValue(); //DICTOOL->getStringValue_json(json, A_NAME);
+	if(name != NULL)
+	{
+		armatureData->name = name;
+	}
+
+	float version = atof(pCocoNode[1].GetValue());
+	dataInfo->cocoStudioVersion = armatureData->dataVersion = version; //DICTOOL->getFloatValue_json(json, VERSION, 0.1f);
+
+	int length = pCocoNode[3].GetChildNum(); //DICTOOL->getArrayCount_json(json, BONE_DATA, 0); 
+	stExpCocoNode *pBoneData = pCocoNode[3].GetChildArray();
+	for (int i = 0; i < length; i++)
+	{
+		//const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, BONE_DATA, i); //json[BONE_DATA][i];
+		CCBoneData *boneData = decodeBone(pCocoLoader, pBoneData, dataInfo);
+		armatureData->addBoneData(boneData);  
+		boneData->release();
+	}
+
+	return armatureData;
+}
+
+CCBoneData* CCDataReaderHelper::decodeBone(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCBoneData *boneData = new CCBoneData();
+	boneData->init();
+
+	decodeNode(boneData, pCocoLoader, pCocoNode, dataInfo);
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pBoneData = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pBoneData[i].GetName(pCocoLoader);
+		str = pBoneData[i].GetValue();
+		if (key.compare(A_NAME) == 0)
+		{
+			 //DICTOOL->getStringValue_json(json, A_NAME);
+			if(str != NULL)
+			{
+				boneData->name = str;
+			}
+		}
+		else if (key.compare(A_PARENT) == 0)
+		{
+			 //DICTOOL->getStringValue_json(json, A_PARENT);
+			if(str != NULL)
+			{
+				boneData->parentName = str;
+			}
+		}
+		else if (key.compare(DISPLAY_DATA) == 0)
+		{
+			int count = pBoneData[i].GetChildNum();
+			stExpCocoNode *pDisplayData = pBoneData[i].GetChildArray();
+			for (int i = 0; i < count; ++i)
+			{
+				CCDisplayData *displayData = decodeBoneDisplay(pCocoLoader, &pDisplayData[i], dataInfo);
+				boneData->addDisplayData(displayData);
+				displayData->release();
+			}
+		}
+	}
+
+	return boneData;
+}
+
+CCDisplayData* CCDataReaderHelper::decodeBoneDisplay(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	std::string key = pCocoNode[1].GetName(pCocoLoader);
+	const char *str = NULL;
+	CCDisplayData *displayData = NULL;
+	DisplayType displayType = CS_DISPLAY_SPRITE;
+	int length = 0;
+	if (key.compare(A_DISPLAY_TYPE) == 0)
+	{
+		str = pCocoNode[1].GetValue(); //DICTOOL->getStringValue_json(json, A_NAME);
+		DisplayType displayType = (DisplayType)(atoi(str)); //DisplayType displayType =  (DisplayType)(DICTOOL->getIntValue_json(json, A_DISPLAY_TYPE, CS_DISPLAY_SPRITE));
+		
+		switch (displayType)
+		{
+		case CS_DISPLAY_SPRITE:
+			{
+				displayData = new CCSpriteDisplayData();
+
+				const char *name =  pCocoNode[0].GetValue(); //DICTOOL->getStringValue_json(json, A_NAME);
+				if(name != NULL)
+				{
+					((CCSpriteDisplayData *)displayData)->displayName = name;
+				}
+				stExpCocoNode *pSkinDataArray = pCocoNode[2].GetChildArray();
+				//const rapidjson::Value &dicArray = DICTOOL->getSubDictionary_json(json, SKIN_DATA);
+				//if(!dicArray.IsNull())
+				if (pSkinDataArray != NULL)
+				{
+					/*rapidjson::SizeType index = 0;
+					const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(dicArray, index);*/
+					stExpCocoNode *pSkinData = &pSkinDataArray[0];
+					if (pSkinData != NULL)
+					{
+						CCSpriteDisplayData *sdd = (CCSpriteDisplayData *)displayData;
+						length = pSkinData->GetChildNum();
+						stExpCocoNode *SkinDataValue = pSkinData->GetChildArray();
+						for (int i = 0; i < length; ++i)
+						{
+							key = SkinDataValue[i].GetName(pCocoLoader);
+							str = SkinDataValue[i].GetValue();
+							if (key.compare(A_X) == 0)
+							{
+								sdd->skinData.x = atof(str) * s_PositionReadScale; //sdd->skinData.x = DICTOOL->getFloatValue_json(dic, A_X) * s_PositionReadScale;
+							}
+							else if (key.compare(A_Y) == 0)
+							{
+								sdd->skinData.y = atof(str) * s_PositionReadScale; //sdd->skinData.y = DICTOOL->getFloatValue_json(dic, A_Y) * s_PositionReadScale;
+							}
+							else if (key.compare(A_SCALE_X) == 0)
+							{
+								sdd->skinData.scaleX = atof(str); //sdd->skinData.scaleX = DICTOOL->getFloatValue_json(dic, A_SCALE_X, 1.0f);
+							}
+							else if (key.compare(A_SCALE_Y) == 0)
+							{
+								sdd->skinData.scaleY = atof(str); //sdd->skinData.scaleY = DICTOOL->getFloatValue_json(dic, A_SCALE_Y, 1.0f);
+							}
+							else if (key.compare(A_SKEW_X) == 0)
+							{
+								sdd->skinData.skewX = atof(str); //sdd->skinData.skewX = DICTOOL->getFloatValue_json(dic, A_SKEW_X, 1.0f);
+							}
+							else if (key.compare(A_SKEW_Y) == 0)
+							{
+								sdd->skinData.skewY = atof(str); //sdd->skinData.skewY = DICTOOL->getFloatValue_json(dic, A_SKEW_Y, 1.0f);
+							}
+						}
+
+						sdd->skinData.x *= dataInfo->contentScale;
+						sdd->skinData.y *= dataInfo->contentScale;
+					}
+				}
+			}
+
+			break;
+		case CS_DISPLAY_ARMATURE:
+			{
+				displayData = new CCArmatureDisplayData();
+
+				const char *name = pCocoNode[0].GetValue();//DICTOOL->getStringValue_json(json, A_NAME);
+				if(name != NULL)
+				{
+					((CCArmatureDisplayData *)displayData)->displayName = name;
+				}
+			}
+			break;
+		case CS_DISPLAY_PARTICLE:
+			{
+				displayData = new CCParticleDisplayData();
+				length = pCocoNode->GetChildNum();
+				stExpCocoNode *pDisplayData = pCocoNode->GetChildArray();
+				for (int i = 0; i < length; ++i)
+				{
+					key = pDisplayData[i].GetName(pCocoLoader);
+                    str = pDisplayData[i].GetValue();
+					if (key.compare(A_PLIST) == 0)
+					{
+                        const char *plist = str;
+                        if(plist != NULL)
+                        {
+                            if (dataInfo->asyncStruct)
+                            {
+                                ((CCParticleDisplayData *)displayData)->displayName = dataInfo->asyncStruct->baseFilePath + plist;
+                            }
+                            else
+                            {
+                                ((CCParticleDisplayData *)displayData)->displayName = dataInfo->baseFilePath + plist;
+                            }
+                        }
+					}
+				}
+				/*const char *plist = DICTOOL->getStringValue_json(json, A_PLIST);
+				if(plist != NULL)
+				{
+				if (dataInfo->asyncStruct)
+				{
+				((CCParticleDisplayData *)displayData)->displayName = dataInfo->asyncStruct->baseFilePath + plist;
+				}
+				else
+				{
+				((CCParticleDisplayData *)displayData)->displayName = dataInfo->baseFilePath + plist;
+				}
+				}*/
+			}
+			break;
+		default:
+			displayData = new CCSpriteDisplayData();
+
+			break;
+		}
+		displayData->displayType = displayType;
+	}
+	return displayData;
+}
+
+CCAnimationData* CCDataReaderHelper::decodeAnimation(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCAnimationData *aniData = new CCAnimationData();
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pAnimationData = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pAnimationData[i].GetName(pCocoLoader);
+		str = pAnimationData[i].GetValue();
+		if (key.compare(A_NAME) == 0)
+		{
+			if(str != NULL)
+			{
+				aniData->name = str;
+			}
+		}
+		else if (key.compare(MOVEMENT_DATA) == 0)
+		{
+			int count = pAnimationData[i].GetChildNum();
+			stExpCocoNode *pMoveData = pAnimationData[i].GetChildArray();
+			CCMovementData *movementData = decodeMovement(pCocoLoader, &pAnimationData[i], dataInfo);
+			aniData->addMovement(movementData);
+			movementData->release();
+		}
+	}
+	return aniData;
+}
+
+CCMovementData* CCDataReaderHelper::decodeMovement(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCMovementData *movementData = new CCMovementData();
+	movementData->scale = 1.0f;
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pMoveDataArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pMoveDataArray[i].GetName(pCocoLoader);
+		str = pMoveDataArray[i].GetValue();
+		if (key.compare(A_NAME) == 0)
+		{
+			if(str != NULL)
+			{
+				movementData->name = str;
+			}
+		}
+		else if (key.compare(A_LOOP) == 0)
+		{
+			movementData->loop = true;
+			if(str != NULL)
+			{
+				if (strcmp("true", str) != 0)
+				{
+					movementData->loop = false; //movementData->loop = DICTOOL->getBooleanValue_json(json, A_LOOP, true);
+				}
+			}
+		}
+		else if (key.compare(A_DURATION_TWEEN) == 0)
+		{
+			movementData->durationTween = 0;
+			if(str != NULL)
+			{
+				movementData->durationTween = atoi(str); //movementData->durationTween = DICTOOL->getIntValue_json(json, A_DURATION_TWEEN, 0);
+			}
+		}
+		else if (key.compare(A_DURATION_TO) == 0)
+		{
+			movementData->durationTo = 0;
+			if(str != NULL)
+			{
+				movementData->durationTo = atoi(str); //movementData->durationTo = DICTOOL->getIntValue_json(json, A_DURATION_TO, 0);
+			}
+		}
+		else if (key.compare(A_DURATION) == 0)
+		{
+			movementData->duration = 0;
+			if(str != NULL)
+			{
+				movementData->duration = atoi(str); //movementData->duration = DICTOOL->getIntValue_json(json, A_DURATION, 0);
+			}
+		}
+		else if (key.compare(A_MOVEMENT_SCALE) == 0)
+		{
+			movementData->scale = 1.0;
+			if(str != NULL)
+			{
+				movementData->scale = atof(str); 
+				/*if (!DICTOOL->checkObjectExist_json(json, A_DURATION))
+				{
+					movementData->scale = 1.0f;
+				}
+				else
+				{
+					movementData->scale = DICTOOL->getFloatValue_json(json, A_MOVEMENT_SCALE, 1.0f);
+				}*/
+			}
+		}
+		else if (key.compare(A_TWEEN_EASING) == 0)
+		{
+			movementData->tweenEasing = Linear;
+			if(str != NULL)
+			{
+				movementData->tweenEasing = (CCTweenType)(atoi(str)); 
+				/*if (!DICTOOL->checkObjectExist_json(json, A_DURATION))
+				{
+					movementData->scale = 1.0f;
+				}
+				else
+				{
+					movementData->scale = DICTOOL->getFloatValue_json(json, A_MOVEMENT_SCALE, 1.0f);
+				}*/
+			}
+		}
+		else if (key.compare(MOVEMENT_BONE_DATA) == 0)
+		{
+			int count = pMoveDataArray[i].GetChildNum();
+			stExpCocoNode *pMoveBoneData = pMoveDataArray[i].GetChildArray();
+			for (int i = 0; i < count; ++i)
+			{
+				CCMovementBoneData *movementBoneData = decodeMovementBone(pCocoLoader, &pMoveBoneData[i],dataInfo);
+				movementData->addMovementBoneData(movementBoneData);
+				movementBoneData->release();
+			}
+		}
+	}
+	return movementData;
+}
+
+CCMovementBoneData* CCDataReaderHelper::decodeMovementBone(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCMovementBoneData *movementBoneData = new CCMovementBoneData();
+	movementBoneData->init();
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pMovementBoneDataArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pMovementBoneDataArray[i].GetName(pCocoLoader);
+		str = pMovementBoneDataArray[i].GetValue();
+		if (key.compare(A_NAME) == 0)
+		{
+			if(str != NULL)
+			{
+				movementBoneData->name = str;
+			}
+		}
+		else if (key.compare(A_MOVEMENT_DELAY) == 0)
+		{
+			if(str != NULL)
+			{
+				movementBoneData->delay = atof(str); //movementBoneData->delay = DICTOOL->getFloatValue_json(json, A_MOVEMENT_DELAY);
+			}
+		}
+		else if (key.compare(FRAME_DATA) == 0)
+		{
+			int count = pMovementBoneDataArray[i].GetChildNum();
+			stExpCocoNode *pFrameData = pMovementBoneDataArray[i].GetChildArray();
+			for (int i = 0; i < count; ++i)
+			{
+				CCFrameData *frameData = decodeFrame(pCocoLoader, &pFrameData[i], dataInfo);
+
+				movementBoneData->addFrameData(frameData);
+				frameData->release();
+
+				if (dataInfo->cocoStudioVersion < VERSION_COMBINED)
+				{
+					frameData->frameID = movementBoneData->duration;
+					movementBoneData->duration += frameData->duration;
+				}
+			}
+		}
+	}
+
+	/*const char *name = DICTOOL->getStringValue_json(json, A_NAME);
+	if(name != NULL)
+	{
+		movementBoneData->name = name;
+	}*/
+
+	//rapidjson::SizeType length = DICTOOL->getArrayCount_json(json, FRAME_DATA);
+	//for (rapidjson::SizeType i = 0; i < length; i++)
+	//{
+	//	const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, FRAME_DATA, i);
+	//	CCFrameData *frameData = decodeFrame(dic,dataInfo);
+
+	//	movementBoneData->addFrameData(frameData);
+	//	frameData->release();
+
+	//	if (dataInfo->cocoStudioVersion < VERSION_COMBINED)
+	//	{
+	//		frameData->frameID = movementBoneData->duration;
+	//		movementBoneData->duration += frameData->duration;
+	//	}
+	//}
+
+	if (dataInfo->cocoStudioVersion < VERSION_CHANGE_ROTATION_RANGE)
+	{
+		//! Change rotation range from (-180 -- 180) to (-infinity -- infinity)
+		CCFrameData **frames = (CCFrameData **)movementBoneData->frameList.data->arr;
+		for (int i = movementBoneData->frameList.count() - 1; i >= 0; i--)
+		{
+			if (i > 0)
+			{
+				float difSkewX = frames[i]->skewX -  frames[i - 1]->skewX;
+				float difSkewY = frames[i]->skewY -  frames[i - 1]->skewY;
+
+				if (difSkewX < -M_PI || difSkewX > M_PI)
+				{
+					frames[i - 1]->skewX = difSkewX < 0 ? frames[i - 1]->skewX - 2 * M_PI : frames[i - 1]->skewX + 2 * M_PI;
+				}
+
+				if (difSkewY < -M_PI || difSkewY > M_PI)
+				{
+					frames[i - 1]->skewY = difSkewY < 0 ? frames[i - 1]->skewY - 2 * M_PI : frames[i - 1]->skewY + 2 * M_PI;
+				}
+			}
+		}
+	}
+
+
+	if (dataInfo->cocoStudioVersion < VERSION_COMBINED)
+	{
+		if (movementBoneData->frameList.count() > 0)
+		{
+			CCFrameData *frameData = new CCFrameData();
+			frameData->copy((CCFrameData *)movementBoneData->frameList.lastObject());
+			movementBoneData->addFrameData(frameData);
+			frameData->release();
+
+			frameData->frameID = movementBoneData->duration;
+		}
+	}
+
+	return movementBoneData;
+}
+
+CCFrameData* CCDataReaderHelper::decodeFrame(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	CCFrameData *frameData = new CCFrameData();
+
+	decodeNode(frameData, pCocoLoader, pCocoNode, dataInfo);
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pFrameDataArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pFrameDataArray[i].GetName(pCocoLoader);
+		str = pFrameDataArray[i].GetValue();
+		if (key.compare(A_TWEEN_EASING) == 0)
+		{
+			frameData->tweenEasing = Linear;
+			if(str != NULL)
+			{
+				frameData->tweenEasing = (CCTweenType)(atoi(str)); //frameData->tweenEasing = (CCTweenType)(DICTOOL->getIntValue_json(json, A_TWEEN_EASING, Linear));
+			}
+		}
+		else if (key.compare(A_DISPLAY_INDEX) == 0)
+		{
+			if(str != NULL)
+			{
+				frameData->displayIndex = atoi(str); //frameData->displayIndex = DICTOOL->getIntValue_json(json, A_DISPLAY_INDEX);
+			}
+		}
+		else if (key.compare(A_BLEND_SRC) == 0)
+		{
+			if(str != NULL)
+			{
+				frameData->blendFunc.src = (GLenum)(atoi(str)); //frameData->blendFunc.src = (GLenum)(DICTOOL->getIntValue_json(json, A_BLEND_SRC, CC_BLEND_SRC));
+			}
+		}
+		else if (key.compare(A_BLEND_DST) == 0)
+		{
+			if(str != NULL)
+			{
+				frameData->blendFunc.dst = (GLenum)(atoi(str)); //frameData->blendFunc.dst = (GLenum)(DICTOOL->getIntValue_json(json, A_BLEND_DST, CC_BLEND_DST));
+			}
+		}
+		else if (key.compare(A_TWEEN_FRAME) == 0)
+		{
+			frameData->isTween = true;
+			if(str != NULL)
+			{
+				if (strcmp("true", str) != 0)
+				{
+					frameData->isTween = false; //DICTOOL->getBooleanValue_json(json, A_TWEEN_FRAME, true);
+				}
+			}
+		}
+		else if (key.compare(A_EVENT) == 0)
+		{
+			if(str != NULL)
+			{
+				frameData->strEvent = str;
+			}
+		}
+		else if (key.compare(A_DURATION) == 0)
+		{
+			if (dataInfo->cocoStudioVersion < VERSION_COMBINED)
+			{
+				frameData->duration = 1;
+				if(str != NULL)
+				{
+					frameData->duration = atoi(str);
+				}
+			}
+		}
+		else if (key.compare(A_FRAME_INDEX) == 0)
+		{
+			if (dataInfo->cocoStudioVersion >= VERSION_COMBINED)
+			{
+				if(str != NULL)
+				{
+					frameData->frameID = atoi(str);
+				}
+			}
+		}
+		else if (key.compare(A_EASING_PARAM) == 0)
+		{
+			int count = pFrameDataArray[i].GetChildNum();
+			if (count != 0 )
+			{
+				frameData->easingParams = new float[count];
+				stExpCocoNode *pFrameData = pFrameDataArray[i].GetChildArray();
+				for (int i = 0; i < count; ++i)
+				{
+					str = pFrameData[i].GetValue();
+					if (str != NULL)
+					{
+						frameData->easingParams[i] = atof(str);
+					}
+				}
+			}
+			
+		}
+	}
+
+	return frameData;
+}
+
+CCTextureData* CCDataReaderHelper::decodeTexture(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode)
+{
+	CCTextureData *textureData = new CCTextureData();
+	textureData->init();
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *pTextureDataArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = pTextureDataArray[i].GetName(pCocoLoader);
+		str = pTextureDataArray[i].GetValue();
+		if (key.compare(A_NAME) == 0)
+		{
+			if(str != NULL)
+			{
+				textureData->name = str;
+			}
+		}
+		else if (key.compare(A_WIDTH) == 0)
+		{
+			if(str != NULL)
+			{
+				textureData->width = atof(str);
+			}
+		}
+		else if (key.compare(A_HEIGHT) == 0)
+		{
+			if(str != NULL)
+			{
+				textureData->height = atof(str);
+			}
+		}
+		else if (key.compare(A_PIVOT_X) == 0)
+		{
+			if(str != NULL)
+			{
+				textureData->pivotX = atof(str);
+			}
+		}
+		else if (key.compare(A_PIVOT_Y) == 0)
+		{
+			if(str != NULL)
+			{
+				textureData->pivotY = atof(str);
+			}
+		}
+		else if (key.compare(CONTOUR_DATA) == 0)
+		{
+			int count = pTextureDataArray[i].GetChildNum();
+			stExpCocoNode *pContourArray = pTextureDataArray[i].GetChildArray();
+			for (int i = 0; i < count; ++i)
+			{
+				CCContourData *contourData = decodeContour(pCocoLoader, &pContourArray[i]);
+				textureData->contourDataList.addObject(contourData);
+				contourData->release();
+			}
+		}
+	}
+
+	/*const char *name = DICTOOL->getStringValue_json(json, A_NAME);
+	if(name != NULL)
+	{
+		textureData->name = name;
+	}*/
+
+	/*int length = DICTOOL->getArrayCount_json(json, CONTOUR_DATA);
+	for (int i = 0; i < length; i++)
+	{
+		const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CONTOUR_DATA, i);
+		CCContourData *contourData = decodeContour(dic);
+		textureData->contourDataList.addObject(contourData);
+		contourData->release();
+
+	}*/
+
+	return textureData;
+}
+
+CCContourData* CCDataReaderHelper::decodeContour(CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode)
+{
+	CCContourData *contourData = new CCContourData();
+	contourData->init();
+
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *verTexPointArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = verTexPointArray[i].GetName(pCocoLoader);
+		str = verTexPointArray[i].GetValue();
+		if (key.compare(VERTEX_POINT) == 0)
+		{
+			int count = verTexPointArray[i].GetChildNum();
+			stExpCocoNode *pVerTexPointArray = verTexPointArray[i].GetChildArray();
+			for (int i = count - 1; i >= 0; --i)
+			{
+				int num = pVerTexPointArray[i].GetChildNum();
+				stExpCocoNode *pVerTexPoint = pVerTexPointArray[i].GetChildArray();
+				for (int i = 0; i < num; ++i)
+				{
+					CCContourVertex2 *vertex = new CCContourVertex2(0, 0);
+					key = pVerTexPoint[i].GetName(pCocoLoader);
+					str = pVerTexPoint[i].GetValue();
+					if (key.compare(A_X) == 0)
+					{
+						vertex->x = atof(str);
+					}
+					else if (key.compare(A_Y) == 0)
+					{
+						vertex->y = atof(str);
+					}
+					contourData->vertexList.addObject(vertex);
+					vertex->release();
+				}
+			}
+			break;
+		}
+	}
+
+	//int length = DICTOOL->getArrayCount_json(json, VERTEX_POINT);
+
+	/*for (int i = length - 1; i >= 0; --i)
+	{
+		const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, VERTEX_POINT, i);
+		CCContourVertex2 *vertex = new CCContourVertex2(0, 0);
+		vertex->x = DICTOOL->getFloatValue_json(dic, A_X);
+		vertex->y = DICTOOL->getFloatValue_json(dic, A_Y);
+
+		contourData->vertexList.addObject(vertex);
+		vertex->release();
+	}*/
+
+	return contourData;
+}
+
+void CCDataReaderHelper::decodeNode(CCBaseData *node, CocoLoader *pCocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo)
+{
+	int length = pCocoNode->GetChildNum();
+	stExpCocoNode *NodeArray = pCocoNode->GetChildArray();
+	const char *str = NULL;
+	for (int i = 0; i < length; ++i)
+	{
+		std::string key = NodeArray[i].GetName(pCocoLoader);
+		str = NodeArray[i].GetValue();
+		if (key.compare(A_X) == 0)
+		{
+			node->x = atof(str) * dataInfo->contentScale;
+		}
+		else if (key.compare(A_Y) == 0)
+		{
+			node->y = atof(str) * dataInfo->contentScale;
+		}
+		else if (key.compare(A_Z) == 0)
+		{
+			node->zOrder = atoi(str);
+		}
+		else if (key.compare(A_SKEW_X) == 0)
+		{
+			node->skewX = atof(str);
+		}
+		else if (key.compare(A_SKEW_Y) == 0)
+		{
+			node->skewY = atof(str);
+		}
+		else if (key.compare(A_SCALE_X) == 0)
+		{
+			node->scaleX = atof(str);
+		}
+		else if (key.compare(A_SCALE_Y) == 0)
+		{
+			node->scaleY = atof(str);
+		}
+		else if (key.compare(COLOR_INFO) == 0)
+		{
+			if (dataInfo->cocoStudioVersion >= VERSION_COLOR_READING)
+			{
+				int count = NodeArray[i].GetChildNum();
+				stExpCocoNode *colorArray = NodeArray[i].GetChildArray();
+				for (int i = 0; i < count; ++i)
+				{
+					std::string key = colorArray[i].GetName(pCocoLoader);
+					str = colorArray[i].GetValue();
+					if (key.compare(A_ALPHA) == 0)
+					{
+						node->a = atoi(str);
+					}
+					else if (key.compare(A_RED) == 0)
+					{
+						node->r = atoi(str);
+					}
+					else if (key.compare(A_GREEN) == 0)
+					{
+						node->g = atoi(str);
+					}
+					else if (key.compare(A_BLUE) == 0)
+					{
+						node->b = atoi(str);
+					}
+				}
+				node->isUseColorInfo = true;
+			}
+		}
+
+		if (dataInfo->cocoStudioVersion < VERSION_COLOR_READING)
+		{
+			length = pCocoNode[0].GetChildNum();
+			stExpCocoNode *colorArray = NodeArray[0].GetChildArray();
+			for (int i = 0; i < length; ++i)
+			{
+				std::string key = colorArray[i].GetName(pCocoLoader);
+				str = colorArray[i].GetValue();
+				if (key.compare(A_ALPHA) == 0)
+				{
+					node->a = atoi(str);
+				}
+				else if (key.compare(A_RED) == 0)
+				{
+					node->r = atoi(str);
+				}
+				else if (key.compare(A_GREEN) == 0)
+				{
+					node->g = atoi(str);
+				}
+				else if (key.compare(A_BLUE) == 0)
+				{
+					node->b = atoi(str);
+				}
+			}
+			node->isUseColorInfo = true;
+
+		}
+
+			//{
+			//	if (DICTOOL->checkObjectExist_json(json, 0))
+			//	{
+			//		const rapidjson::Value &colorDic = DICTOOL->getSubDictionary_json(json, 0); 
+			//		node->a = DICTOOL->getIntValue_json(colorDic, A_ALPHA, 255);   
+			//		node->r = DICTOOL->getIntValue_json(colorDic, A_RED, 255);  
+			//		node->g = DICTOOL->getIntValue_json(colorDic, A_GREEN, 255); 
+			//		node->b = DICTOOL->getIntValue_json(colorDic, A_BLUE, 255); 
+
+			//		node->isUseColorInfo = true;
+			//	}
+			//}
+	}
+
+	/*node->x =  DICTOOL->getFloatValue_json(json, A_X) * dataInfo->contentScale;
+	node->y = DICTOOL->getFloatValue_json(json, A_Y) * dataInfo->contentScale;
+	node->zOrder = DICTOOL->getIntValue_json(json, A_Z);*/
+
+	/*node->skewX = DICTOOL->getFloatValue_json(json, A_SKEW_X);
+	node->skewY = DICTOOL->getFloatValue_json(json, A_SKEW_Y);
+	node->scaleX = DICTOOL->getFloatValue_json(json, A_SCALE_X, 1.0f);
+	node->scaleY = DICTOOL->getFloatValue_json(json, A_SCALE_Y, 1.0f);*/
+
+	//if (dataInfo->cocoStudioVersion < VERSION_COLOR_READING)
+	//{
+	//	if (DICTOOL->checkObjectExist_json(json, 0))
+	//	{
+	//		const rapidjson::Value &colorDic = DICTOOL->getSubDictionary_json(json, 0); 
+	//		node->a = DICTOOL->getIntValue_json(colorDic, A_ALPHA, 255);   
+	//		node->r = DICTOOL->getIntValue_json(colorDic, A_RED, 255);  
+	//		node->g = DICTOOL->getIntValue_json(colorDic, A_GREEN, 255); 
+	//		node->b = DICTOOL->getIntValue_json(colorDic, A_BLUE, 255); 
+
+	//		node->isUseColorInfo = true;
+	//	}
+	//}
+	//else
+	//{
+	//	if (DICTOOL->checkObjectExist_json(json, COLOR_INFO))
+	//	{
+	//		const rapidjson::Value &colorDic =  DICTOOL->getSubDictionary_json(json, COLOR_INFO); //json.getSubDictionary(COLOR_INFO);
+	//		node->a = DICTOOL->getIntValue_json(colorDic, A_ALPHA, 255);   
+	//		node->r = DICTOOL->getIntValue_json(colorDic, A_RED, 255);  
+	//		node->g = DICTOOL->getIntValue_json(colorDic, A_GREEN, 255); 
+	//		node->b = DICTOOL->getIntValue_json(colorDic, A_BLUE, 255); 
+
+	//		node->isUseColorInfo = true;
+	//	}
+	//}
 }
 
 NS_CC_EXT_END

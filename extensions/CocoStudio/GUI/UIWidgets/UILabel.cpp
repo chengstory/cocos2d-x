@@ -28,8 +28,7 @@ NS_CC_BEGIN
 
 namespace ui {
 
-static const int LABEL_RENDERER_Z = (0);
-//static const int LABEL_RENDERER_Z = (-1);
+static const int LABEL_RENDERER_Z = (-1);
     
 IMPLEMENT_CLASS_GUI_INFO(Label)
 

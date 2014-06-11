@@ -167,12 +167,9 @@ public:
     CCDictionary *getAnimationDatas() const;
     CCDictionary *getTextureDatas() const;
 
-	/**
-     *	@brief	Get relative data
-     */
-	CCRelativeData *getRelativeData(const char* configFilePath);
 protected:
     void addRelativeData(const char* configFilePath);
+    CCRelativeData *getRelativeData(const char* configFilePath);
 private:
     /**
      *	@brief	save amature datas

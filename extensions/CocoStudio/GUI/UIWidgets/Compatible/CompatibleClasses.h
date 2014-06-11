@@ -17,7 +17,6 @@
 #include "../ScrollWidget/UIListView.h"
 #include "../ScrollWidget/UIPageView.h"
 #include "../ScrollWidget/UIScrollView.h"
-#include "../../System/UITouchGroup.h"
 
 //class type define
 NS_CC_BEGIN
