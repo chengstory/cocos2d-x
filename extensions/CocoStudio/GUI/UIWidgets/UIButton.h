@@ -208,6 +208,9 @@ protected:
     CCSize _pressedTextureSize;
     CCSize _disabledTextureSize;
     bool _pressedActionEnabled;
+    std::string _titleText;
+    std::string _titleFontName;
+    float _titleFontSize;
     ccColor3B _titleColor;
     float _normalTextureScaleXInSize;
     float _normalTextureScaleYInSize;

@@ -32,8 +32,9 @@ namespace ui {
 
 #define STATIC_CAST_CCSPRITE static_cast<CCSprite*>(_imageRenderer)
 #define STATIC_CAST_SCALE9SPRITE static_cast<extension::CCScale9Sprite*>(_imageRenderer)
-    
-static const int IMAGE_RENDERER_Z = (-1);
+  
+static const int IMAGE_RENDERER_Z = (0);
+//static const int IMAGE_RENDERER_Z = (-1);
     
     IMPLEMENT_CLASS_GUI_INFO(ImageView)
 
