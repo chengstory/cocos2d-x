@@ -41,6 +41,10 @@ static const char* FrameType_RotationSkewFrame  = "RotationSkewFrame";
 static const char* FrameType_AnchorFrame        = "AnchorFrame";
 static const char* FrameType_InnerActionFrame   = "InnerActionFrame";
 static const char* FrameType_ColorFrame         = "ColorFrame";
+static const char* FrameType_TextureFrame       = "TextureFrame";
+static const char* FrameType_EventFrame         = "EventFrame";
+static const char* FrameType_ZOrderFrame        = "ZOrderFrame";
+
 
 
 static const char* ACTION           = "action";
@@ -60,19 +64,20 @@ static const char* START_FRAME      = "startFrame";
 
 static const char* X                = "x";
 static const char* Y                = "y";
-static const char* SCALE_X          = "scalex";
-static const char* SCALE_Y          = "scaley";
-static const char* SKEW_X           = "skewx";
-static const char* SKEW_Y           = "skewy";
+static const char* SCALE_X          = "scaleX";
+static const char* SCALE_Y          = "scaleY";
+static const char* SKEW_X           = "skewX";
+static const char* SKEW_Y           = "skewY";
 static const char* ROTATION         = "rotation";
 static const char* ROTATION_SKEW_X  = "rotationSkewX";
 static const char* ROTATION_SKEW_Y  = "rotationSkewY";
-static const char* ANCHOR_X         = "anchorx";
-static const char* ANCHOR_Y         = "anchory";
+static const char* ANCHOR_X         = "anchorPointX";
+static const char* ANCHOR_Y         = "anchorPointY";
 static const char* ALPHA            = "alpha";
 static const char* RED              = "red";
 static const char* GREEN            = "green";
 static const char* BLUE             = "blue";
+static const char* Value            = "value";
 
 
 
@@ -165,6 +170,10 @@ void TimelineActionCache::init()
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadAnchorPointFrame)), FrameType_AnchorFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadInnerActionFrame)), FrameType_InnerActionFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadColorFrame)),       FrameType_ColorFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadTextureFrame)),     FrameType_TextureFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadEventFrame)),       FrameType_EventFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadZOrderFrame)),      FrameType_ZOrderFrame);
+
 }
 
 void TimelineActionCache::removeAction(const std::string& fileName)
@@ -262,7 +271,7 @@ Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
             bool tween = DICTOOL->getBooleanValue_json(dic, TWEEN, false);
             frame->setTween(tween);
 
-            timeline->getFrames()->addObject(frame);
+            timeline->addFrame(frame);
         }
     }
 
@@ -273,7 +282,7 @@ Frame* TimelineActionCache::loadVisibleFrame(const rapidjson::Value& json)
 {
     VisibleFrame* frame = VisibleFrame::create();
 
-    bool visible = DICTOOL->getBooleanValue_json(json, VISIBLE);
+    bool visible = DICTOOL->getBooleanValue_json(json, Value);
     frame->setVisible(visible);
 
     return frame;
@@ -294,8 +303,8 @@ Frame* TimelineActionCache::loadScaleFrame(const rapidjson::Value& json)
 {
    ScaleFrame* frame = ScaleFrame::create();
 
-   float scalex = DICTOOL->getFloatValue_json(json, SCALE_X);
-   float scaley = DICTOOL->getFloatValue_json(json, SCALE_Y);
+   float scalex = DICTOOL->getFloatValue_json(json, X);
+   float scaley = DICTOOL->getFloatValue_json(json, Y);
 
    frame->setScaleX(scalex);
    frame->setScaleY(scaley);
@@ -307,8 +316,8 @@ Frame* TimelineActionCache::loadSkewFrame(const rapidjson::Value& json)
 {
     SkewFrame* frame = SkewFrame::create();
 
-    float skewx = DICTOOL->getFloatValue_json(json, SKEW_X);
-    float skewy = DICTOOL->getFloatValue_json(json, SKEW_Y);
+    float skewx = DICTOOL->getFloatValue_json(json, X);
+    float skewy = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setSkewX(skewx);
     frame->setSkewY(skewy);
@@ -320,8 +329,8 @@ Frame* TimelineActionCache::loadRotationSkewFrame(const rapidjson::Value& json)
 {
     RotationSkewFrame* frame = RotationSkewFrame::create();
 
-    float skewx = DICTOOL->getFloatValue_json(json, ROTATION_SKEW_X);
-    float skewy = DICTOOL->getFloatValue_json(json, ROTATION_SKEW_Y);
+    float skewx = DICTOOL->getFloatValue_json(json, X);
+    float skewy = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setSkewX(skewx);
     frame->setSkewY(skewy);
@@ -343,8 +352,8 @@ Frame* TimelineActionCache::loadAnchorPointFrame (const rapidjson::Value& json)
 {
     AnchorPointFrame* frame = AnchorPointFrame::create();
 
-    float anchorx = DICTOOL->getFloatValue_json(json, ANCHOR_X);
-    float anchory = DICTOOL->getFloatValue_json(json, ANCHOR_Y);
+    float anchorx = DICTOOL->getFloatValue_json(json, X);
+    float anchory = DICTOOL->getFloatValue_json(json, Y);
 
     frame->setAnchorPoint(CCPoint(anchorx, anchory));
 
@@ -379,6 +388,40 @@ Frame* TimelineActionCache::loadColorFrame(const rapidjson::Value& json)
     return frame;
 }
 
+
+Frame* TimelineActionCache::loadTextureFrame(const rapidjson::Value& json)
+{
+    TextureFrame* frame = TextureFrame::create();
+
+    const char* texture = DICTOOL->getStringValue_json(json, Value);
+
+    if(texture != NULL)
+        frame->setTexture(texture);
+
+    return frame;
+}
+
+Frame* TimelineActionCache::loadEventFrame(const rapidjson::Value& json)
+{
+    EventFrame* frame = EventFrame::create();
+
+    const char* evnt = DICTOOL->getStringValue_json(json, Value);
+
+    if(evnt != NULL)
+        frame->setEvent(evnt);
+
+    return frame;
+}
+
+Frame* TimelineActionCache::loadZOrderFrame(const rapidjson::Value& json)
+{
+    ZOrderFrame* frame = ZOrderFrame::create();
+
+    int zorder = DICTOOL->getIntValue_json(json, Value);
+    frame->setZOrder(zorder);
+
+    return frame;
+}
 
 }
 }

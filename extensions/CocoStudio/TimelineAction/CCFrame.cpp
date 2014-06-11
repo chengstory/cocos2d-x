@@ -23,6 +23,8 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "CCFrame.h"
+#include "CCTimeLine.h"
+#include "CCTimelineAction.h"
 
 using namespace cocos2d;
 
@@ -33,6 +35,7 @@ namespace animation {
 Frame::Frame()
     : _frameIndex(0)
     , _tween(true)
+    , _timeline(NULL)
     , _node(NULL)
 {
 }
@@ -200,16 +203,18 @@ SkewFrame::SkewFrame()
 
 void SkewFrame::onEnter(Frame *nextFrame)
 {
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setSkewX(_skewX);
         _node->setSkewY(_skewY);
     }
-    else
+    
+    if(_tween)
     {
         _betweenSkewX = static_cast<SkewFrame*>(nextFrame)->_skewX - _skewX;
         _betweenSkewY = static_cast<SkewFrame*>(nextFrame)->_skewY - _skewY;
     }
+
 }
 
 void SkewFrame::apply(float percent)
@@ -257,12 +262,13 @@ RotationSkewFrame::RotationSkewFrame()
 
 void RotationSkewFrame::onEnter(Frame *nextFrame)
 {
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setRotationX(_skewX);
         _node->setRotationY(_skewY);
     }
-    else
+    
+    if(_tween)
     {
         _betweenSkewX = static_cast<RotationSkewFrame*>(nextFrame)->_skewX - _skewX;
         _betweenSkewY = static_cast<RotationSkewFrame*>(nextFrame)->_skewY - _skewY;
@@ -313,11 +319,12 @@ PositionFrame::PositionFrame()
 
 void PositionFrame::onEnter(Frame *nextFrame)
 {
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setPosition(_position);
     }
-    else
+
+    if(_tween)
     {
         _betweenX = static_cast<PositionFrame*>(nextFrame)->_position.x - _position.x;
         _betweenY = static_cast<PositionFrame*>(nextFrame)->_position.y - _position.y;
@@ -368,12 +375,13 @@ ScaleFrame::ScaleFrame()
 
 void ScaleFrame::onEnter(Frame *nextFrame)
 {
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         _node->setScaleX(_scaleX);
         _node->setScaleY(_scaleY);
     }
-    else
+    
+    if(_tween)
     {
         _betweenScaleX = static_cast<ScaleFrame*>(nextFrame)->_scaleX - _scaleX;
         _betweenScaleY = static_cast<ScaleFrame*>(nextFrame)->_scaleY - _scaleY;
@@ -502,7 +510,7 @@ void ColorFrame::onEnter(Frame *nextFrame)
     if(!rgbaProtocaol)
         return;
 
-    if (!_tween)
+    if (!_tween || nextFrame == this)
     {
         if(_alpha != rgbaProtocaol->getOpacity())
             rgbaProtocaol->setOpacity(_alpha);
@@ -511,7 +519,8 @@ void ColorFrame::onEnter(Frame *nextFrame)
         if((color.r != _color.r) || (color.g != _color.g) || (color.b != _color.b))
             rgbaProtocaol->setColor(_color);
     }
-    else
+    
+    if(_tween)
     {
         _betweenAlpha = static_cast<ColorFrame*>(nextFrame)->_alpha - _alpha;
 
@@ -523,6 +532,7 @@ void ColorFrame::onEnter(Frame *nextFrame)
 
     rgbaProtocaol->setCascadeColorEnabled(true);
     rgbaProtocaol->setCascadeOpacityEnabled(true);
+
 }
 
 void ColorFrame::apply(float percent)
@@ -557,6 +567,80 @@ Frame* ColorFrame::clone()
     return frame;
 }
 
+
+
+// EventFrame
+EventFrame* EventFrame::create()
+{
+    EventFrame* frame = new EventFrame();
+    if (frame)
+    {
+        frame->autorelease();
+        return frame;
+    }
+    CC_SAFE_DELETE(frame);
+    return NULL;
+}
+
+EventFrame::EventFrame()
+    : _event("")
+{
+}
+
+void EventFrame::onEnter(Frame *nextFrame)
+{
+    if (_timeline)
+    {
+        _timeline->getTimelineAction()->emitFrameEvent(this);
+    }
+}
+
+
+Frame* EventFrame::clone()
+{
+    EventFrame* frame = EventFrame::create();
+    frame->setEvent(_event);
+
+    frame->cloneProperty(this);
+
+    return frame;
+}
+
+
+// ZOrderFrame
+ZOrderFrame* ZOrderFrame::create()
+{
+    ZOrderFrame* frame = new ZOrderFrame();
+    if (frame)
+    {
+        frame->autorelease();
+        return frame;
+    }
+    CC_SAFE_DELETE(frame);
+    return NULL;
+}
+
+ZOrderFrame::ZOrderFrame()
+    : _zorder(0)
+{
+}
+
+void ZOrderFrame::onEnter(Frame *nextFrame)
+{
+    if(_node)
+        _node->setZOrder(_zorder);
+}
+
+
+Frame* ZOrderFrame::clone()
+{
+    ZOrderFrame* frame = ZOrderFrame::create();
+    frame->setZOrder(_zorder);
+
+    frame->cloneProperty(this);
+
+    return frame;
+}
 
 }
 }
