@@ -171,12 +171,7 @@ void CCArmatureAnimation::play(const char *animationName, int durationTo, int du
     CCAssert(m_pAnimationData, "m_pAnimationData can not be null");
 
     m_pMovementData = m_pAnimationData->getMovement(animationName);
-    if (m_pMovementData == NULL)
-    {
-        return;
-    }
-    
-    //CCAssert(m_pMovementData, "m_pMovementData can not be null");
+    CCAssert(m_pMovementData, "m_pMovementData can not be null");
 
     //! Get key frame count
     m_iRawDuration = m_pMovementData->duration;

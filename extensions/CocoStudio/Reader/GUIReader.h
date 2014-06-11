@@ -62,7 +62,6 @@ public:
 	static void purge();
     
     cocos2d::ui::Widget* widgetFromJsonFile(const char* fileName);
-    
     int getVersionInteger(const char* str);
     void storeFileDesignSize(const char* fileName, const cocos2d::CCSize &size);
     const cocos2d::CCSize getFileDesignSize(const char* fileName) const;

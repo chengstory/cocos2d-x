@@ -54,14 +54,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
                 {
                     std::string tp_b = jsonPath;
                     const char* imageFileName = DICTOOL->getStringValue_json(imageFileNameDic, "path");
-                    const char* imageFileName_tp = NULL;
-					std::string imageFilePath;
-					if (imageFileName && (strcmp(imageFileName, "") != 0))
-					{
-                        imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
-						imageFileName_tp = imageFilePath.c_str();
-					}
-					//	(imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+                    const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
                     slider->loadBarTexture(imageFileName_tp);
                     break;
                 }
@@ -87,13 +80,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
                 {
                     std::string tp_b = jsonPath;
                     const char*imageFileName =  DICTOOL->getStringValue_json(imageFileNameDic, "path");
-                    const char* imageFileName_tp = NULL;
-					std::string imageFilePath;
-					if (imageFileName && (strcmp(imageFileName, "") != 0))
-					{
-                        imageFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
-						imageFileName_tp = imageFilePath.c_str();
-					}
+                    const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
                     slider->loadBarTexture(imageFileName_tp);
                     break;
                 }
@@ -117,12 +104,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_n = jsonPath;
             const char* normalFileName = DICTOOL->getStringValue_json(normalDic, "path");
-            const char* normalFileName_tp = NULL;
-            if (normalFileName && (strcmp(normalFileName, "") != 0))
-            {
-                tp_n = CCFileUtils::sharedFileUtils()->fullPathForFilename(normalFileName);
-                normalFileName_tp = tp_n.c_str();
-            }
+            const char* normalFileName_tp = (normalFileName && (strcmp(normalFileName, "") != 0))?tp_n.append(normalFileName).c_str():NULL;
             slider->loadSlidBallTextureNormal(normalFileName_tp);
             break;
         }
@@ -144,12 +126,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_p = jsonPath;
             const char* pressedFileName = DICTOOL->getStringValue_json(pressedDic, "path");
-            const char* pressedFileName_tp = NULL; //(pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
-            if (pressedFileName && (strcmp(pressedFileName, "") != 0))
-            {
-                tp_p = CCFileUtils::sharedFileUtils()->fullPathForFilename(pressedFileName);
-                pressedFileName_tp = tp_p.c_str();
-            }
+            const char* pressedFileName_tp = (pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
             slider->loadSlidBallTexturePressed(pressedFileName_tp);
             break;
         }
@@ -171,12 +148,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_d = jsonPath;
             const char* disabledFileName = DICTOOL->getStringValue_json(disabledDic, "path");
-            const char* disabledFileName_tp = NULL; //(disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
-            if (disabledFileName && (strcmp(disabledFileName, "") != 0))
-            {
-               tp_d = CCFileUtils::sharedFileUtils()->fullPathForFilename(disabledFileName);
-               disabledFileName_tp = tp_d.c_str();
-            }
+            const char* disabledFileName_tp = (disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
             slider->loadSlidBallTextureDisabled(disabledFileName_tp);
             break;
         }
@@ -200,12 +172,7 @@ void SliderReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
         {
             std::string tp_b = jsonPath;
             const char* imageFileName = DICTOOL->getStringValue_json(progressBarDic, "path");
-            const char* imageFileName_tp = NULL; //(imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
-            if(imageFileName && (strcmp(imageFileName, "") != 0))
-            {
-                tp_b = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageFileName);
-                imageFileName_tp = tp_b.c_str();
-            }
+            const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
             slider->loadProgressBarTexture(imageFileName_tp);
             break;
         }

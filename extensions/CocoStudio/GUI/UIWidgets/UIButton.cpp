@@ -29,16 +29,10 @@ NS_CC_BEGIN
 
 namespace ui {
 
-static const int NORMAL_RENDERER_Z = (0);
-static const int PRESSED_RENDERER_Z = (0);
-static const int DISABLED_RENDERER_Z = (0);
-static const int TITLE_RENDERER_Z = (0);
-/*
 static const int NORMAL_RENDERER_Z = (-2);
 static const int PRESSED_RENDERER_Z = (-2);
 static const int DISABLED_RENDERER_Z = (-2);
 static const int TITLE_RENDERER_Z = (-1);
- */
     
 IMPLEMENT_CLASS_GUI_INFO(Button)
     
@@ -62,9 +56,6 @@ _normalTextureSize(_size),
 _pressedTextureSize(_size),
 _disabledTextureSize(_size),
 _pressedActionEnabled(false),
-_titleText(""),
-_titleFontName("Helvetica"),
-_titleFontSize(14),
 _titleColor(ccWHITE),
 _normalTextureScaleXInSize(1.0f),
 _normalTextureScaleYInSize(1.0f),
@@ -124,17 +115,12 @@ void Button::setScale9Enabled(bool able)
     }
     _brightStyle = BRIGHT_NONE;
     _scale9Enabled = able;
-    
     CCNode::removeChild(_buttonNormalRenderer, true);
     CCNode::removeChild(_buttonClickedRenderer, true);
     CCNode::removeChild(_buttonDisableRenderer, true);
-    CCNode::removeChild(_titleRenderer, true);
-    
     _buttonNormalRenderer = NULL;
     _buttonClickedRenderer = NULL;
     _buttonDisableRenderer = NULL;
-    _titleRenderer = NULL;
-    
     if (_scale9Enabled)
     {
         _buttonNormalRenderer = extension::CCScale9Sprite::create();
@@ -147,8 +133,6 @@ void Button::setScale9Enabled(bool able)
         _buttonClickedRenderer = CCSprite::create();
         _buttonDisableRenderer = CCSprite::create();
     }
-    _titleRenderer = CCLabelTTF::create(_titleText.c_str(), _titleFontName.c_str(), _titleFontSize);
-    setTitleColor(_titleColor);
 
     loadTextureNormal(_normalFileName.c_str(), _normalTexType);
     loadTexturePressed(_clickedFileName.c_str(), _pressedTexType);
@@ -156,12 +140,6 @@ void Button::setScale9Enabled(bool able)
     CCNode::addChild(_buttonNormalRenderer, NORMAL_RENDERER_Z, -1);
     CCNode::addChild(_buttonClickedRenderer,PRESSED_RENDERER_Z, -1);
     CCNode::addChild(_buttonDisableRenderer,DISABLED_RENDERER_Z, -1);
-    CCNode::addChild(_titleRenderer, TITLE_RENDERER_Z, -1);
-//    setTitleText(_titleText);
-//    setTitleColor(_titleColor);
-//    setTitleFontName(_titleFontName.c_str());
-//    setTitleFontSize(_titleFontSize);
-    
     if (_scale9Enabled)
     {
         bool ignoreBefore = _ignoreSize;
@@ -673,7 +651,6 @@ void Button::setPressedActionEnabled(bool enabled)
 void Button::setTitleText(const std::string& text)
 {
     _titleRenderer->setString(text.c_str());
-    _titleText = text;
 }
 
 const char* Button::getTitleText() const
@@ -694,7 +671,6 @@ const ccColor3B& Button::getTitleColor() const
 
 void Button::setTitleFontSize(float size)
 {
-    _titleFontSize = size;
     _titleRenderer->setFontSize(size);
 }
 
@@ -705,7 +681,6 @@ float Button::getTitleFontSize() const
 
 void Button::setTitleFontName(const char* fontName)
 {
-    _titleFontName = fontName;
     _titleRenderer->setFontName(fontName);
 }
 
