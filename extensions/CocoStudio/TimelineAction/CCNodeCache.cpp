@@ -61,7 +61,7 @@ static const char* ClassName_Label      = "Label";
 static const char* NODE        = "nodeTree";
 static const char* CHILDREN    = "children";
 static const char* NODETYPE    = "classname";
-static const char* FILE_PATH   = "filePath";
+static const char* FILE_PATH   = "fileName";
 static const char* PLIST_FILE  = "plistFile";
 static const char* ACTION_TAG  = "actionTag";
 
