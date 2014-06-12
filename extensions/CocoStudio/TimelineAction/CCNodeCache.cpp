@@ -267,9 +267,16 @@ cocos2d::CCNode* NodeCache::loadNode(const rapidjson::Value& json, cocos2d::CCNo
         cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(node);
         if (widget)
         {
-            cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
-            group->addWidget(widget);
-            parent->addChild(group);
+            if (!parent)
+            {
+                return widget;
+            }
+            else
+            {
+                cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
+                group->addWidget(widget);
+                parent->addChild(group);
+            }
         }
         else
         {
