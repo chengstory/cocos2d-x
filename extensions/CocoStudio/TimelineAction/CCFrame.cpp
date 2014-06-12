@@ -115,7 +115,12 @@ void TextureFrame::onEnter(Frame *nextFrame)
 {
     if(_sprite)
     {
-        _sprite->initWithFile(_texture.c_str());
+        CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(_texture.c_str());
+
+        if(spriteFrame != nullptr)
+            _sprite->initWithSpriteFrame(spriteFrame);
+        else
+            _sprite->initWithFile(_texture.c_str());
     }
 }
 
