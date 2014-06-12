@@ -105,6 +105,10 @@ cocos2d::CCNode* SceneReader::createNodeWithSceneFile(const char* pszFileName, A
 					for (int i = 0; i < nCount; i++)
 					{
 						stExpCocoNode *subDict = pComponents[i].GetChildArray();
+						if (subDict == NULL)
+						{
+							continue;
+						}
 						std::string key = subDict[1].GetName(&tCocoLoader);
 						const char *comName = subDict[1].GetValue();//DICTOOL->getStringValue_json(subDict, "classname");
 						CCComponent *pCom = NULL;
@@ -152,8 +156,9 @@ cocos2d::CCNode* SceneReader::createNodeWithSceneFile(const char* pszFileName, A
 					{
 						createObject(&tCocoLoader, &pGameObjects[i], _pNode, eAttachComponent);
 					}
-					
+					TriggerMng::getInstance()->parse(&tCocoLoader, tpChildArray);
 				}
+				
 			}
 		}while (0);
 		return _pNode;
@@ -263,6 +268,7 @@ CCNode* SceneReader::createObject(const rapidjson::Value &root, cocos2d::CCNode*
                     CC_SAFE_RELEASE_NULL(pCom);
                 }
             }
+			CC_SAFE_DELETE(pData);
 			if (_pListener && _pfnSelector)
 			{
 				(_pListener->*_pfnSelector)(pCom, (void*)(&subDict));
@@ -331,9 +337,13 @@ cocos2d::CCNode* SceneReader::createObject(CocoLoader *pCocoLoader, stExpCocoNod
 		}
 		stExpCocoNode *pComponents = pNodeArray[13].GetChildArray();
 		SerData *data = new SerData();
-		for (int i = 0; i < count; i++)
+		for (int i = 0; i < count; ++i)
 		{
 			stExpCocoNode *subDict = pComponents[i].GetChildArray();
+			if (subDict == NULL)
+			{
+				continue;
+			}
 			std::string key = subDict[1].GetName(pCocoLoader);
 			const char *comName = subDict[1].GetValue();//DICTOOL->getStringValue_json(subDict, "classname");
 			CCComponent *pCom = NULL;

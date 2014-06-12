@@ -96,13 +96,12 @@ bool CCComAudio::serialize(void* r)
 		}
 		else if (pCocoNode != NULL)
 		{
-			pClassName = pCocoNode[1].GetValue();//DICTOOL->getStringValue_json(*v, "classname");
+			pClassName = pCocoNode[1].GetValue();
 			CC_BREAK_IF(pClassName == NULL);
-			pComName = pCocoNode[2].GetValue();//DICTOOL->getStringValue_json(*v, "name");
+			pComName = pCocoNode[2].GetValue();
 			stExpCocoNode *pfileData = pCocoNode[4].GetChildArray();
-			//const rapidjson::Value &fileData = DICTOOL->getSubDictionary_json(*v, "fileData");
 			CC_BREAK_IF(!pfileData);
-			pFile = pfileData[0].GetValue(); //DICTOOL->getStringValue_json(fileData, "path");
+			pFile = pfileData[0].GetValue();
 			CC_BREAK_IF(pFile == NULL);
 			if (pFile != NULL)
 			{
