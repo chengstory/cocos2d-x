@@ -39,11 +39,11 @@ NS_CC_EXT_BEGIN
 
 struct  stExpCocoAttribDesc
 {
-    rapidjson::Type		m_Type;
+	rapidjson::Type	m_Type;
 	uint64_t	m_szName;
-	uint64_t	m_szDefaultValue;		
+	uint64_t	m_szDefaultValue;
 public:
-	//÷ÿΩ®
+	
 	void	ReBuild(char* pStringMemoryAddr)
 	{
 		m_szName = m_szName + (uint64_t)pStringMemoryAddr;
@@ -56,14 +56,14 @@ struct  stExpCocoObjectDesc
 	uint32_t		m_nAttribNum;
 	uint64_t		m_szName;
 	uint64_t		m_pAttribDescArray;
-    
+
 public:
-    stExpCocoObjectDesc()
-    {
-        m_nAttribNum = 0;
-        m_szName = 0;
-        m_pAttribDescArray = 0;
-    }
+	stExpCocoObjectDesc()
+	{
+		m_nAttribNum = 0;
+		m_szName = 0;
+		m_pAttribDescArray = 0;
+	}
 	void ReBuild(char* pAttribMemoryAddr,char* pStringMemoryAddr)
 	{
 		m_szName = m_szName + (uint64_t)pStringMemoryAddr;
@@ -79,21 +79,21 @@ public:
 
 class CocoLoader;
 
-struct  stExpCocoNode
+struct CC_EX_DLL stExpCocoNode
 {
 protected:
-	int32_t						m_ObjIndex;
-	int32_t						m_AttribIndex;
-	uint32_t					m_ChildNum;
-	uint64_t					m_szValue;
-	uint64_t					m_ChildArray;
+	int32_t	m_ObjIndex;
+	int32_t	m_AttribIndex;
+	uint32_t	m_ChildNum;
+	uint64_t	m_szValue;
+	uint64_t	m_ChildArray;
     
 public:
-    rapidjson::Type				GetType(CocoLoader*	pCoco);
-	char*				GetName(CocoLoader*	pCoco);
-	char*				GetValue();
-	int					GetChildNum();
-	stExpCocoNode*		GetChildArray();
+    rapidjson::Type	 GetType(CocoLoader*	pCoco);
+	char*	GetName(CocoLoader*	pCoco);
+	char*	GetValue();
+	int	GetChildNum();
+	stExpCocoNode*	GetChildArray();
     
 public:
 	inline  void	ReBuild(char* pCocoNodeAddr,char* pStringMemoryAddr);
@@ -101,37 +101,36 @@ public:
 };
 
 
-struct		stCocoFileHeader
+struct	stCocoFileHeader
 {
-	char			m_FileDesc[32];
-	char			m_Version[32];
-	uint32_t		m_nFirstUsed;
-	uint32_t		m_ObjectCount;
-	uint64_t		m_lAttribMemAddr;
-	uint64_t		m_CocoNodeMemAddr;
-	uint64_t		m_lStringMemAddr;
+	char	m_FileDesc[32];
+	char	m_Version[32];
+	uint32_t	m_nFirstUsed;
+	uint32_t	m_ObjectCount;
+	uint64_t	m_lAttribMemAddr;
+	uint64_t	m_CocoNodeMemAddr;
+	uint64_t	m_lStringMemAddr;
 	
 };
 
 
-class CocoLoader
+class CC_EX_DLL CocoLoader
 {
 private:
-	stCocoFileHeader*			m_pFileHeader;
-	stExpCocoNode*				m_pRootNode;
-	stExpCocoObjectDesc*		m_pObjectDescArray;
+	stCocoFileHeader*	m_pFileHeader;
+	stExpCocoNode*		m_pRootNode;
+	stExpCocoObjectDesc*	m_pObjectDescArray;
 
 public:
 	CocoLoader();
 	~CocoLoader();
 
 public:
-	bool					ReadCocoBinBuff(char* pBinBuff);
-	stCocoFileHeader*		GetFileHeader(){return m_pFileHeader;}
-	stExpCocoNode*			GetRootCocoNode(){return	m_pRootNode;}
+	bool	ReadCocoBinBuff(char* pBinBuff);
+	stCocoFileHeader*	GetFileHeader(){return m_pFileHeader;}
+	stExpCocoNode*		GetRootCocoNode(){return	m_pRootNode;}
 	stExpCocoObjectDesc*	GetCocoObjectDescArray(){return	m_pObjectDescArray;}
 	stExpCocoObjectDesc*	GetCocoObjectDesc(const char* szObjDesc);
-			
 };
 
 NS_CC_EXT_END

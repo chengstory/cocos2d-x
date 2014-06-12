@@ -192,7 +192,7 @@ bool CCComAttribute::serialize(void* r)
 			pClassName = pCocoNode[1].GetValue();
 			CC_BREAK_IF(pClassName == NULL);
 			pComName = pCocoNode[2].GetValue();
-			stExpCocoNode *pfileData = pCocoNode[4].GetChildArray();
+			stExpCocoNode *pfileData = pCocoNode[3].GetChildArray();
 			CC_BREAK_IF(!pfileData);
 			pFile = pfileData[0].GetValue();
 			CC_BREAK_IF(pFile == NULL);

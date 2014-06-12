@@ -115,16 +115,15 @@ bool CCComRender::serialize(void* r)
 		}
 		else if(pCocoNode != NULL)
 		{
-			pClassName = pCocoNode[1].GetValue();//DICTOOL->getStringValue_json(*v, "classname");
+			pClassName = pCocoNode[1].GetValue();
 			CC_BREAK_IF(pClassName == NULL);
-			pComName = pCocoNode[2].GetValue();//DICTOOL->getStringValue_json(*v, "name");
+			pComName = pCocoNode[2].GetValue();
 			stExpCocoNode *pfileData = pCocoNode[4].GetChildArray();
-			//const rapidjson::Value &fileData = DICTOOL->getSubDictionary_json(*v, "fileData");
 			CC_BREAK_IF(!pfileData);
-			pFile = pfileData[0].GetValue(); //DICTOOL->getStringValue_json(fileData, "path");
-			pPlist = pfileData[1].GetValue(); //DICTOOL->getStringValue_json(fileData, "plistFile");
+			pFile = pfileData[0].GetValue(); 
+			pPlist = pfileData[1].GetValue(); 
 			CC_BREAK_IF(pFile == NULL && pPlist == NULL);
-			nResType = atoi(pfileData[2].GetValue());//DICTOOL->getIntValue_json(fileData, "resourceType", -1);
+			nResType = atoi(pfileData[2].GetValue());
 		}  
 		if (pComName != NULL)
 		{
