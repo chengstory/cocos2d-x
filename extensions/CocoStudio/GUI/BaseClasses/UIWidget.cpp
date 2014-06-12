@@ -142,10 +142,10 @@ void Widget::addChild(CCNode * child, int zOrder)
 void Widget::addChild(CCNode* child, int zOrder, int tag)
 {
     //CCAssert(dynamic_cast<Widget*>(child) != NULL, "Widget only supports Widgets as children");
-	if (dynamic_cast<Widget*>(child) == NULL)
-	{
-		return;
-	}
+    if (dynamic_cast<Widget*>(child) == NULL)
+    {
+        return;
+    }
     CCNode::addChild(child, zOrder, tag);
     _widgetChildren->addObject(child);
 }
