@@ -59,6 +59,20 @@ protected:
 };
 
 
+class TimelineActionData : public cocos2d::CCObject
+{
+public:
+    static TimelineActionData* create(int actionTag);
+
+    virtual void setActionTag(int actionTag) { _actionTag = actionTag; }
+    virtual int getActionTag() { return _actionTag; }
+protected:
+    TimelineActionData();
+    virtual bool init(int actionTag);
+
+    int _actionTag;
+};
+
 class CC_EX_DLL NodeCache : public cocos2d::CCObject
 {
 public:

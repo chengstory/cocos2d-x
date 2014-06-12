@@ -64,6 +64,7 @@ static const char* NODETYPE    = "classname";
 static const char* FILE_PATH   = "fileName";
 static const char* PLIST_FILE  = "plistFile";
 static const char* ACTION_TAG  = "actionTag";
+static const char* TAG         = "tag";
 
 static const char* OPTIONS     = "options";
 
@@ -125,6 +126,34 @@ bool NodeCreateCallFunc::init(CCObject* target, NodeCreateCallback callback)
 CCNode* NodeCreateCallFunc::excute(const rapidjson::Value& json, cocos2d::CCNode* parent)
 {
     return (_target->*_callback)(json, parent);
+}
+
+
+
+// TimelineActionData
+TimelineActionData* TimelineActionData::create(int actionTag)
+{
+    TimelineActionData * ret = new TimelineActionData();
+    if (ret && ret->init(actionTag))
+    {
+        ret->autorelease();
+    }
+    else
+    {
+        CC_SAFE_DELETE(ret);
+    }
+    return ret;
+}
+
+TimelineActionData::TimelineActionData()
+    : _actionTag(0)
+{
+}
+
+bool TimelineActionData::init(int actionTag)
+{
+    _actionTag = actionTag;
+    return true;
 }
 
 
@@ -330,7 +359,8 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
     GLubyte red         = (GLubyte)DICTOOL->getIntValue_json(json, RED, 255);
     GLubyte green       = (GLubyte)DICTOOL->getIntValue_json(json, GREEN, 255);
     GLubyte blue        = (GLubyte)DICTOOL->getIntValue_json(json, BLUE, 255);
-	int tag				= DICTOOL->getIntValue_json(json, ACTION_TAG);
+	int tag				= DICTOOL->getIntValue_json(json, TAG);
+    int actionTag		= DICTOOL->getIntValue_json(json, ACTION_TAG);
 
     if(x != 0 || y != 0)
         node->setPosition(CCPoint(x, y));
@@ -355,12 +385,18 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
     if(rgbaProtocaol)
     {
         if(alpha != 255)
-            rgbaProtocaol->setOpacity(alpha); rgbaProtocaol->setCascadeOpacityEnabled(true);
+        {
+            rgbaProtocaol->setOpacity(alpha); 
+            rgbaProtocaol->setCascadeOpacityEnabled(true);
+        }
         if(red != 255 || green != 255 || blue != 255)
+        {
             rgbaProtocaol->setColor(ccc3(red, green, blue));
+            rgbaProtocaol->setCascadeColorEnabled(true);
+        }
     }
 
-	node->setTag(tag);
+	node->setUserObject(TimelineActionData::create(actionTag));
 }
 
 
@@ -436,20 +472,22 @@ CCNode* NodeCache::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* par
 }
 
 bool NodeCache::isUiWidget(const std::string &type)
-{
+{    
     return (type == ClassName_Button
         || type == ClassName_CheckBox
         || type == ClassName_ImageView
-        || type == ClassName_Layout
-        || type == ClassName_ListView
-        || type == ClassName_LoadingBar
-        || type == ClassName_PageView
-        || type == ClassName_Panel
-        || type == ClassName_Text
         || type == ClassName_LabelAtlas
         || type == ClassName_LabelBMFont
+        || type == ClassName_LoadingBar
         || type == ClassName_TextField
-        || type == ClassName_Widget);
+        || type == ClassName_Slider
+        || type == ClassName_Layout
+        || type == ClassName_ScrollView
+        || type == ClassName_ListView        
+        || type == ClassName_PageView
+        || type == ClassName_Widget
+        || type == ClassName_Panel
+        || type == ClassName_Label);
 }
 
 }

@@ -23,6 +23,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "CCTimelineAction.h"
+#include "CCNodeCache.h"
 
 using namespace cocos2d;
 
@@ -175,7 +176,8 @@ void TimelineAction::step(float delta)
 
 void TimelineAction::foreachNodeDescendant(CCNode* parent)
 {
-    int actionTag = parent->getTag();
+    TimelineActionData* data = dynamic_cast<TimelineActionData*>(parent->getUserObject());
+    int actionTag = data->getActionTag();
 
     CCObject* object = NULL;
 
