@@ -177,17 +177,20 @@ void TimelineAction::step(float delta)
 void TimelineAction::foreachNodeDescendant(CCNode* parent)
 {
     TimelineActionData* data = dynamic_cast<TimelineActionData*>(parent->getUserObject());
-    int actionTag = data->getActionTag();
-
     CCObject* object = NULL;
 
-    if(_timelineMap.find(actionTag) != _timelineMap.end())
+    if(data)
     {
-        CCArray* timelines = this->_timelineMap[actionTag];
-        CCARRAY_FOREACH (timelines, object)
+        int actionTag = data->getActionTag();
+
+        if(_timelineMap.find(actionTag) != _timelineMap.end())
         {
-            Timeline* timeline = static_cast<Timeline*>(object);
-            timeline->setNode(parent);
+            CCArray* timelines = this->_timelineMap[actionTag];
+            CCARRAY_FOREACH (timelines, object)
+            {
+                Timeline* timeline = static_cast<Timeline*>(object);
+                timeline->setNode(parent);
+            }
         }
     }
 
