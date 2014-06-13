@@ -311,6 +311,16 @@ void ImageView::copySpecialProperties(Widget *widget)
     }
 }
 
+TextureResType ImageView::getTextureResType()
+{
+    return _imageTexType;
+}
+
+std::string ImageView::getTextureFile()
+{
+    return _textureFile;
+}
+    
 }
 
 NS_CC_END
