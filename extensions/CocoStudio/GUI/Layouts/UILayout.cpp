@@ -29,9 +29,11 @@
 NS_CC_BEGIN
 
 namespace ui {
-    
-static const int BACKGROUNDIMAGE_Z = (-1);
-static const int BACKGROUNDCOLOR_RENDERER_Z = (-2);
+
+static const int BACKGROUNDIMAGE_Z = (0);
+static const int BACKGROUNDCOLOR_RENDERER_Z = (0);
+//static const int BACKGROUNDIMAGE_Z = (-1);
+//static const int BACKGROUNDCOLOR_RENDERER_Z = (-2);
 
 static GLint g_sStencilBits = -1;
     
@@ -707,6 +709,27 @@ void Layout::setBackGroundColorType(LayoutBackGroundColorType type)
         default:
             break;
     }
+
+    /**/
+    if (_backGroundImage)
+    {
+        CCNode::removeChild(_backGroundImage, true);
+        _backGroundImage = NULL;
+        if (_backGroundScale9Enabled)
+        {
+            _backGroundImage = extension::CCScale9Sprite::create();
+            CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
+        }
+        else
+        {
+            _backGroundImage = CCSprite::create();
+            CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
+        }
+        setBackGroundImage(_backGroundImageFileName.c_str(),_bgImageTexType);
+        setBackGroundImageCapInsets(_backGroundImageCapInsets);
+    }
+    /**/
+    
 }
     
 LayoutBackGroundColorType Layout::getBackGroundColorType()
