@@ -1,7 +1,8 @@
 
 
 #include "WidgetReader.h"
-#include "../../TimelineAction/CCNodeCache.h"
+#include "../../Json/CocoLoader.h"
+#include "../../../../cocos2dx/CCDirector.h"
 
 NS_CC_EXT_BEGIN
 
@@ -26,6 +27,24 @@ WidgetReader* WidgetReader::getInstance()
         instanceWidgetReader = new WidgetReader();
     }
     return instanceWidgetReader;
+}
+
+int WidgetReader::valueToInt(std::string& value)
+{
+    return atoi(value.c_str());
+}
+bool WidgetReader::valueToBool(std::string& value)
+{
+    int intValue = valueToInt(value);
+    if (1 == intValue) {
+        return true;
+    }else{
+        return false;
+    }
+}
+float WidgetReader::valueToFloat(std::string& value)
+{
+    return atof(value.c_str());
 }
 
 void WidgetReader::purge()
@@ -154,4 +173,55 @@ void WidgetReader::setColorPropsFromJsonDictionary(ui::Widget *widget, const rap
     widget->setFlipY(flipY);
 }
 
+void WidgetReader::beginSetBasicProperties(cocos2d::ui::Widget *widget)
+{
+    position = widget->getPosition();
+    //set default color
+    widget->setColor(ccc3(255,255,255));
+    originalAnchorPoint = widget->getAnchorPoint();
+}
+
+void WidgetReader::endSetBasicProperties(cocos2d::ui::Widget *widget)
+{
+    CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
+    
+    widget->setPositionPercent(CCPoint(positionPercentX, positionPercentY));
+    widget->setSizePercent(CCPoint(sizePercentX, sizePercentY));
+    if (isAdaptScreen) {
+        width = screenSize.width;
+        height = screenSize.height;
+    }
+    widget->setSize(CCSize(width, height));
+    widget->setPosition(position);
+    widget->setAnchorPoint(originalAnchorPoint);
+}
+
+std::string WidgetReader::getResourcePath(CocoLoader *pCocoLoader,
+                                          stExpCocoNode *pCocoNode,
+                                          cocos2d::ui::TextureResType texType)
+{
+    stExpCocoNode *backGroundChildren = pCocoNode->GetChildArray();
+    std::string backgroundValue = backGroundChildren[0].GetValue();
+    
+    if (backgroundValue.size() < 3) {
+        return "";
+    }
+    
+    std::string binaryPath = GUIReader::shareReader()->getFilePath();
+    
+    std::string imageFileName_tp;
+    if (!backgroundValue.empty())
+    {
+        if (texType == cocos2d::ui::UI_TEX_TYPE_LOCAL) {
+            imageFileName_tp = binaryPath + backgroundValue;
+        }
+        else if(texType == cocos2d::ui::UI_TEX_TYPE_PLIST){
+            imageFileName_tp = backgroundValue;
+        }
+        else{
+            CCAssert(0, "invalid TextureResType!!!");
+        }
+    }
+    return imageFileName_tp;
+}
 NS_CC_EXT_END
