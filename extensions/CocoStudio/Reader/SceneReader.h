@@ -27,8 +27,8 @@
 
 #include "cocos2d.h"
 #include "cocos-ext.h"
-#include "../Json/CocoLoader.h"
 #include "ExtensionMacros.h"
+#include "../Json/CocoLoader.h"
 
 NS_CC_EXT_BEGIN
 
