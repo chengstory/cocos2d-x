@@ -171,9 +171,8 @@ void ActionNode::initWithDictionary(const rapidjson::Value& dic,CCObject* root)
 	initActionNodeFromRoot(root);
 }
 
-void ActionNode::initWithBinary(cocos2d::extension::CocoLoader *pCocoLoader, cocos2d::extension::stExpCocoNode *pCocoNode, cocos2d::CCObject *root)
+void ActionNode::initWithBinary(cocos2d::extension::CocoLoader* pCocoLoader, cocos2d::extension::stExpCocoNode* pCocoNode, cocos2d::CCObject* root)
 {
-    
     stExpCocoNode *stChildNode = pCocoNode->GetChildArray();
     
 	int actionNodeCount =  stChildNode->GetChildNum();
