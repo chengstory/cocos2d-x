@@ -351,6 +351,11 @@
 		37CA1CFE17D87AC700A649D0 /* ProjectileController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37CA1CAC17D87AC700A649D0 /* ProjectileController.cpp */; };
 		37CA1CFF17D87AC700A649D0 /* SceneController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37CA1CAE17D87AC700A649D0 /* SceneController.cpp */; };
 		37CA1D1A17D87AC700A649D0 /* SceneEditorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37CA1CF717D87AC700A649D0 /* SceneEditorTest.cpp */; };
+		43B90FD1194846F600F7F815 /* CCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FC7194846F600F7F815 /* CCFrame.cpp */; };
+		43B90FD2194846F600F7F815 /* CCNodeCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FC9194846F600F7F815 /* CCNodeCache.cpp */; };
+		43B90FD3194846F600F7F815 /* CCTimeLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FCB194846F600F7F815 /* CCTimeLine.cpp */; };
+		43B90FD4194846F600F7F815 /* CCTimelineAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FCD194846F600F7F815 /* CCTimelineAction.cpp */; };
+		43B90FD5194846F600F7F815 /* CCTimelineActionCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B90FCF194846F600F7F815 /* CCTimelineActionCache.cpp */; };
 		50181AE1185FEBAE0051CA1C /* CCActionEaseEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50181ADF185FEBAE0051CA1C /* CCActionEaseEx.cpp */; };
 		50D36120186AED6100828878 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50D3611E186AED6100828878 /* UITouchGroup.cpp */; };
 		50D6A4CD17E2C91100523A82 /* GUIReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50D6A4CB17E2C91100523A82 /* GUIReader.cpp */; };
@@ -1181,6 +1186,16 @@
 		37CA1CAF17D87AC700A649D0 /* SceneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneController.h; sourceTree = "<group>"; };
 		37CA1CF717D87AC700A649D0 /* SceneEditorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneEditorTest.cpp; sourceTree = "<group>"; };
 		37CA1CF817D87AC700A649D0 /* SceneEditorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneEditorTest.h; sourceTree = "<group>"; };
+		43B90FC7194846F600F7F815 /* CCFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCFrame.cpp; sourceTree = "<group>"; };
+		43B90FC8194846F600F7F815 /* CCFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFrame.h; sourceTree = "<group>"; };
+		43B90FC9194846F600F7F815 /* CCNodeCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCNodeCache.cpp; sourceTree = "<group>"; };
+		43B90FCA194846F600F7F815 /* CCNodeCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNodeCache.h; sourceTree = "<group>"; };
+		43B90FCB194846F600F7F815 /* CCTimeLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTimeLine.cpp; sourceTree = "<group>"; };
+		43B90FCC194846F600F7F815 /* CCTimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTimeLine.h; sourceTree = "<group>"; };
+		43B90FCD194846F600F7F815 /* CCTimelineAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTimelineAction.cpp; sourceTree = "<group>"; };
+		43B90FCE194846F600F7F815 /* CCTimelineAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTimelineAction.h; sourceTree = "<group>"; };
+		43B90FCF194846F600F7F815 /* CCTimelineActionCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTimelineActionCache.cpp; sourceTree = "<group>"; };
+		43B90FD0194846F600F7F815 /* CCTimelineActionCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTimelineActionCache.h; sourceTree = "<group>"; };
 		50181ADF185FEBAE0051CA1C /* CCActionEaseEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCActionEaseEx.cpp; sourceTree = "<group>"; };
 		50181AE0185FEBAE0051CA1C /* CCActionEaseEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionEaseEx.h; sourceTree = "<group>"; };
 		50D3611E186AED6100828878 /* UITouchGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITouchGroup.cpp; sourceTree = "<group>"; };
@@ -2872,6 +2887,7 @@
 		37CA1B8117D87A3300A649D0 /* CocoStudio */ = {
 			isa = PBXGroup;
 			children = (
+				43B90FC6194846F600F7F815 /* TimelineAction */,
 				372902421867D36800B59D3A /* Trigger */,
 				37BB5ADD17E86BF1002746B4 /* Action */,
 				37CA1B8217D87A3300A649D0 /* Armature */,
@@ -3154,6 +3170,23 @@
 			);
 			name = CocoStudioSceneTest;
 			path = ../../Classes/ExtensionsTest/CocoStudioSceneTest;
+			sourceTree = "<group>";
+		};
+		43B90FC6194846F600F7F815 /* TimelineAction */ = {
+			isa = PBXGroup;
+			children = (
+				43B90FC7194846F600F7F815 /* CCFrame.cpp */,
+				43B90FC8194846F600F7F815 /* CCFrame.h */,
+				43B90FC9194846F600F7F815 /* CCNodeCache.cpp */,
+				43B90FCA194846F600F7F815 /* CCNodeCache.h */,
+				43B90FCB194846F600F7F815 /* CCTimeLine.cpp */,
+				43B90FCC194846F600F7F815 /* CCTimeLine.h */,
+				43B90FCD194846F600F7F815 /* CCTimelineAction.cpp */,
+				43B90FCE194846F600F7F815 /* CCTimelineAction.h */,
+				43B90FCF194846F600F7F815 /* CCTimelineActionCache.cpp */,
+				43B90FD0194846F600F7F815 /* CCTimelineActionCache.h */,
+			);
+			path = TimelineAction;
 			sourceTree = "<group>";
 		};
 		50E9124C18C8987500D07E0D /* UIRichTextTest */ = {
@@ -3759,10 +3792,12 @@
 				3729024D1867D36800B59D3A /* TriggerMng.cpp in Sources */,
 				15AA9D6015B7EC460033D6C2 /* QuestionContainerSprite.cpp in Sources */,
 				15AA9D6115B7EC460033D6C2 /* Bug-624.cpp in Sources */,
+				43B90FD3194846F600F7F815 /* CCTimeLine.cpp in Sources */,
 				15AA9D6215B7EC460033D6C2 /* Bug-886.cpp in Sources */,
 				15AA9D6315B7EC460033D6C2 /* Bug-899.cpp in Sources */,
 				15AA9D6415B7EC460033D6C2 /* Bug-914.cpp in Sources */,
 				15AA9D6515B7EC460033D6C2 /* BugsTest.cpp in Sources */,
+				43B90FD4194846F600F7F815 /* CCTimelineAction.cpp in Sources */,
 				15AA9D6715B7EC460033D6C2 /* ClickAndMoveTest.cpp in Sources */,
 				15AA9D6815B7EC460033D6C2 /* CocosDenshionTest.cpp in Sources */,
 				15AA9D6915B7EC460033D6C2 /* controller.cpp in Sources */,
@@ -3863,6 +3898,7 @@
 				15A3D9111682F7D5002FB0C5 /* b2Body.cpp in Sources */,
 				15A3D9121682F7D5002FB0C5 /* b2ContactManager.cpp in Sources */,
 				15A3D9131682F7D5002FB0C5 /* b2Fixture.cpp in Sources */,
+				43B90FD1194846F600F7F815 /* CCFrame.cpp in Sources */,
 				15A3D9141682F7D5002FB0C5 /* b2Island.cpp in Sources */,
 				15A3D9151682F7D5002FB0C5 /* b2World.cpp in Sources */,
 				15A3D9161682F7D5002FB0C5 /* b2WorldCallbacks.cpp in Sources */,
@@ -3876,6 +3912,7 @@
 				15A3D91D1682F7D5002FB0C5 /* b2EdgeAndPolygonContact.cpp in Sources */,
 				15A3D91E1682F7D5002FB0C5 /* b2PolygonAndCircleContact.cpp in Sources */,
 				50E9127618C99A9A00D07E0D /* CustomParticleWidget.cpp in Sources */,
+				43B90FD5194846F600F7F815 /* CCTimelineActionCache.cpp in Sources */,
 				50F8546E18C581FB0019FBFB /* UILabelBMFontTest.cpp in Sources */,
 				50F8546218C581FB0019FBFB /* CustomImageViewReader.cpp in Sources */,
 				15A3D91F1682F7D5002FB0C5 /* b2PolygonContact.cpp in Sources */,
@@ -3917,6 +3954,7 @@
 				50F8546B18C581FB0019FBFB /* UIImageViewTest_Editor.cpp in Sources */,
 				15A3D9A41682F7F9002FB0C5 /* cpBB.c in Sources */,
 				50F853F618C57E040019FBFB /* ScrollViewReader.cpp in Sources */,
+				43B90FD2194846F600F7F815 /* CCNodeCache.cpp in Sources */,
 				15A3D9A51682F7F9002FB0C5 /* cpBBTree.c in Sources */,
 				15A3D9A61682F7F9002FB0C5 /* cpBody.c in Sources */,
 				15A3D9A71682F7F9002FB0C5 /* cpCollision.c in Sources */,

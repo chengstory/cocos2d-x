@@ -59,12 +59,27 @@ protected:
 };
 
 
+class TimelineActionData : public cocos2d::CCObject
+{
+public:
+    static TimelineActionData* create(int actionTag);
+
+    virtual void setActionTag(int actionTag) { _actionTag = actionTag; }
+    virtual int getActionTag() { return _actionTag; }
+protected:
+    TimelineActionData();
+    virtual bool init(int actionTag);
+
+    int _actionTag;
+};
+
 class CC_EX_DLL NodeCache : public cocos2d::CCObject
 {
 public:
     static NodeCache* getInstance();
     static void destroyInstance();
-
+    
+    NodeCache();
     virtual ~NodeCache();
     void purge();
 
@@ -74,6 +89,12 @@ public:
 
     cocos2d::CCNode* loadNodeWithFile(const std::string& fileName);
     cocos2d::CCNode* loadNodeWithContent(const std::string& content);
+
+    void setRecordJsonPath(bool record) { _recordJsonPath = record; }
+    bool isRecordJsonPath() { return _recordJsonPath; }
+
+    void setJsonPath(std::string jsonPath) { _jsonPath = jsonPath; }
+    std::string getJsonPath() { return _jsonPath; }
 protected:
 
     cocos2d::CCNode* loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent = NULL);
@@ -85,11 +106,14 @@ protected:
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
 	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
 
+    bool isUiWidget(const std::string& type);
 
     cocos2d::CCDictionary* _funcs;  // <std::string, NodeCreateCallFunc*>
-    cocos2d::CCDictionary* _nodes;  // <std::string, cocos2d::CCNode*>
 
 	cocos2d::extension::WidgetPropertiesReader0300* _guiReader;
+
+    bool _recordJsonPath;
+    std::string _jsonPath;
 };
 
 }

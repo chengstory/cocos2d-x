@@ -23,6 +23,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "CCTimelineAction.h"
+#include "CCNodeCache.h"
 
 using namespace cocos2d;
 
@@ -50,6 +51,8 @@ TimelineAction::TimelineAction()
     , _playing(false)
     , _currentFrame(0)
     , _endFrame(0)
+    , _frameEventCallFunc(NULL)
+    , _frameEventTarget(NULL)
 {
 }
 
@@ -162,10 +165,7 @@ void TimelineAction::step(float delta)
     {
         _playing = _loop;
         if(!_playing)
-        {
             _currentFrame = _time = _endFrame;
-            return;
-        }
         else           
             _currentFrame = _time = 0;
     }
@@ -176,17 +176,21 @@ void TimelineAction::step(float delta)
 
 void TimelineAction::foreachNodeDescendant(CCNode* parent)
 {
-    int actionTag = parent->getTag();
-
+    TimelineActionData* data = dynamic_cast<TimelineActionData*>(parent->getUserObject());
     CCObject* object = NULL;
 
-    if(_timelineMap.find(actionTag) != _timelineMap.end())
+    if(data)
     {
-        CCArray* timelines = this->_timelineMap[actionTag];
-        CCARRAY_FOREACH (timelines, object)
+        int actionTag = data->getActionTag();
+
+        if(_timelineMap.find(actionTag) != _timelineMap.end())
         {
-            Timeline* timeline = static_cast<Timeline*>(object);
-            timeline->setNode(parent);
+            CCArray* timelines = this->_timelineMap[actionTag];
+            CCARRAY_FOREACH (timelines, object)
+            {
+                Timeline* timeline = static_cast<Timeline*>(object);
+                timeline->setNode(parent);
+            }
         }
     }
 
@@ -219,6 +223,7 @@ void TimelineAction::addTimeline(Timeline* timeline)
     {
         _timelineList->addObject(timeline);
         _timelineMap[tag]->addObject(timeline);
+        timeline->setTimelineAction(this);
     }
 }
 
@@ -231,7 +236,28 @@ void TimelineAction::removeTimeline(Timeline* timeline)
         {
             _timelineMap[tag]->removeObject(timeline);
             _timelineList->removeObject(timeline);
+            timeline->setTimelineAction(NULL);
         }
+    }
+}
+
+void TimelineAction::setFrameEventCallFunc  (CCObject *target, SEL_FrameEventCallFunc callFunc)
+{
+    _frameEventTarget   = target;
+    _frameEventCallFunc = callFunc;
+}
+
+void TimelineAction::clearFrameEventCallFunc()
+{
+    _frameEventTarget   = NULL;
+    _frameEventCallFunc = NULL;
+}
+
+void TimelineAction::emitFrameEvent(Frame* frame)
+{
+    if (_frameEventTarget != NULL && _frameEventCallFunc != NULL)
+    {
+        (_frameEventTarget->*_frameEventCallFunc)(frame);
     }
 }
 

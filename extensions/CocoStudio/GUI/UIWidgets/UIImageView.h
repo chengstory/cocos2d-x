@@ -101,6 +101,9 @@ public:
     
     virtual const CCSize& getContentSize() const;
     virtual CCNode* getVirtualRenderer();
+    
+    virtual TextureResType getTextureResType();
+    virtual std::string getTextureFile();
 protected:
     virtual void initRenderer();
     virtual void onSizeChanged();

@@ -32,7 +32,7 @@ namespace cocostudio {
 namespace animation {
 
 class Frame;
-class Timeline;
+class TimelineAction;
 
 class CC_EX_DLL Timeline : public cocos2d::CCObject
 {
@@ -47,7 +47,10 @@ public:
     virtual void gotoFrame  (int frameIndex);
     virtual void stepToFrame(int frameIndex);
 
-    virtual cocos2d::CCArray* getFrames() { return _frames; }
+    virtual const cocos2d::CCArray* getFrames() { return _frames; }
+    virtual void addFrame(Frame* frame);
+    virtual void insertFrame(Frame* frame, int index);
+    virtual void removeFrame(Frame* frame);
 
     virtual void setActionTag(int tag) { _actionTag = tag; }
     virtual int  getActionTag() { return _actionTag; }
@@ -55,8 +58,10 @@ public:
     virtual void setNode(cocos2d::CCNode* node);
     virtual cocos2d::CCNode* getNode();
 
-    virtual Timeline* clone();
+    virtual void setTimelineAction(TimelineAction* action) { _timelineAction = action; }
+    virtual TimelineAction* getTimelineAction() { return _timelineAction; }
 
+    virtual Timeline* clone();
 
 protected:
     virtual void apply(int frameIndex);
@@ -73,6 +78,7 @@ protected:
     int _betweenDuration;
     int _actionTag;
 
+    TimelineAction*  _timelineAction;
     cocos2d::CCNode* _node;
 };
 

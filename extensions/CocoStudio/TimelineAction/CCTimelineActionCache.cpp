@@ -41,6 +41,10 @@ static const char* FrameType_RotationSkewFrame  = "RotationSkewFrame";
 static const char* FrameType_AnchorFrame        = "AnchorFrame";
 static const char* FrameType_InnerActionFrame   = "InnerActionFrame";
 static const char* FrameType_ColorFrame         = "ColorFrame";
+static const char* FrameType_TextureFrame       = "TextureFrame";
+static const char* FrameType_EventFrame         = "EventFrame";
+static const char* FrameType_ZOrderFrame        = "ZOrderFrame";
+
 
 
 static const char* ACTION           = "action";
@@ -166,6 +170,10 @@ void TimelineActionCache::init()
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadAnchorPointFrame)), FrameType_AnchorFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadInnerActionFrame)), FrameType_InnerActionFrame);
     _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadColorFrame)),       FrameType_ColorFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadTextureFrame)),     FrameType_TextureFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadEventFrame)),       FrameType_EventFrame);
+    _funcs->setObject(FrameCreateCallFunc::create(this, FrameCreateCallback_selector(TimelineActionCache::loadZOrderFrame)),      FrameType_ZOrderFrame);
+
 }
 
 void TimelineActionCache::removeAction(const std::string& fileName)
@@ -263,7 +271,7 @@ Timeline* TimelineActionCache::loadTimeline(const rapidjson::Value& json)
             bool tween = DICTOOL->getBooleanValue_json(dic, TWEEN, false);
             frame->setTween(tween);
 
-            timeline->getFrames()->addObject(frame);
+            timeline->addFrame(frame);
         }
     }
 
@@ -380,6 +388,40 @@ Frame* TimelineActionCache::loadColorFrame(const rapidjson::Value& json)
     return frame;
 }
 
+
+Frame* TimelineActionCache::loadTextureFrame(const rapidjson::Value& json)
+{
+    TextureFrame* frame = TextureFrame::create();
+
+    const char* texture = DICTOOL->getStringValue_json(json, Value);
+
+    if(texture != NULL)
+        frame->setTexture(texture);
+
+    return frame;
+}
+
+Frame* TimelineActionCache::loadEventFrame(const rapidjson::Value& json)
+{
+    EventFrame* frame = EventFrame::create();
+
+    const char* evnt = DICTOOL->getStringValue_json(json, Value);
+
+    if(evnt != NULL)
+        frame->setEvent(evnt);
+
+    return frame;
+}
+
+Frame* TimelineActionCache::loadZOrderFrame(const rapidjson::Value& json)
+{
+    ZOrderFrame* frame = ZOrderFrame::create();
+
+    int zorder = DICTOOL->getIntValue_json(json, Value);
+    frame->setZOrder(zorder);
+
+    return frame;
+}
 
 }
 }
