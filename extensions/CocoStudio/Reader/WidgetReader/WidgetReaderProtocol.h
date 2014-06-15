@@ -38,7 +38,8 @@ namespace cocos2d
 NS_CC_EXT_BEGIN
 
 class CocoLoader;
-class stExpCocoNode;
+struct stExpCocoNode;
+
 class CC_EX_DLL WidgetReaderProtocol
 {
 public:

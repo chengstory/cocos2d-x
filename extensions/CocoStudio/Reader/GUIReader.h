@@ -179,7 +179,7 @@ public:
     //added for binary parsing
     virtual cocos2d::ui::Widget* createWidgetFromBinary(CocoLoader* pCocoLoader,
                                                         stExpCocoNode*	pCocoNode,
-                                                        const char* fileName)override{return NULL;}
+                                                        const char* fileName){return NULL;}
     
     virtual cocos2d::ui::Widget* widgetFromBinary(CocoLoader* pCocoLoader,
                                                   stExpCocoNode*	pCocoNode){return NULL;}
@@ -231,7 +231,7 @@ public:
     //added for binary parsing
     virtual cocos2d::ui::Widget* createWidgetFromBinary(CocoLoader* pCocoLoader,
                                                         stExpCocoNode*	pCocoNode,
-                                                        const char* fileName)override;
+                                                        const char* fileName);
     
     virtual cocos2d::ui::Widget* widgetFromBinary(CocoLoader* pCocoLoader,
                                                   stExpCocoNode*	pCocoNode);

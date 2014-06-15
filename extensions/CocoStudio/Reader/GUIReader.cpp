@@ -2232,8 +2232,17 @@ void WidgetPropertiesReader0300::setPropsForAllCustomWidgetFromJsonDictionary(co
     }    
 }
 
-Widget* WidgetPropertiesReader0300::createWidgetFromBinary(cocos2d::extension::CocoLoader *pCocoLoader, cocos2d::extension::stExpCocoNode *pCocoNode, const char *fileName)
+Widget* WidgetPropertiesReader0300::createWidgetFromBinary(cocos2d::extension::CocoLoader *pCocoLoader,
+                                                           cocos2d::extension::stExpCocoNode *pCocoNode,
+                                                           const char *fileName)
 {
+    
+    std::string jsonpath;
+	rapidjson::Document jsonDict;
+    jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
+    int pos = jsonpath.find_last_of('/');
+	m_strFilePath = jsonpath.substr(0,pos+1);
+    
     stExpCocoNode *tpChildArray = pCocoNode->GetChildArray();
     float fileDesignWidth;
     float fileDesignHeight;
@@ -2250,7 +2259,9 @@ Widget* WidgetPropertiesReader0300::createWidgetFromBinary(cocos2d::extension::C
                 std::string file;
                 stExpCocoNode *textureCountsArray = tpChildArray[i].GetChildArray();
                 file = textureCountsArray[j].GetValue();
-                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(file.c_str());
+                std::string tp = m_strFilePath;
+                tp.append(file);
+                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(tp.c_str());
             }
         }else if (key == "designWidth"){
             fileDesignWidth =  atof(tpChildArray[i].GetValue());
@@ -2306,14 +2317,30 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromBinary(CocoLoader* pC
 {
     Widget* widget = NULL;
     stExpCocoNode *stChildArray = pCocoNode->GetChildArray();
+    stExpCocoNode *optionsNode = NULL;
+    stExpCocoNode *childrenNode = NULL;
+    int elementCount = pCocoNode->GetChildNum();
     std::string classname;
-    
-    
-    std::string key = stChildArray[0].GetName(pCocoLoader);
-    classname = stChildArray[0].GetValue();
-    
-    if (key == "classname" && !classname.empty()) {
-        widget = this->createGUI(classname);
+    for (int i = 0; i < elementCount; ++i)
+    {
+        std::string key = stChildArray[i].GetName(pCocoLoader);
+        std::string value = stChildArray[i].GetValue();
+        if (key == "classname" )
+        {
+            if (!value.empty())
+            {
+                classname = value;
+                widget = this->createGUI(classname);
+            }
+            else
+            {
+                CCLOG("Warning!!! classname not found!");
+            }
+        }else if(key == "children"){
+            childrenNode = &stChildArray[i];
+        }else if(key == "options"){
+            optionsNode = &stChildArray[i];
+        }
     }
     
 //    CCLOG("classname = %s", classname.c_str());
@@ -2324,7 +2351,7 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromBinary(CocoLoader* pC
     if (reader)
     {
         // widget parse with widget reader
-        setPropsForAllWidgetFromBinary(reader, widget, pCocoLoader, &stChildArray[3]);
+        setPropsForAllWidgetFromBinary(reader, widget, pCocoLoader, optionsNode);
     }
     else
     {
@@ -2332,12 +2359,12 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromBinary(CocoLoader* pC
         readerName = this->getWidgetReaderClassName(widget);
         reader = this->createWidgetReaderProtocol(readerName);
         
-        setPropsForAllWidgetFromBinary(reader, widget, pCocoLoader, &stChildArray[3]);
+        setPropsForAllWidgetFromBinary(reader, widget, pCocoLoader, optionsNode);
         
         //2nd. parse custom property
         const char* customProperty = NULL;
-        stExpCocoNode *optionChildNode = stChildArray[3].GetChildArray();
-        for (int k = 0; k < stChildArray[3].GetChildNum(); ++k) {
+        stExpCocoNode *optionChildNode = optionsNode->GetChildArray();
+        for (int k = 0; k < optionsNode->GetChildNum(); ++k) {
             std::string key = optionChildNode[k].GetName(pCocoLoader);
             if (key == "customProperty") {
                 customProperty = optionChildNode[k].GetValue();
@@ -2355,17 +2382,20 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromBinary(CocoLoader* pC
     }
     
     //parse children
-    stExpCocoNode* childrenArray = &stChildArray[2];
-    if (NULL != childrenArray) {
-        rapidjson::Type tType22  = stChildArray[2].GetType(pCocoLoader);
-        if (tType22 == rapidjson::kArrayType) {
+    if (NULL != childrenNode)
+    {
+        rapidjson::Type tType22  = childrenNode->GetType(pCocoLoader);
+        if (tType22 == rapidjson::kArrayType)
+        {
             
-            int childrenCount = childrenArray->GetChildNum();
-            stExpCocoNode* innerChildArray = childrenArray->GetChildArray();
-            for (int i=0; i < childrenCount; ++i) {
+            int childrenCount = childrenNode->GetChildNum();
+            stExpCocoNode* innerChildArray = childrenNode->GetChildArray();
+            for (int i=0; i < childrenCount; ++i)
+            {
                 rapidjson::Type tType  = innerChildArray[i].GetType(pCocoLoader);
                 
-                if (tType == rapidjson::kObjectType) {
+                if (tType == rapidjson::kObjectType)
+                {
                     
                     Widget *child = widgetFromBinary(pCocoLoader, &innerChildArray[i]);
                     
