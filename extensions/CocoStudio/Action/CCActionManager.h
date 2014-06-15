@@ -30,6 +30,9 @@ THE SOFTWARE.
 #include "CCActionObject.h"
 #include "../Json/rapidjson/document.h"
 NS_CC_EXT_BEGIN
+
+class CocoLoader;
+class stExpCocoNode;
 	/**
 	*   @js NA
 	*   @lua NA
@@ -92,7 +95,8 @@ public:
 	ActionObject* playActionByName(const char* jsonName,const char* actionName, CCCallFunc* func);
 
 	/*init properties with json dictionay*/
-	void initWithDictionary(const char* jsonName,const rapidjson::Value &dic,CCObject* root);
+	void initWithDictionary(const char* jsonName,const rapidjson::Value &dic, cocos2d::CCObject* root);
+    void initWithBinary(const char* file, cocos2d::CCObject* root,  cocos2d::extension::CocoLoader* pCocoLoader, stExpCocoNode*	pCocoNode);
 	/**
 	* Release all actions.
 	*
