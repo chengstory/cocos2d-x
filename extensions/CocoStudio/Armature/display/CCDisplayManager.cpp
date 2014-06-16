@@ -223,7 +223,7 @@ void CCDisplayManager::changeDisplayByName(const char *name, bool force)
 
 void CCDisplayManager::changeDisplayWithIndex(int index, bool force)
 {
-    CCAssert( (m_pDecoDisplayList ? index < (int)m_pDecoDisplayList->count() : true), "the _index value is out of range");
+    //CCAssert( (m_pDecoDisplayList ? index < (int)m_pDecoDisplayList->count() : true), "the _index value is out of range");
 
     m_bForceChangeDisplay = force;
 

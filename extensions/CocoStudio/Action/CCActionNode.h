@@ -33,14 +33,14 @@
 NS_CC_EXT_BEGIN
 
 class CocoLoader;
-class stExpCocoNode;
+struct stExpCocoNode;
 
 
 /**
 *   @js NA
 *   @lua NA
 */
-class CC_EX_DLL ActionNode : public CCObject
+class CC_EX_DLL ActionNode:public CCObject
 {
 public:
     
@@ -155,8 +155,7 @@ public:
 	
     /*init properties with a json dictionary*/
 	virtual void initWithDictionary(const rapidjson::Value& dic,CCObject* root);
-    void initWithBinary(cocos2d::extension::CocoLoader* pCocoLoader, cocos2d::extension::stExpCocoNode*	pCocoNode, cocos2d::CCObject* root);
-
+    virtual void initWithBinary(CocoLoader* pCocoLoader, stExpCocoNode*	pCocoNode, CCObject* root);
     /**
      * Gets if the action is done once time.
      *
