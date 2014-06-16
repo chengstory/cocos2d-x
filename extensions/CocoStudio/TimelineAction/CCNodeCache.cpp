@@ -84,6 +84,8 @@ static const char* RED              = "colorR";
 static const char* GREEN            = "colorG";
 static const char* BLUE             = "colorB";
 static const char* ZORDER           = "ZOrder";
+static const char* FLIPX            = "flipX";
+static const char* FLIPY            = "flipY";
 
 static const char* TEXTURES     = "textures";
 static const char* TEXTURES_PNG = "texturesPng";
@@ -400,6 +402,7 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
         }
     }
 
+    node->setTag(tag);
 	node->setUserObject(TimelineActionData::create(actionTag));
 }
 
@@ -452,6 +455,14 @@ CCNode* NodeCache::loadSprite(const rapidjson::Value& json, cocos2d::CCNode* par
 	}
 
     initNode(sprite, json);
+
+    bool flipX          = DICTOOL->getBooleanValue_json(json, FLIPX);
+    bool flipY          = DICTOOL->getBooleanValue_json(json, FLIPY);
+
+    if(flipX != false)
+        sprite->setFlipX(flipX);
+    if(flipY != false)
+        sprite->setFlipY(flipY);
 
     return sprite;
 }
