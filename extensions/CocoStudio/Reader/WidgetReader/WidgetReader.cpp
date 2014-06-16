@@ -77,6 +77,10 @@ void WidgetReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     
     widget->setTag(DICTOOL->getIntValue_json(options, "tag"));
     widget->setActionTag(DICTOOL->getIntValue_json(options, "actiontag"));
+    
+    int actionTag = DICTOOL->getIntValue_json(options, "actionTag");
+    widget->setUserObject(cocostudio::animation::TimelineActionData::create(actionTag));
+
     widget->setTouchEnabled(DICTOOL->getBooleanValue_json(options, "touchAble"));
     const char* name = DICTOOL->getStringValue_json(options, "name");
     const char* widgetName = name?name:"default";
