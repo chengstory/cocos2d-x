@@ -223,7 +223,7 @@ void CCDisplayManager::changeDisplayByName(const char *name, bool force)
 
 void CCDisplayManager::changeDisplayWithIndex(int index, bool force)
 {
-    //CCAssert( (m_pDecoDisplayList ? index < (int)m_pDecoDisplayList->count() : true), "the _index value is out of range");
+    CCAssert( (m_pDecoDisplayList ? index < (int)m_pDecoDisplayList->count() : true), "the _index value is out of range");
 
     m_bForceChangeDisplay = force;
 
@@ -299,6 +299,7 @@ void CCDisplayManager::setCurrentDecorativeDisplay(CCDecorativeDisplay *decoDisp
         if (CCArmature *armature = dynamic_cast<CCArmature *>(m_pDisplayRenderNode))
         {
             m_pBone->setChildArmature(armature);
+            armature->setParentBone(m_pBone);
         }
         else if (CCParticleSystemQuad *particle = dynamic_cast<CCParticleSystemQuad *>(m_pDisplayRenderNode))
         {
