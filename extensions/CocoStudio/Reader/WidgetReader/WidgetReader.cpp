@@ -1,7 +1,6 @@
 
 
 #include "WidgetReader.h"
-#include "../../Json/CocoLoader.h"
 #include "../../../../cocos2dx/CCDirector.h"
 
 NS_CC_EXT_BEGIN
@@ -19,7 +18,6 @@ _height(0.0f),
 _positionPercentX(0.0f),
 _positionPercentY(0.0f)
 {
-    
 }
 
 WidgetReader::~WidgetReader()
@@ -78,9 +76,7 @@ void WidgetReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     widget->setSize(CCSizeMake(w, h));
     
     widget->setTag(DICTOOL->getIntValue_json(options, "tag"));
-    //widget->setActionTag(DICTOOL->getIntValue_json(options, "actiontag"));
-    int actionTag = DICTOOL->getIntValue_json(options, "actionTag");
-    widget->setUserObject(cocostudio::animation::TimelineActionData::create(actionTag));
+    widget->setActionTag(DICTOOL->getIntValue_json(options, "actiontag"));
     widget->setTouchEnabled(DICTOOL->getBooleanValue_json(options, "touchAble"));
     const char* name = DICTOOL->getStringValue_json(options, "name");
     const char* widgetName = name?name:"default";
@@ -184,7 +180,8 @@ void WidgetReader::beginSetBasicProperties(cocos2d::ui::Widget *widget)
 {
     _position = widget->getPosition();
     //set default color
-    widget->setColor(ccc3(255,255,255));
+    _color = ccc3(255,255,255);
+    widget->setColor(_color);
     _originalAnchorPoint = widget->getAnchorPoint();
 }
 
@@ -198,9 +195,10 @@ void WidgetReader::endSetBasicProperties(cocos2d::ui::Widget *widget)
         _width = screenSize.width;
         _height = screenSize.height;
     }
+    widget->setColor(_color);
     widget->setSize(CCSize(_width, _height));
-    widget->setPosition(_position);
     widget->setAnchorPoint(_originalAnchorPoint);
+    widget->setPosition(_position);
 }
 
 std::string WidgetReader::getResourcePath(CocoLoader *pCocoLoader,
@@ -231,4 +229,6 @@ std::string WidgetReader::getResourcePath(CocoLoader *pCocoLoader,
     }
     return imageFileName_tp;
 }
+
+
 NS_CC_EXT_END

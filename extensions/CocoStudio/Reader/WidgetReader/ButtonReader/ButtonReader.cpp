@@ -145,7 +145,7 @@ void ButtonReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     bool fs = DICTOOL->checkObjectExist_json(options, "fontSize");
     if (fs)
     {
-        button->setTitleFontSize(DICTOOL->getIntValue_json(options, "fontSize"));
+        button->setTitleFontSize(DICTOOL->getFloatValue_json(options, "fontSize"));
     }
     bool fn = DICTOOL->checkObjectExist_json(options, "fontName");
     if (fn)
@@ -269,17 +269,16 @@ void ButtonReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
         
         else if (key == "opacity") {
             widget->setOpacity(valueToInt(value));
-        }else if(key == "colorR"){
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3(valueToInt(value), color.g, color.b));
+        }
+        else if(key == "colorR"){
+            _color.r = valueToInt(value);
         }else if(key == "colorG"){
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3( color.r, valueToInt(value), color.b));
+            _color.g = valueToInt(value);
         }else if(key == "colorB")
         {
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3( color.r,  color.g , valueToInt(value)));
-        }else if(key == "flipX"){
+            _color.b = valueToInt(value);
+        }
+        else if(key == "flipX"){
             widget->setFlipX(valueToBool(value));
         }else if(key == "flipY"){
             widget->setFlipY(valueToBool(value));
