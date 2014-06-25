@@ -79,10 +79,14 @@ static const char* ROTATION_SKEW_X  = "rotationSkewX";
 static const char* ROTATION_SKEW_Y  = "rotationSkewY";
 static const char* ANCHOR_X         = "anchorPointX";
 static const char* ANCHOR_Y         = "anchorPointY";
-static const char* ALPHA            = "alpha";
-static const char* RED              = "red";
-static const char* GREEN            = "green";
-static const char* BLUE             = "blue";
+static const char* ALPHA            = "opacity";
+static const char* RED              = "colorR";
+static const char* GREEN            = "colorG";
+static const char* BLUE             = "colorB";
+static const char* ZORDER           = "ZOrder";
+static const char* FLIPX            = "flipX";
+static const char* FLIPY            = "flipY";
+static const char* VISIBLE          = "visible";
 
 static const char* TEXTURES     = "textures";
 static const char* TEXTURES_PNG = "texturesPng";
@@ -359,8 +363,10 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
     GLubyte red         = (GLubyte)DICTOOL->getIntValue_json(json, RED, 255);
     GLubyte green       = (GLubyte)DICTOOL->getIntValue_json(json, GREEN, 255);
     GLubyte blue        = (GLubyte)DICTOOL->getIntValue_json(json, BLUE, 255);
+    int zorder		    = DICTOOL->getIntValue_json(json, ZORDER);
 	int tag				= DICTOOL->getIntValue_json(json, TAG);
     int actionTag		= DICTOOL->getIntValue_json(json, ACTION_TAG);
+    bool visible        = DICTOOL->getBooleanValue_json(json, VISIBLE);
 
     if(x != 0 || y != 0)
         node->setPosition(CCPoint(x, y));
@@ -380,6 +386,10 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
         node->setSkewY(skewy);
     if(anchorx != 0.5f || anchory != 0.5f)
         node->setAnchorPoint(CCPoint(anchorx, anchory));
+    if(zorder != 0)
+        node->setZOrder(zorder);
+    if(visible != true)
+        node->setVisible(visible);
 
     CCRGBAProtocol *rgbaProtocaol = dynamic_cast<CCRGBAProtocol *>(node);
     if(rgbaProtocaol)
@@ -396,6 +406,7 @@ void NodeCache::initNode(cocos2d::CCNode* node, const rapidjson::Value& json)
         }
     }
 
+    node->setTag(tag);
 	node->setUserObject(TimelineActionData::create(actionTag));
 }
 
@@ -448,6 +459,14 @@ CCNode* NodeCache::loadSprite(const rapidjson::Value& json, cocos2d::CCNode* par
 	}
 
     initNode(sprite, json);
+
+    bool flipX          = DICTOOL->getBooleanValue_json(json, FLIPX);
+    bool flipY          = DICTOOL->getBooleanValue_json(json, FLIPY);
+
+    if(flipX != false)
+        sprite->setFlipX(flipX);
+    if(flipY != false)
+        sprite->setFlipY(flipY);
 
     return sprite;
 }

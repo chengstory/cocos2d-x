@@ -32,7 +32,7 @@ THE SOFTWARE.
 NS_CC_EXT_BEGIN
 
 class CocoLoader;
-class stExpCocoNode;
+struct stExpCocoNode;
 	/**
 	*   @js NA
 	*   @lua NA
@@ -95,8 +95,8 @@ public:
 	ActionObject* playActionByName(const char* jsonName,const char* actionName, CCCallFunc* func);
 
 	/*init properties with json dictionay*/
-	void initWithDictionary(const char* jsonName,const rapidjson::Value &dic, cocos2d::CCObject* root);
-    void initWithBinary(const char* file, cocos2d::CCObject* root,  cocos2d::extension::CocoLoader* pCocoLoader, stExpCocoNode*	pCocoNode);
+	void initWithDictionary(const char* jsonName,const rapidjson::Value &dic,CCObject* root);
+    void initWithBinary(const char* file, CCObject* root,  CocoLoader* pCocoLoader, stExpCocoNode*	pCocoNode);
 	/**
 	* Release all actions.
 	*

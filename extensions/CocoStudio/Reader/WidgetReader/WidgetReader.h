@@ -45,7 +45,7 @@ public:
     
     virtual void setPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
     virtual void setColorPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
-    virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode){}
+    virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode);
 protected:
     void beginSetBasicProperties(cocos2d::ui::Widget *widget);
     void endSetBasicProperties(cocos2d::ui::Widget *widget);
@@ -64,9 +64,12 @@ protected:
     float _positionPercentY;
     float _width ;
     float _height;
+    cocos2d::ccColor3B _color;
+    int _opacity;
     cocos2d::CCPoint _position;
     bool _isAdaptScreen;
     cocos2d::CCPoint _originalAnchorPoint;
+    
 };
 
 NS_CC_EXT_END

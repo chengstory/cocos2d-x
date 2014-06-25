@@ -79,12 +79,12 @@ void LabelAtlasReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoade
     
     
     stExpCocoNode *stChildArray = pCocoNode->GetChildArray();
-    ui::TextureResType type;
+    ui::TextureResType type = ui::UI_TEX_TYPE_LOCAL;
     std::string charMapFileName;
     std::string stringValue;
     std::string startCharMap;
-    float itemWidth;
-    float itemHeight;
+    float itemWidth = 0.0f;
+    float itemHeight = 0.0f;
     for (int i = 0; i < pCocoNode->GetChildNum(); ++i) {
         std::string key = stChildArray[i].GetName(pCocoLoader);
         std::string value = stChildArray[i].GetValue();
@@ -183,18 +183,17 @@ void LabelAtlasReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoade
         }
         
         else if (key == "opacity") {
-            widget->setOpacity(valueToInt(value));
-        }else if(key == "colorR"){
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3(valueToInt(value), color.g, color.b));
+            _opacity = valueToInt(value);
+        }
+        else if(key == "colorR"){
+            _color.r = valueToInt(value);
         }else if(key == "colorG"){
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3( color.r, valueToInt(value), color.b));
+            _color.g = valueToInt(value);
         }else if(key == "colorB")
         {
-            ccColor3B color = widget->getColor();
-            widget->setColor(ccc3( color.r,  color.g , valueToInt(value)));
-        }else if(key == "flipX"){
+            _color.b = valueToInt(value);
+        }
+        else if(key == "flipX"){
             widget->setFlipX(valueToBool(value));
         }else if(key == "flipY"){
             widget->setFlipY(valueToBool(value));
