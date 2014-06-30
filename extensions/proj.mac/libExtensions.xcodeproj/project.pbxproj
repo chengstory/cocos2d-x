@@ -2392,7 +2392,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2409,7 +2409,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)../include";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -2417,7 +2419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2428,14 +2430,19 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)../include";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
 		1551A34D158F2AB200E66CFE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/cocos2dx.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "libExtensions-Prefix.pch";
@@ -2507,16 +2514,21 @@
 					"/Users/xiexin/github/CocoStudio-MultiPlatform/cocos2dx/CocosDenshion/third_party/blackberry/libraries/x86",
 					"/Users/xiexin/github/CocoStudio-MultiPlatform/CocoStudio/Debug.mac/Debug",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Extensions;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
 		1551A34E158F2AB200E66CFE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/cocos2dx.dst;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2588,10 +2600,12 @@
 					"/Users/xiexin/github/CocoStudio-MultiPlatform/cocos2dx/CocosDenshion/third_party/blackberry/libraries/x86",
 					"/Users/xiexin/github/CocoStudio-MultiPlatform/CocoStudio/Debug.mac/Debug",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Extensions;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
