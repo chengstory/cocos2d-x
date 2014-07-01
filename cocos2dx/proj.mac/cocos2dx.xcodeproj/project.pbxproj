@@ -1707,10 +1707,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../platform/third_party/mac/libraries\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1739,10 +1739,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../platform/third_party/mac/libraries\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
