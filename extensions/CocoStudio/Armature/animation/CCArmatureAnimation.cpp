@@ -63,6 +63,7 @@ CCArmatureAnimation::CCArmatureAnimation()
     , m_sFrameEventCallFunc(NULL)
     , m_sMovementEventTarget(NULL)
     , m_sFrameEventTarget(NULL)
+    , m_pScriptObjectDict(NULL)
 {
 
 }
@@ -73,6 +74,8 @@ CCArmatureAnimation::~CCArmatureAnimation(void)
     CC_SAFE_RELEASE_NULL(m_pAnimationData);
 
     CC_SAFE_RELEASE_NULL(m_pUserObject);
+    CC_SAFE_RELEASE_NULL(m_pScriptObjectDict);
+
 }
 
 bool CCArmatureAnimation::init(CCArmature *armature)
@@ -171,12 +174,7 @@ void CCArmatureAnimation::play(const char *animationName, int durationTo, int du
     CCAssert(m_pAnimationData, "m_pAnimationData can not be null");
 
     m_pMovementData = m_pAnimationData->getMovement(animationName);
-    if (m_pMovementData == NULL)
-    {
-        return;
-    }
-    
-    //CCAssert(m_pMovementData, "m_pMovementData can not be null");
+    CCAssert(m_pMovementData, "m_pMovementData can not be null");
 
     //! Get key frame count
     m_iRawDuration = m_pMovementData->duration;
@@ -559,6 +557,17 @@ void CCArmatureAnimation::updateMovementList()
 
         m_bOnMovementList = true;
     }
+}
+
+cocos2d::CCDictionary * CCArmatureAnimation::getScriptObjectDict()
+{
+    return m_pScriptObjectDict;
+}
+void CCArmatureAnimation::setScriptObjectDict(cocos2d::CCDictionary* pScriptObjectDict)
+{
+    CC_SAFE_RETAIN(pScriptObjectDict);
+    CC_SAFE_RELEASE(m_pScriptObjectDict);
+    m_pScriptObjectDict = pScriptObjectDict;
 }
 
 NS_CC_EXT_END

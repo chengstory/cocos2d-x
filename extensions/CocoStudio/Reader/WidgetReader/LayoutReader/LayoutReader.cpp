@@ -56,25 +56,25 @@ void LayoutReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     
     bool backGroundScale9Enable = DICTOOL->getBooleanValue_json(options, "backGroundScale9Enable");
     panel->setBackGroundImageScale9Enabled(backGroundScale9Enable);
-    int cr = DICTOOL->getIntValue_json(options, "bgColorR");
-    int cg = DICTOOL->getIntValue_json(options, "bgColorG");
-    int cb = DICTOOL->getIntValue_json(options, "bgColorB");
+    int cr = DICTOOL->getIntValue_json(options, "bgColorR",150);
+    int cg = DICTOOL->getIntValue_json(options, "bgColorG",150);
+    int cb = DICTOOL->getIntValue_json(options, "bgColorB",150);
     
-    int scr = DICTOOL->getIntValue_json(options, "bgStartColorR");
-    int scg = DICTOOL->getIntValue_json(options, "bgStartColorG");
-    int scb = DICTOOL->getIntValue_json(options, "bgStartColorB");
+    int scr = DICTOOL->getIntValue_json(options, "bgStartColorR",255);
+    int scg = DICTOOL->getIntValue_json(options, "bgStartColorG",255);
+    int scb = DICTOOL->getIntValue_json(options, "bgStartColorB",255);
     
-    int ecr = DICTOOL->getIntValue_json(options, "bgEndColorR");
-    int ecg = DICTOOL->getIntValue_json(options, "bgEndColorG");
-    int ecb = DICTOOL->getIntValue_json(options, "bgEndColorB");
+    int ecr = DICTOOL->getIntValue_json(options, "bgEndColorR",150);
+    int ecg = DICTOOL->getIntValue_json(options, "bgEndColorG",200);
+    int ecb = DICTOOL->getIntValue_json(options, "bgEndColorB",255);
     
     float bgcv1 = DICTOOL->getFloatValue_json(options, "vectorX");
-    float bgcv2 = DICTOOL->getFloatValue_json(options, "vectorY");
+    float bgcv2 = DICTOOL->getFloatValue_json(options, "vectorY",-0.5f);
     panel->setBackGroundColorVector(ccp(bgcv1, bgcv2));
     
-    int co = DICTOOL->getIntValue_json(options, "bgColorOpacity");
+    int co = DICTOOL->getIntValue_json(options, "bgColorOpacity",100);
     
-    int colorType = DICTOOL->getIntValue_json(options, "colorType");
+    int colorType = DICTOOL->getIntValue_json(options, "colorType",1);
     panel->setBackGroundColorType(ui::LayoutBackGroundColorType(colorType));
     panel->setBackGroundColor(ccc3(scr, scg, scb),ccc3(ecr, ecg, ecb));
     panel->setBackGroundColor(ccc3(cr, cg, cb));
@@ -116,8 +116,8 @@ void LayoutReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     {
         float cx = DICTOOL->getFloatValue_json(options, "capInsetsX");
         float cy = DICTOOL->getFloatValue_json(options, "capInsetsY");
-        float cw = DICTOOL->getFloatValue_json(options, "capInsetsWidth");
-        float ch = DICTOOL->getFloatValue_json(options, "capInsetsHeight");
+        float cw = DICTOOL->getFloatValue_json(options, "capInsetsWidth",1);
+        float ch = DICTOOL->getFloatValue_json(options, "capInsetsHeight",1);
         panel->setBackGroundImageCapInsets(CCRectMake(cx, cy, cw, ch));
     }
     panel->setLayoutType((ui::LayoutType)DICTOOL->getIntValue_json(options, "layoutType"));
@@ -132,7 +132,7 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
     
     ui::Layout* panel = static_cast<ui::Layout*>(widget);
     
-    stExpCocoNode *stChildArray = pCocoNode->GetChildArray();
+    stExpCocoNode *stChildArray = pCocoNode->GetChildArray(pCocoLoader);
     this->beginSetBasicProperties(widget);
     
     int cr=0, cg = 0, cb = 0;
@@ -146,7 +146,7 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
     
     for (int i = 0; i < pCocoNode->GetChildNum(); ++i) {
         std::string key = stChildArray[i].GetName(pCocoLoader);
-        std::string value = stChildArray[i].GetValue();
+        std::string value = stChildArray[i].GetValue(pCocoLoader);
         //            CCLOG("Layout: key = %s, value = %d", key.c_str(), i);
         if (key == "ignoreSize") {
             widget->ignoreContentAdaptWithSize(valueToBool(value));
@@ -194,7 +194,7 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
         }else if(key == "ZOrder"){
             widget->setZOrder(valueToInt(value));
         }else if(key == "layoutParameter"){
-            stExpCocoNode *layoutCocosNode = stChildArray[i].GetChildArray();
+            stExpCocoNode *layoutCocosNode = stChildArray[i].GetChildArray(pCocoLoader);
             
             ui::LinearLayoutParameter *linearParameter = ui::LinearLayoutParameter::create();
             ui::RelativeLayoutParameter *relativeParameter = ui::RelativeLayoutParameter::create();
@@ -203,7 +203,7 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
             int paramType = -1;
             for (int j = 0; j < stChildArray[i].GetChildNum(); ++j) {
                 std::string innerKey = layoutCocosNode[j].GetName(pCocoLoader);
-                std::string innerValue = layoutCocosNode[j].GetValue();
+                std::string innerValue = layoutCocosNode[j].GetValue(pCocoLoader);
                 
                 if (innerKey == "type") {
                     paramType = valueToInt(innerValue);
@@ -302,9 +302,9 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
             colorType = ui::LayoutBackGroundColorType(valueToInt(value));
         }else if (key == "backGroundImageData"){
             
-            stExpCocoNode *backGroundChildren = stChildArray[i].GetChildArray();
+            stExpCocoNode *backGroundChildren = stChildArray[i].GetChildArray(pCocoLoader);
             if (backGroundChildren) {
-                std::string resType = backGroundChildren[2].GetValue();;
+                std::string resType = backGroundChildren[2].GetValue(pCocoLoader);
                 
                 ui::TextureResType imageFileNameType = (ui::TextureResType)valueToInt(resType);
                 

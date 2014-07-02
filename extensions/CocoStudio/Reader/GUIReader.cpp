@@ -206,13 +206,13 @@ cocos2d::ui::Widget* GUIReader::widgetFromBinaryFile(const char *fileName)
             rapidjson::Type tType = tpRootCocoNode->GetType(&tCocoLoader);
             if (rapidjson::kObjectType == tType || rapidjson::kArrayType == tType)
             {
-                stExpCocoNode *tpChildArray = tpRootCocoNode->GetChildArray();
+                stExpCocoNode *tpChildArray = tpRootCocoNode->GetChildArray(&tCocoLoader);
                 
                 
                 for (int i = 0; i < tpRootCocoNode->GetChildNum(); ++i) {
                     std::string key = tpChildArray[i].GetName(&tCocoLoader);
                     if (key == "version") {
-                        fileVersion = tpChildArray[i].GetValue();
+                        fileVersion = tpChildArray[i].GetValue(&tCocoLoader);
                         break;
                     }
                 }

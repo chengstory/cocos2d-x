@@ -61,7 +61,8 @@ _nodes(NULL),
 _color(ccWHITE),
 _opacity(255),
 _flippedX(false),
-_flippedY(false)
+_flippedY(false),
+_scriptObjectDict(NULL)
 {
     
 }
@@ -76,6 +77,7 @@ Widget::~Widget()
     CC_SAFE_RELEASE(_layoutParameterDictionary);
     _nodes->removeAllObjects();
     CC_SAFE_RELEASE(_nodes);
+    CC_SAFE_RELEASE_NULL(_scriptObjectDict);
 }
 
 Widget* Widget::create()
@@ -141,11 +143,7 @@ void Widget::addChild(CCNode * child, int zOrder)
     
 void Widget::addChild(CCNode* child, int zOrder, int tag)
 {
-    //CCAssert(dynamic_cast<Widget*>(child) != NULL, "Widget only supports Widgets as children");
-    if (dynamic_cast<Widget*>(child) == NULL)
-    {
-        return;
-    }
+    CCAssert(dynamic_cast<Widget*>(child) != NULL, "Widget only supports Widgets as children");
     CCNode::addChild(child, zOrder, tag);
     _widgetChildren->addObject(child);
 }
@@ -1125,6 +1123,18 @@ void Widget::updateRGBAToRenderer(CCNode* renderer)
         rgbap->setColor(_color);
         rgbap->setOpacity(_opacity);
     }
+}
+    
+void Widget::setScriptObjectDict(cocos2d::CCDictionary* scriptObjectDict)
+{
+    CC_SAFE_RETAIN(scriptObjectDict);
+    CC_SAFE_RELEASE(_scriptObjectDict);
+    _scriptObjectDict = scriptObjectDict;
+}
+    
+cocos2d::CCDictionary* Widget::getScriptObjectDict() const
+{
+    return _scriptObjectDict;
 }
     
 }
