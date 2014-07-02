@@ -166,10 +166,11 @@ public:
     CCDictionary *getArmatureDatas() const;
     CCDictionary *getAnimationDatas() const;
     CCDictionary *getTextureDatas() const;
-
+public:
+	CCRelativeData *getRelativeData(const char* configFilePath);
 protected:
     void addRelativeData(const char* configFilePath);
-    CCRelativeData *getRelativeData(const char* configFilePath);
+    
 private:
     /**
      *	@brief	save amature datas
