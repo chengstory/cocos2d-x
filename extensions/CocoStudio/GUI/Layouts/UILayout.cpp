@@ -636,6 +636,10 @@ void Layout::addBackGroundImage()
         CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
     }
     _backGroundImage->setPosition(CCPoint(_size.width/2.0f, _size.height/2.0f));
+
+    /**/
+    resetChildren();
+    /**/
 }
 
 void Layout::removeBackGroundImage()
@@ -713,23 +717,7 @@ void Layout::setBackGroundColorType(LayoutBackGroundColorType type)
     }
 
     /**/
-    if (_backGroundImage)
-    {
-        CCNode::removeChild(_backGroundImage, true);
-        _backGroundImage = NULL;
-        if (_backGroundScale9Enabled)
-        {
-            _backGroundImage = extension::CCScale9Sprite::create();
-            CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
-        }
-        else
-        {
-            _backGroundImage = CCSprite::create();
-            CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
-        }
-        setBackGroundImage(_backGroundImageFileName.c_str(),_bgImageTexType);
-        setBackGroundImageCapInsets(_backGroundImageCapInsets);
-    }
+    resetChildren();
     /**/
     
 }
@@ -1335,6 +1323,81 @@ void Layout::doLayout()
             break;
     }
     _doLayoutDirty = false;
+}
+
+void Layout::resetChildren()
+{
+    // reset render node children
+    if (_colorRender)
+    {
+        if (_colorRender->retainCount() == 1)
+        {
+            _colorRender->retain();
+        }
+        CCNode::removeChild(_colorRender, true);
+        CCNode::addChild(_colorRender, BACKGROUNDCOLOR_RENDERER_Z, -1);
+    }
+    else if (_gradientRender)
+    {
+        if (_gradientRender->retainCount() == 1)
+        {
+            _gradientRender->retain();
+        }
+        CCNode::removeChild(_gradientRender, true);
+        CCNode::addChild(_gradientRender, BACKGROUNDCOLOR_RENDERER_Z, -1);
+    }
+    
+    if (_backGroundImage)
+    {
+        if (_backGroundImage->retainCount() == 1)
+        {
+            _backGroundImage->retain();
+        }
+        CCNode::removeChild(_backGroundImage, true);
+        CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
+    }
+    
+    // reset widget children
+    // for 2.x
+    CCArray* array = Widget::getChildren();
+    CCObject* obj = NULL;
+    CCARRAY_FOREACH(array, obj)
+    {
+        CCNode* node = static_cast<CCNode*>(obj);
+        int zorder = node->getZOrder();
+        int tag = node->getTag();
+        
+        if (node->retainCount() == 1)
+        {
+            node->retain();
+        }
+        CCNode::removeChild(node, true);
+        CCNode::addChild(node, zorder, tag);
+    }
+    
+    // in preparation for 3.x
+    /*
+    CCArray* array = CCNode::getChildren();
+    CCObject* obj = NULL;
+    CCARRAY_FOREACH(array, obj)
+    {
+        CCNode* node = static_cast<CCNode*>(obj);
+        int zorder = node->getZOrder();
+        int tag = node->getTag();
+        bool require = (!(node->isEqual(_colorRender))
+                        && !(node->isEqual(_gradientRender))
+                        && !(node->isEqual(_backGroundImage)));
+        if (require)
+        {
+            if (node->retainCount() == 1)
+            {
+                node->retain();
+            }
+            CCNode::removeChild(node);
+            CCNode::addChild(node, zorder, tag);
+        }
+    }
+     */
 }
 
 std::string Layout::getDescription() const
