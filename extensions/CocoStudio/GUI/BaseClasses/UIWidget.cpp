@@ -865,7 +865,7 @@ void Widget::setPosition(const CCPoint &pos)
         Widget* widgetParent = getWidgetParent();
         if (widgetParent)
         {
-            CCSize pSize = widgetParent->getSize();
+            CCSize pSize = widgetParent->getLayoutSize();
             if (pSize.width <= 0.0f || pSize.height <= 0.0f)
             {
                 _positionPercent = CCPointZero;

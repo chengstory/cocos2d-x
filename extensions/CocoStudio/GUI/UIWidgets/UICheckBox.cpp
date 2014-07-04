@@ -358,11 +358,19 @@ void CheckBox::updateFlippedY()
 void CheckBox::setAnchorPoint(const CCPoint &pt)
 {
     Widget::setAnchorPoint(pt);
-    _backGroundBoxRenderer->setAnchorPoint(pt);
-    _backGroundSelectedBoxRenderer->setAnchorPoint(pt);
-    _backGroundBoxDisabledRenderer->setAnchorPoint(pt);
-    _frontCrossRenderer->setAnchorPoint(pt);
-    _frontCrossDisabledRenderer->setAnchorPoint(pt);
+    _backGroundBoxRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _backGroundSelectedBoxRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _backGroundBoxDisabledRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _frontCrossRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _frontCrossDisabledRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    /*
+     _backGroundBoxRenderer->setAnchorPoint(pt);
+     _backGroundSelectedBoxRenderer->setAnchorPoint(pt);
+     _backGroundBoxDisabledRenderer->setAnchorPoint(pt);
+     _frontCrossRenderer->setAnchorPoint(pt);
+     _frontCrossDisabledRenderer->setAnchorPoint(pt);
+     */
+    /**/
 }
 
 void CheckBox::onSizeChanged()
