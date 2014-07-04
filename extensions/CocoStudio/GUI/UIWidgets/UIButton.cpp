@@ -524,11 +524,18 @@ void Button::updateFlippedY()
 void Button::setAnchorPoint(const CCPoint &pt)
 {
     Widget::setAnchorPoint(pt);
-    _buttonNormalRenderer->setAnchorPoint(pt);
-    _buttonClickedRenderer->setAnchorPoint(pt);
-    _buttonDisableRenderer->setAnchorPoint(pt);
+    _buttonNormalRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _buttonClickedRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    _buttonDisableRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
     _titleRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+    /*
+     _buttonNormalRenderer->setAnchorPoint(pt);
+     _buttonClickedRenderer->setAnchorPoint(pt);
+     _buttonDisableRenderer->setAnchorPoint(pt);
+     _titleRenderer->setPosition(CCPoint(_size.width*(0.5f-m_obAnchorPoint.x), _size.height*(0.5f-m_obAnchorPoint.y)));
+     */
 }
+
 
 void Button::onSizeChanged()
 {
