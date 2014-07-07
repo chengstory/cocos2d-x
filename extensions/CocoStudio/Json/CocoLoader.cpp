@@ -164,6 +164,17 @@ CocoLoader::~CocoLoader()
     
 }
 
+bool    CocoLoader::IsValidFileData(char* pBinBuff)
+{
+    char szVersion[32];
+	memcpy(szVersion,&pBinBuff[32],32);
+	if(strcmp(szVersion,"V1.0.2")==0)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool	CocoLoader::ReadCocoBinBuff(char* pBinBuff)
 {
     if(m_pMemoryBuff)return true;

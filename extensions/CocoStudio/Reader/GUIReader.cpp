@@ -199,7 +199,7 @@ cocos2d::ui::Widget* GUIReader::widgetFromBinaryFile(const char *fileName)
     if (pBuffer != NULL && nSize > 0)
     {
         CocoLoader	tCocoLoader;
-        if(true == tCocoLoader.ReadCocoBinBuff((char*)pBuffer))
+        if(tCocoLoader.IsValidFileData((char*)pBuffer) && tCocoLoader.ReadCocoBinBuff((char*)pBuffer))
         {
             stExpCocoNode*	tpRootCocoNode = tCocoLoader.GetRootCocoNode();
             
