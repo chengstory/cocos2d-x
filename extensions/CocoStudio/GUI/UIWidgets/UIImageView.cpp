@@ -189,6 +189,8 @@ void ImageView::setScale9Enabled(bool able)
         ignoreContentAdaptWithSize(_prevIgnoreSize);
     }
     setCapInsets(_capInsets);
+    
+    resetChildren();
 }
     
 bool ImageView::isScale9Enabled()
@@ -321,6 +323,22 @@ std::string ImageView::getTextureFile()
     return _textureFile;
 }
     
+void ImageView::resetChildren()
+{
+    // reset render node children
+    if (_imageRenderer)
+    {
+        if (_imageRenderer->retainCount() == 1)
+        {
+            _imageRenderer->retain();
+        }
+        CCNode::removeChild(_imageRenderer, true);
+        CCNode::addChild(_imageRenderer, IMAGE_RENDERER_Z, -1);
+    }
+    
+    Widget::resetChildren();
+}
+
 }
 
 NS_CC_END

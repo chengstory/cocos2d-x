@@ -246,6 +246,9 @@ void Slider::setScale9Enabled(bool able)
     }
     setCapInsetsBarRenderer(_capInsetsBarRenderer);
     setCapInsetProgressBarRebderer(_capInsetsProgressBarRenderer);
+    
+    
+    resetChildren();
 }
     
 bool Slider::isScale9Enabled()
@@ -613,6 +616,67 @@ void Slider::copySpecialProperties(Widget *widget)
         loadSlidBallTextureDisabled(slider->_slidBallDisabledTextureFile.c_str(), slider->_ballDTexType);
         setPercent(slider->getPercent());
     }
+}
+    
+void Slider::resetChildren()
+{
+    // reset render node children
+    if (_barRenderer)
+    {
+        if (_barRenderer->retainCount() == 1)
+        {
+            _barRenderer->retain();
+        }
+        CCNode::removeChild(_barRenderer, true);
+        CCNode::addChild(_barRenderer, BASEBAR_RENDERER_Z, -1);
+    }
+    if (_progressBarRenderer)
+    {
+        if (_progressBarRenderer->retainCount() == 1)
+        {
+            _progressBarRenderer->retain();
+        }
+        CCNode::removeChild(_progressBarRenderer, true);
+        CCNode::addChild(_progressBarRenderer, PROGRESSBAR_RENDERER_Z, -1);
+    }
+    if (_slidBallRenderer)
+    {
+        if (_slidBallRenderer->retainCount() == 1)
+        {
+            _slidBallRenderer->retain();
+        }
+        CCNode::removeChild(_slidBallRenderer, true);
+        CCNode::addChild(_slidBallRenderer, SLIDBALL_RENDERER_Z, -1);
+    }
+    if (_slidBallNormalRenderer)
+    {
+        if (_slidBallNormalRenderer->retainCount() == 1)
+        {
+            _slidBallNormalRenderer->retain();
+        }
+        _slidBallRenderer->removeChild(_slidBallNormalRenderer, true);
+        _slidBallRenderer->addChild(_slidBallNormalRenderer);
+    }
+    if (_slidBallPressedRenderer)
+    {
+        if (_slidBallPressedRenderer->retainCount() == 1)
+        {
+            _slidBallPressedRenderer->retain();
+        }
+        _slidBallRenderer->removeChild(_slidBallPressedRenderer, true);
+        _slidBallRenderer->addChild(_slidBallPressedRenderer);
+    }
+    if (_slidBallDisabledRenderer)
+    {
+        if (_slidBallDisabledRenderer->retainCount() == 1)
+        {
+            _slidBallDisabledRenderer->retain();
+        }
+        _slidBallRenderer->removeChild(_slidBallDisabledRenderer, true);
+        _slidBallRenderer->addChild(_slidBallDisabledRenderer);
+    }
+    
+    Widget::resetChildren();
 }
 
 }

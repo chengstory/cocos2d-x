@@ -176,6 +176,8 @@ void Button::setScale9Enabled(bool able)
     setCapInsetsPressedRenderer(_capInsetsPressed);
     setCapInsetsDisabledRenderer(_capInsetsDisabled);
     setBright(_bright);
+    
+    resetChildren();
 }
     
 bool Button::isScale9Enabled()
@@ -771,6 +773,49 @@ void Button::copySpecialProperties(Widget *widget)
         setTitleColor(button->getTitleColor());
         setPressedActionEnabled(button->_pressedActionEnabled);
     }
+}
+    
+void Button::resetChildren()
+{
+    // reset render node children
+    if (_buttonNormalRenderer)
+    {
+        if (_buttonNormalRenderer->retainCount() == 1)
+        {
+            _buttonNormalRenderer->retain();
+        }
+        CCNode::removeChild(_buttonNormalRenderer, true);
+        CCNode::addChild(_buttonNormalRenderer, NORMAL_RENDERER_Z, -1);
+    }
+    if (_buttonClickedRenderer)
+    {
+        if (_buttonClickedRenderer->retainCount() == 1)
+        {
+            _buttonClickedRenderer->retain();
+        }
+        CCNode::removeChild(_buttonClickedRenderer, true);
+        CCNode::addChild(_buttonClickedRenderer, PRESSED_RENDERER_Z, -1);
+    }
+    if (_buttonDisableRenderer)
+    {
+        if (_buttonDisableRenderer->retainCount() == 1)
+        {
+            _buttonDisableRenderer->retain();
+        }
+        CCNode::removeChild(_buttonDisableRenderer, true);
+        CCNode::addChild(_buttonDisableRenderer, DISABLED_RENDERER_Z, -1);
+    }
+    if (_titleRenderer)
+    {
+        if (_titleRenderer->retainCount() == 1)
+        {
+            _titleRenderer->retain();
+        }
+        CCNode::removeChild(_titleRenderer, true);
+        CCNode::addChild(_titleRenderer, TITLE_RENDERER_Z, -1);
+    }
+    
+    Widget::resetChildren();
 }
 
 }

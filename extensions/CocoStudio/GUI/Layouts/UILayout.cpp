@@ -520,6 +520,8 @@ void Layout::setBackGroundImageScale9Enabled(bool able)
     }
     setBackGroundImage(_backGroundImageFileName.c_str(),_bgImageTexType);    
     setBackGroundImageCapInsets(_backGroundImageCapInsets);
+    
+    resetChildren();
 }
     
 bool Layout::isBackGroundImageScale9Enabled()
@@ -1357,47 +1359,7 @@ void Layout::resetChildren()
         CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
     }
     
-    // reset widget children
-    // for 2.x
-    CCArray* array = Widget::getChildren();
-    CCObject* obj = NULL;
-    CCARRAY_FOREACH(array, obj)
-    {
-        CCNode* node = static_cast<CCNode*>(obj);
-        int zorder = node->getZOrder();
-        int tag = node->getTag();
-        
-        if (node->retainCount() == 1)
-        {
-            node->retain();
-        }
-        CCNode::removeChild(node, true);
-        CCNode::addChild(node, zorder, tag);
-    }
-    
-    // in preparation for 3.x
-    /*
-    CCArray* array = CCNode::getChildren();
-    CCObject* obj = NULL;
-    CCARRAY_FOREACH(array, obj)
-    {
-        CCNode* node = static_cast<CCNode*>(obj);
-        int zorder = node->getZOrder();
-        int tag = node->getTag();
-        bool require = (!(node->isEqual(_colorRender))
-                        && !(node->isEqual(_gradientRender))
-                        && !(node->isEqual(_backGroundImage)));
-        if (require)
-        {
-            if (node->retainCount() == 1)
-            {
-                node->retain();
-            }
-            CCNode::removeChild(node);
-            CCNode::addChild(node, zorder, tag);
-        }
-    }
-     */
+    Widget::resetChildren();
 }
 
 std::string Layout::getDescription() const
