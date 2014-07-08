@@ -77,7 +77,7 @@ static const char* RED              = "red";
 static const char* GREEN            = "green";
 static const char* BLUE             = "blue";
 static const char* Value            = "value";
-
+static const char* FILE_PATH        = "filePath";
 
 
 // FrameCreateCallFunc
@@ -392,7 +392,7 @@ Frame* ActionTimelineCache::loadTextureFrame(const rapidjson::Value& json)
 {
     TextureFrame* frame = TextureFrame::create();
 
-    const char* texture = DICTOOL->getStringValue_json(json, Value);
+    const char* texture = DICTOOL->getStringValue_json(json, FILE_PATH);
 
     if(texture != NULL)
         frame->setTextureName(texture);
