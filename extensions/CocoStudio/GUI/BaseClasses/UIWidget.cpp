@@ -1137,6 +1137,51 @@ cocos2d::CCDictionary* Widget::getScriptObjectDict() const
     return _scriptObjectDict;
 }
     
+void Widget::resetChildren()
+{
+    // reset widget children
+    // for 2.x
+    CCArray* array = Widget::getChildren();
+    CCObject* obj = NULL;
+    CCARRAY_FOREACH(array, obj)
+    {
+        CCNode* node = static_cast<CCNode*>(obj);
+        int zorder = node->getZOrder();
+        int tag = node->getTag();
+        
+        if (node->retainCount() == 1)
+        {
+            node->retain();
+        }
+        CCNode::removeChild(node, true);
+        CCNode::addChild(node, zorder, tag);
+    }
+    
+    // in preparation for 3.x
+    /*
+     CCArray* array = CCNode::getChildren();
+     CCObject* obj = NULL;
+     CCARRAY_FOREACH(array, obj)
+     {
+     CCNode* node = static_cast<CCNode*>(obj);
+     int zorder = node->getZOrder();
+     int tag = node->getTag();
+     bool require = (!(node->isEqual(_colorRender))
+     && !(node->isEqual(_gradientRender))
+     && !(node->isEqual(_backGroundImage)));
+     if (require)
+     {
+     if (node->retainCount() == 1)
+     {
+     node->retain();
+     }
+     CCNode::removeChild(node);
+     CCNode::addChild(node, zorder, tag);
+     }
+     }
+     */
+}
+    
 }
 
 NS_CC_END

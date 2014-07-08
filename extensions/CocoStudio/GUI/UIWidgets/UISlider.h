@@ -210,6 +210,9 @@ protected:
     void progressBarRendererScaleChangedWithSize();
     virtual Widget* createCloneInstance();
     virtual void copySpecialProperties(Widget* model);
+    
+    virtual void resetChildren();
+    
 protected:
     CCNode*  _barRenderer;
     CCNode* _progressBarRenderer;

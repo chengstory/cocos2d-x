@@ -188,6 +188,9 @@ protected:
     void disabledTextureScaleChangedWithSize();
     virtual Widget* createCloneInstance();
     virtual void copySpecialProperties(Widget* model);
+    
+    virtual void resetChildren();
+    
 protected:
     CCNode* _buttonNormalRenderer;
     CCNode* _buttonClickedRenderer;

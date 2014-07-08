@@ -197,6 +197,8 @@ void LoadingBar::setScale9Enabled(bool enabled)
     }
     setCapInsets(_capInsets);
     setPercent(_percent);
+    
+    resetChildren();
 }
     
 bool LoadingBar::isScale9Enabled()
@@ -363,6 +365,22 @@ void LoadingBar::copySpecialProperties(Widget *widget)
         setPercent(loadingBar->_percent);
         setDirection(loadingBar->_barType);
     }
+}
+    
+void LoadingBar::resetChildren()
+{
+    // reset render node children
+    if (_barRenderer)
+    {
+        if (_barRenderer->retainCount() == 1)
+        {
+            _barRenderer->retain();
+        }
+        CCNode::removeChild(_barRenderer, true);
+        CCNode::addChild(_barRenderer, BAR_RENDERER_Z, -1);
+    }
+    
+    Widget::resetChildren();
 }
 
 }
