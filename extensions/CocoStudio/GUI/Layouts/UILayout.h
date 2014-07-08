@@ -283,7 +283,7 @@ protected:
     void updateBackGroundImageOpacity();
     void updateBackGroundImageRGBA();
 
-    void resetChildren();
+    virtual void resetChildren();
 
 protected:
     bool _clippingEnabled;

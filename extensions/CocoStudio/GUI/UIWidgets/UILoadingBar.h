@@ -143,6 +143,9 @@ protected:
     void barRendererScaleChangedWithSize();
     virtual Widget* createCloneInstance();
     virtual void copySpecialProperties(Widget* model);
+    
+    virtual void resetChildren();
+    
 protected:
     LoadingBarType _barType;
     int _percent;

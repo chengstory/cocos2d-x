@@ -694,6 +694,9 @@ protected:
     virtual void copySpecialProperties(Widget* model);
     virtual void copyClonedWidgetChildren(Widget* model);
     Widget* getWidgetParent();
+    
+    virtual void resetChildren();
+    
 protected:
     bool _enabled;            ///< Highest control of widget
     bool _bright;             ///< is this widget bright

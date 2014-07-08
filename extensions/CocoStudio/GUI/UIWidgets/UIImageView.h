@@ -115,6 +115,9 @@ protected:
     void imageTextureScaleChangedWithSize();
     virtual Widget* createCloneInstance();
     virtual void copySpecialProperties(Widget* model);
+    
+    virtual void resetChildren();
+    
 protected:
     bool _scale9Enabled;
     bool _prevIgnoreSize;
