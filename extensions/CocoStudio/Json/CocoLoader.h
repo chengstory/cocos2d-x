@@ -102,7 +102,7 @@ public:
     CocoLoader();
     ~CocoLoader();
 public:
-    
+    bool					IsValidFileData(char* pBinBuff);
     bool					ReadCocoBinBuff(char* pBinBuff);
     stCocoFileHeader*		GetFileHeader(){return m_pFileHeader;}
     stExpCocoNode*			GetRootCocoNode(){return	m_pRootNode;}
