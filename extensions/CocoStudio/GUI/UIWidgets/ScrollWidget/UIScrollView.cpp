@@ -1748,7 +1748,14 @@ void ScrollView::copySpecialProperties(Widget *widget)
         setInertiaScrollEnabled(scrollView->_inertiaScrollEnabled);
     }
 }
-
+void ScrollView::requestDoLayout()
+{
+    this->_innerContainer->requestDoLayout();
+}
+void ScrollView::forceDoLayout()
+{
+    this->_innerContainer->forceDoLayout();
+}
 }
 
 NS_CC_END

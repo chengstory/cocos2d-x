@@ -344,6 +344,10 @@ public:
     virtual std::string getDescription() const;
     
     virtual void onEnter();
+    
+    virtual void requestDoLayout();
+    
+    virtual void forceDoLayout();
 protected:
     virtual bool init();
     virtual void initRenderer();
