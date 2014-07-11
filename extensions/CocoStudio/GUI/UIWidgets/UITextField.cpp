@@ -554,6 +554,10 @@ bool TextField::onTouchBegan(CCTouch *touch, CCEvent *unused_event)
     {
         _textFieldRenderer->attachWithIME();
     }
+	else
+	{
+		_textFieldRenderer->detachWithIME();
+	}
     return pass;
 }
 
