@@ -241,7 +241,7 @@ void LoadingBar::setPercent(int percent)
     {
         CCSprite* spriteRenderer = static_cast<CCSprite*>(_barRenderer);
         CCRect rect = spriteRenderer->getTextureRect();
-        rect.size.width = rect.size.width * res;
+        rect.size.width = _barRendererTextureSize.width * res;
         spriteRenderer->setTextureRect(rect, spriteRenderer->isTextureRectRotated(), rect.size);
     }
 }
