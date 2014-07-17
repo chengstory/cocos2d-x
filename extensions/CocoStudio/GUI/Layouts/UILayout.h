@@ -258,6 +258,11 @@ public:
     virtual void onExit();
     
     virtual bool hitTest(const CCPoint &pt);
+
+	//override "getContentSize" method of widget.
+	virtual const CCSize& getContentSize() const;
+	//override "setAnchorPoint" of widget.
+	virtual void setAnchorPoint(const CCPoint &pt);
 protected:
     //override "init" method of widget.
     virtual bool init();
@@ -314,6 +319,7 @@ protected:
     bool _clippingRectDirty;
     ccColor3B _backGroundImageColor;
     GLubyte _backGroundImageOpacity;
+	CCSize _layoutSize;
 };
     
 }
