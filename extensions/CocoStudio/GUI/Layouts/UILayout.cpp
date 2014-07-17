@@ -65,7 +65,8 @@ _clippingParent(NULL),
 _doLayoutDirty(true),
 _clippingRectDirty(true),
 _backGroundImageColor(ccWHITE),
-_backGroundImageOpacity(255)
+_backGroundImageOpacity(255),
+_layoutSize(CCSizeZero)
 {
     _widgetType = WidgetTypeContainer;
 }
@@ -477,13 +478,14 @@ const CCRect& Layout::getClippingRect()
 void Layout::onSizeChanged()
 {
     Widget::onSizeChanged();
-    setContentSize(_size);
+    //setContentSize(_size);
+	_layoutSize = _size;
     setStencilClippingSize(_size);
     _doLayoutDirty = true;
     _clippingRectDirty = true;
     if (_backGroundImage)
     {
-        _backGroundImage->setPosition(CCPoint(_size.width/2.0f, _size.height/2.0f));
+        _backGroundImage->setPosition(_layoutSize.width*(0.5f-m_obAnchorPoint.x),_layoutSize.height*(0.5f-m_obAnchorPoint.y));
         if (_backGroundScale9Enabled && _backGroundImage)
         {
             static_cast<extension::CCScale9Sprite*>(_backGroundImage)->setPreferredSize(_size);
@@ -497,6 +499,28 @@ void Layout::onSizeChanged()
     {
         _gradientRender->setContentSize(_size);
     }
+}
+
+const CCSize& Layout::getContentSize() const
+{
+	return _layoutSize;
+}
+
+void Layout::setAnchorPoint(const CCPoint &pt)
+{
+	Widget::setAnchorPoint(pt);
+	if (_backGroundImage)
+	{
+		_backGroundImage->setPosition(_layoutSize.width*(0.5f-m_obAnchorPoint.x),_layoutSize.height*(0.5f-m_obAnchorPoint.y));
+	}
+	if (_colorRender)
+	{
+		_colorRender->setPosition(_layoutSize.width*(0.0f-m_obAnchorPoint.x),_layoutSize.height*(0.0f-m_obAnchorPoint.y));
+	}
+	if (_gradientRender)
+	{
+		_gradientRender->setPosition(_layoutSize.width*(0.0f-m_obAnchorPoint.x),_layoutSize.height*(0.0f-m_obAnchorPoint.y));
+	}
 }
 
 void Layout::setBackGroundImageScale9Enabled(bool able)
@@ -572,7 +596,7 @@ void Layout::setBackGroundImage(const char* fileName,TextureResType texType)
         }
     }
     _backGroundImageTextureSize = _backGroundImage->getContentSize();
-    _backGroundImage->setPosition(CCPoint(_size.width/2.0f, _size.height/2.0f));
+    _backGroundImage->setPosition(_layoutSize.width*(0.5f-m_obAnchorPoint.x),_layoutSize.height*(0.5f-m_obAnchorPoint.y));
     updateBackGroundImageRGBA();
 }
 
@@ -637,7 +661,7 @@ void Layout::addBackGroundImage()
         _backGroundImage = CCSprite::create();
         CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
     }
-    _backGroundImage->setPosition(CCPoint(_size.width/2.0f, _size.height/2.0f));
+    _backGroundImage->setPosition(_layoutSize.width*(0.5f-m_obAnchorPoint.x),_layoutSize.height*(0.5f-m_obAnchorPoint.y));
 
     /**/
     resetChildren();
@@ -1338,6 +1362,7 @@ void Layout::resetChildren()
         }
         CCNode::removeChild(_colorRender, true);
         CCNode::addChild(_colorRender, BACKGROUNDCOLOR_RENDERER_Z, -1);
+		_colorRender->setPosition(_layoutSize.width*(0.0f-m_obAnchorPoint.x),_layoutSize.height*(0.0f-m_obAnchorPoint.y));
     }
     else if (_gradientRender)
     {
@@ -1347,6 +1372,7 @@ void Layout::resetChildren()
         }
         CCNode::removeChild(_gradientRender, true);
         CCNode::addChild(_gradientRender, BACKGROUNDCOLOR_RENDERER_Z, -1);
+		_gradientRender->setPosition(_layoutSize.width*(0.0f-m_obAnchorPoint.x),_layoutSize.height*(0.0f-m_obAnchorPoint.y));
     }
     
     if (_backGroundImage)
@@ -1357,8 +1383,9 @@ void Layout::resetChildren()
         }
         CCNode::removeChild(_backGroundImage, true);
         CCNode::addChild(_backGroundImage, BACKGROUNDIMAGE_Z, -1);
+		_backGroundImage->setPosition(_layoutSize.width*(0.5f-m_obAnchorPoint.x),_layoutSize.height*(0.5f-m_obAnchorPoint.y));
     }
-    
+
     Widget::resetChildren();
 }
 
