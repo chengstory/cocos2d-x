@@ -208,6 +208,7 @@ protected:
     virtual void updateTextureRGBA();
     void barRendererScaleChangedWithSize();
     void progressBarRendererScaleChangedWithSize();
+	void slidBallRendererScaleChangedWithSize();
     virtual Widget* createCloneInstance();
     virtual void copySpecialProperties(Widget* model);
     
@@ -222,6 +223,8 @@ protected:
     CCSprite* _slidBallPressedRenderer;
     CCSprite* _slidBallDisabledRenderer;
     CCNode* _slidBallRenderer;
+	CCSize _slidBallSize;
+
     
     float _barLength;
     int _percent;

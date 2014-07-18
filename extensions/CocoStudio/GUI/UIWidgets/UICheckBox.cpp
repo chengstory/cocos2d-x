@@ -381,6 +381,7 @@ void CheckBox::onSizeChanged()
     frontCrossTextureScaleChangedWithSize();
     backGroundDisabledTextureScaleChangedWithSize();
     frontCrossDisabledTextureScaleChangedWithSize();
+	updateAnchorPoint();
 }
 
 const CCSize& CheckBox::getContentSize() const

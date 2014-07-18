@@ -545,6 +545,7 @@ void Button::onSizeChanged()
     normalTextureScaleChangedWithSize();
     pressedTextureScaleChangedWithSize();
     disabledTextureScaleChangedWithSize();
+	updateAnchorPoint();
 }
 
 const CCSize& Button::getContentSize() const
