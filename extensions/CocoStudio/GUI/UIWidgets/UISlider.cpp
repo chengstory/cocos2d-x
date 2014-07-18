@@ -48,6 +48,7 @@ _slidBallNormalRenderer(NULL),
 _slidBallPressedRenderer(NULL),
 _slidBallDisabledRenderer(NULL),
 _slidBallRenderer(NULL),
+_slidBallSize(CCSizeZero),
 _barLength(0.0),
 _percent(0),
 _scale9Enabled(false),
@@ -328,6 +329,9 @@ void Slider::loadSlidBallTextureNormal(const char* normal,TextureResType texType
             break;
     }
     updateRGBAToRenderer(_slidBallNormalRenderer);
+	_slidBallSize = _slidBallNormalRenderer->getContentSize();
+	slidBallRendererScaleChangedWithSize();
+
 }
 
 void Slider::loadSlidBallTexturePressed(const char* pressed,TextureResType texType)
@@ -461,6 +465,8 @@ void Slider::onSizeChanged()
     Widget::onSizeChanged();
     barRendererScaleChangedWithSize();
     progressBarRendererScaleChangedWithSize();
+	slidBallRendererScaleChangedWithSize();
+
 }
 
 const CCSize& Slider::getContentSize() const
@@ -543,6 +549,29 @@ void Slider::progressBarRendererScaleChangedWithSize()
     _progressBarRenderer->setPosition(CCPoint(-_barLength * 0.5f, 0.0f));
     setPercent(_percent);
 }
+
+void Slider::slidBallRendererScaleChangedWithSize()
+{
+	if (_ignoreSize)
+	{
+		_slidBallSize = _slidBallNormalRenderer->getContentSize();
+	}
+	else
+	{
+		CCSize slidBallSize = _slidBallSize;
+		if (slidBallSize.width <= 0.0f || slidBallSize.height <= 0.0f)
+		{
+			_slidBallRenderer->setScale(1.0f);
+			return;
+		}
+		float pscaleX = _size.width / slidBallSize.width;
+		float pscaleY = _size.height / slidBallSize.height;
+		_slidBallRenderer->setScaleX(pscaleY);
+		_slidBallRenderer->setScaleY(pscaleY);
+	}
+	setPercent(_percent);
+}
+
 
 void Slider::onPressStateChangedToNormal()
 {
