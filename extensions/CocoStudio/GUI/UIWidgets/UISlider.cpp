@@ -555,6 +555,7 @@ void Slider::slidBallRendererScaleChangedWithSize()
 	if (_ignoreSize)
 	{
 		_slidBallSize = _slidBallNormalRenderer->getContentSize();
+        _slidBallRenderer->setScale(1.0f);
 	}
 	else
 	{
