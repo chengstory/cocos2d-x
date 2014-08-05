@@ -32,6 +32,35 @@
 #include "../Trigger/ObjectFactory.h"
 #include "../Json/CocoLoader.h"
 
+/* peterson protocol buffers */
+namespace protocolbuffers
+{
+    class NodeTree;
+    class WidgetOptions;
+    class LayoutOptions;
+    class CheckBoxOptions;
+    class ButtonOptions;
+    class ImageViewOptions;
+    class LabelAtlasOptions;
+    class LabelBMFontOptions;
+    class LabelOptions;
+    class LoadingBarOptions;
+    class SliderOptions;
+    class TextFieldOptions;
+    class ScrollViewOptions;
+    class PageViewOptions;
+    class ListViewOptions;
+}
+
+namespace cocos2d
+{
+    namespace ui
+    {
+        class Widget;
+    }
+}
+/**/
+
 NS_CC_EXT_BEGIN
 
 typedef void (CCObject::*SEL_ParseEvent)(const std::string&, CCObject*, const rapidjson::Value&);
@@ -129,6 +158,13 @@ public:
 //                                                      CocoLoader* pCocoLoader,
 //                                                      stExpCocoNode*	pCocoNode) = 0;
     
+    /* peterson protocol buffers */
+    virtual cocos2d::ui::Widget* widgetFromProtocolBuffers(const protocolbuffers::NodeTree& nodetree) = 0;
+    virtual void setPropsForAllWidgetFromProtocolBuffers(WidgetReaderProtocol* reader,
+                                                         cocos2d::ui::Widget* widget,
+                                                         const protocolbuffers::NodeTree& nodetree) = 0;
+    /**/
+    
 protected:
     std::string  getWidgetReaderClassName(const std::string& classname);
     std::string  getWidgetReaderClassName(cocos2d::ui::Widget *widget);
@@ -188,6 +224,13 @@ public:
                                                 cocos2d::ui::Widget* widget,
                                                 CocoLoader* pCocoLoader,
                                                 stExpCocoNode*	pCocoNode) {}
+    
+    /* peterson protocol buffers */
+    virtual cocos2d::ui::Widget* widgetFromProtocolBuffers(const protocolbuffers::NodeTree& nodetree) { return NULL; };
+    virtual void setPropsForAllWidgetFromProtocolBuffers(WidgetReaderProtocol* reader,
+                                                         cocos2d::ui::Widget* widget,
+                                                         const protocolbuffers::NodeTree& nodetree) {};
+    /**/
 };
 
 /**
@@ -240,6 +283,13 @@ public:
                                                 cocos2d::ui::Widget* widget,
                                                 CocoLoader* pCocoLoader,
                                                 stExpCocoNode*	pCocoNode);
+    
+    /* peterson protocol buffers */
+    virtual cocos2d::ui::Widget* widgetFromProtocolBuffers(const protocolbuffers::NodeTree& nodetree);
+    virtual void setPropsForAllWidgetFromProtocolBuffers(WidgetReaderProtocol* reader,
+                                                         cocos2d::ui::Widget* widget,
+                                                         const protocolbuffers::NodeTree& nodetree);
+    /**/
     
 };
 

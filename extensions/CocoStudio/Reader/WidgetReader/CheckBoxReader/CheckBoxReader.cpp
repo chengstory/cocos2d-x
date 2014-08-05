@@ -2,6 +2,9 @@
 
 #include "CheckBoxReader.h"
 #include "../../../GUI/UIWidgets/UICheckBox.h"
+/* peterson protocol buffers */
+#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -329,6 +332,127 @@ void CheckBoxReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader 
     this->endSetBasicProperties(widget);
 }
 
+/* peterson protocol buffers */
+void CheckBoxReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::CheckBox* checkBox = static_cast<ui::CheckBox*>(widget);
+    const protocolbuffers::CheckBoxOptions& options = nodeTree.checkboxoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    const protocolbuffers::ResourceData& backGroundDic = options.backgroundboxdata();
+    int backGroundType = backGroundDic.resourcetype();
+    switch (backGroundType)
+    {
+        case 0:
+        {
+            std::string tp_b = protocolBuffersPath;
+            const char* backGroundFileName = backGroundDic.path().c_str();
+            const char* backGroundFileName_tp = (backGroundFileName && (strcmp(backGroundFileName, "") != 0))?tp_b.append(backGroundFileName).c_str():NULL;
+            checkBox->loadTextureBackGround(backGroundFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* backGroundFileName = backGroundDic.path().c_str();
+            checkBox->loadTextureBackGround(backGroundFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& backGroundSelectedDic = options.backgroundboxselecteddata();
+    int backGroundSelectedType = backGroundSelectedDic.resourcetype();
+    switch (backGroundSelectedType)
+    {
+        case 0:
+        {
+            std::string tp_bs = protocolBuffersPath;
+            const char* backGroundSelectedFileName = backGroundSelectedDic.path().c_str();
+            const char* backGroundSelectedFileName_tp = (backGroundSelectedFileName && (strcmp(backGroundSelectedFileName, "") != 0))?tp_bs.append(backGroundSelectedFileName).c_str():NULL;
+            checkBox->loadTextureBackGroundSelected(backGroundSelectedFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* backGroundSelectedFileName = backGroundSelectedDic.path().c_str();
+            checkBox->loadTextureBackGroundSelected(backGroundSelectedFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& frontCrossDic = options.frontcrossdata();
+    int frontCrossType = frontCrossDic.resourcetype();
+    switch (frontCrossType)
+    {
+        case 0:
+        {
+            std::string tp_c = protocolBuffersPath;
+            const char* frontCrossFileName = frontCrossDic.path().c_str();
+            const char* frontCrossFileName_tp = (frontCrossFileName && (strcmp(frontCrossFileName, "") != 0))?tp_c.append(frontCrossFileName).c_str():NULL;
+            checkBox->loadTextureFrontCross(frontCrossFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* frontCrossFileName = frontCrossDic.path().c_str();
+            checkBox->loadTextureFrontCross(frontCrossFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& backGroundDisabledDic = options.backgroundboxdisableddata();
+    int backGroundDisabledType = backGroundDisabledDic.resourcetype();
+    switch (backGroundDisabledType)
+    {
+        case 0:
+        {
+            std::string tp_bd = protocolBuffersPath;
+            const char* backGroundDisabledFileName = backGroundDisabledDic.path().c_str();
+            const char* backGroundDisabledFileName_tp = (backGroundDisabledFileName && (strcmp(backGroundDisabledFileName, "") != 0))?tp_bd.append(backGroundDisabledFileName).c_str():NULL;
+            checkBox->loadTextureBackGroundDisabled(backGroundDisabledFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* backGroundDisabledFileName = backGroundDisabledDic.path().c_str();
+            checkBox->loadTextureBackGroundDisabled(backGroundDisabledFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& frontCrossDisabledDic = options.frontcrossdisableddata();
+    int frontCrossDisabledType = frontCrossDisabledDic.resourcetype();
+    switch (frontCrossDisabledType)
+    {
+        case 0:
+        {
+            std::string tp_cd = protocolBuffersPath;
+            const char* frontCrossDisabledFileName = frontCrossDisabledDic.path().c_str();
+            const char* frontCrossDisabledFileName_tp = (frontCrossDisabledFileName && (strcmp(frontCrossDisabledFileName, "") != 0))?tp_cd.append(frontCrossDisabledFileName).c_str():NULL;
+            checkBox->loadTextureFrontCrossDisabled(frontCrossDisabledFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* frontCrossDisabledFileName = frontCrossDisabledDic.path().c_str();
+            checkBox->loadTextureFrontCrossDisabled(frontCrossDisabledFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+}
+/**/
 
 
 NS_CC_EXT_END

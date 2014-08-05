@@ -2,6 +2,9 @@
 
 #include "LabelReader.h"
 #include "../../../GUI/UIWidgets/UILabel.h"
+/* peterson protocol buffers */
+#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -234,5 +237,62 @@ void LabelReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *pC
     } //end of for loop
     this->endSetBasicProperties(widget);
 }
+
+/* peterson protocol buffers */
+void LabelReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::Label* label = static_cast<ui::Label*>(widget);
+    const protocolbuffers::LabelOptions& options = nodeTree.labeloptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    bool touchScaleChangeAble = options.touchscaleenable();
+    label->setTouchScaleChangeEnabled(touchScaleChangeAble);
+    const char* text = options.has_text() ? options.text().c_str() : "Text Label";
+    label->setText(text);
+    
+    int fontSize = options.has_fontsize() ? options.fontsize() : 20;
+    label->setFontSize(fontSize);
+    
+    std::string fontName = options.has_fontname() ? options.fontname() : "微软雅黑";
+    std::string file_extension = "";
+    size_t pos = fontName.find_last_of('.');
+    if (pos != std::string::npos)
+    {
+        file_extension = fontName.substr(pos, fontName.length());
+        std::transform(file_extension.begin(),file_extension.end(), file_extension.begin(), (int(*)(int))toupper);
+    }
+    
+    if (file_extension.compare(".TTF") == 0)
+    {
+        std::string fontFilePath = protocolBuffersPath.append(fontName);
+        label->setFontName(fontFilePath);
+    }
+    else
+    {
+        label->setFontName(fontName);
+    }
+    
+    bool aw = options.has_areawidth();
+    bool ah = options.has_areaheight();
+    if (aw && ah)
+    {
+        CCSize size = CCSize(options.areawidth(), options.areaheight());
+        label->setTextAreaSize(size);
+    }
+    bool ha = options.has_halignment();
+    if (ha)
+    {
+        label->setTextHorizontalAlignment((CCTextAlignment)options.halignment());
+    }
+    bool va = options.has_valignment();
+    if (va)
+    {
+        label->setTextVerticalAlignment((CCVerticalTextAlignment)options.valignment());
+    }
+}
+/**/
 
 NS_CC_EXT_END

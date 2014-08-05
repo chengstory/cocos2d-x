@@ -42,10 +42,17 @@
 #include "WidgetReader/ScrollViewReader/ScrollViewReader.h"
 #include "WidgetReader/ListViewReader/ListViewReader.h"
 
+/* peterson protocol buffers */
+#include "../Reader/ProtocolBuffers/CSParseBinary.pb.h"
+/**/
+
 
 NS_CC_EXT_BEGIN
 
 using namespace cocos2d::ui;
+/* peterson protocol buffers */
+using namespace protocolbuffers;
+/**/
 
 static GUIReader* sharedReader = NULL;
 
@@ -2439,4 +2446,96 @@ void WidgetPropertiesReader0300::setPropsForAllWidgetFromBinary(WidgetReaderProt
 {
     reader->setPropsFromBinary(widget, pCocoLoader, pCocoNode);
 }
+
+/* peterson protocol buffers */
+Widget* WidgetPropertiesReader0300::widgetFromProtocolBuffers(const protocolbuffers::NodeTree &nodetree)
+{
+    std::string classname = nodetree.classname();
+    CCLog("classname = %s", classname.c_str());
+    
+    cocos2d::ui::Widget* widget = ObjectFactory::getInstance()->createGUI(classname);
+    
+    // create widget reader to parse properties of widget
+    std::string readerName = getWidgetReaderClassName(classname);
+    CCLog("readerName = %s", readerName.c_str());
+    
+    WidgetReaderProtocol* reader = this->createWidgetReaderProtocol(readerName);
+    protocolbuffers::WidgetOptions widgetOptions = nodetree.widgetoptions();
+    
+    if (reader)
+    {
+        // widget parse with widget reader
+        setPropsForAllWidgetFromProtocolBuffers(reader, widget, nodetree);
+    }
+    else
+    {
+        //
+        // 1st., custom widget parse properties of parent widget with parent widget reader
+        readerName = this->getWidgetReaderClassName(widget);
+        reader =  this->createWidgetReaderProtocol(readerName);
+        if (reader && widget)
+        {
+            setPropsForAllWidgetFromProtocolBuffers(reader, widget, nodetree);
+            
+            // 2nd., custom widget parse with custom reader
+            const WidgetOptions& widgetOptions = nodetree.widgetoptions();
+            const char* customProperty = widgetOptions.customproperty().c_str();
+            rapidjson::Document customJsonDict;
+            customJsonDict.Parse<0>(customProperty);
+            if (customJsonDict.HasParseError())
+            {
+                CCLOG("GetParseError %s\n", customJsonDict.GetParseError());
+            }
+            setPropsForAllCustomWidgetFromJsonDictionary(classname, widget, customJsonDict);
+        }
+        else
+        {
+            CCLOG("Widget or WidgetReader doesn't exists!!!  Please check your json file.");
+        }
+        //
+    }
+    
+    int size = nodetree.children_size();
+    CCLog("widget children size = %d", size);
+    for (int i = 0; i < size; ++i)
+    {
+        protocolbuffers::NodeTree subNodeTree = nodetree.children(i);
+        Widget* child = widgetFromProtocolBuffers(subNodeTree);
+        CCLog("widget child = %p", child);
+        if (child)
+        {
+            PageView* pageView = dynamic_cast<PageView*>(widget);
+            if (pageView)
+            {
+                pageView->addPage(static_cast<Layout*>(child));
+            }
+            else
+            {
+                ListView* listView = dynamic_cast<ListView*>(widget);
+                if (listView)
+                {
+                    listView->pushBackCustomItem(child);
+                }
+                else
+                {
+                    widget->addChild(child);
+                }
+            }
+        }
+    }
+    
+    CCLog("widget = %p", widget);
+    
+    return widget;
+}
+
+void WidgetPropertiesReader0300::setPropsForAllWidgetFromProtocolBuffers(cocos2d::extension::WidgetReaderProtocol *reader,
+                                                                         cocos2d::ui::Widget *widget,
+                                                                         const protocolbuffers::NodeTree &nodetree)
+{
+    reader->setPropsFromProtocolBuffers(widget, nodetree);
+}
+
+/**/
+
 NS_CC_EXT_END

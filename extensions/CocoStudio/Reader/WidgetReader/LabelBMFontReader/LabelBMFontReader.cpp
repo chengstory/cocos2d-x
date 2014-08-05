@@ -2,6 +2,9 @@
 
 #include "LabelBMFontReader.h"
 #include "../../../GUI/UIWidgets/UILabelBMFont.h"
+/* peterson protocol buffers */
+#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -205,5 +208,39 @@ void LabelBMFontReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoad
     
     this->endSetBasicProperties(widget);
 }
+
+/* peterson protocol buffers */
+void LabelBMFontReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::LabelBMFont* labelBMFont = static_cast<ui::LabelBMFont*>(widget);
+    const protocolbuffers::LabelBMFontOptions& options = nodeTree.labelbmfontoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    const protocolbuffers::ResourceData& cmftDic = options.filenamedata();
+    int cmfType = cmftDic.resourcetype();
+    switch (cmfType)
+    {
+        case 0:
+        {
+            std::string tp_c = protocolBuffersPath;
+            const char* cmfPath = cmftDic.path().c_str();
+            const char* cmf_tp = tp_c.append(cmfPath).c_str();
+            labelBMFont->setFntFile(cmf_tp);
+            break;
+        }
+        case 1:
+            CCLOG("Wrong res type of LabelAtlas!");
+            break;
+        default:
+            break;
+    }
+    
+    const char* text = (options.has_text()) ? options.text().c_str() : "Text Label";
+    labelBMFont->setText(text);
+}
+/**/
 
 NS_CC_EXT_END
