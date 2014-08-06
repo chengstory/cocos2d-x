@@ -170,7 +170,8 @@ bool CCParticleSystem::initWithFile(const char *plistFile)
     bool bRet = false;
     m_sPlistFile = CCFileUtils::sharedFileUtils()->fullPathForFilename(plistFile);
     CCDictionary *dict = CCDictionary::createWithContentsOfFileThreadSafe(m_sPlistFile.c_str());
-
+	if(dict == NULL)
+		return bRet;
     CCAssert( dict != NULL, "Particles: file not found");
     
     // XXX compute path from a path, should define a function somewhere to do it
