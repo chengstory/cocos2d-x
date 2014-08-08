@@ -116,6 +116,10 @@ public:
     std::string getProtocolBuffersPath() const { return _protocolBuffersPath; }
     /**/
     
+    /* peterson cocos2d-x version that mono editor is based on */
+    const std::string& getMonoCocos2dxVersion() const { return _monoCocos2dxVersion; };
+    /**/
+    
 protected:
 
     cocos2d::CCNode* loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent = NULL);
@@ -127,7 +131,7 @@ protected:
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
 	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
     
-    /* peterson protocol buffers */
+    /* peterson cocos2d-x version that mono editor is based on */
     void setPropsForNodeFromProtocolBuffers(cocos2d::CCNode* node, const protocolbuffers::WidgetOptions& nodeOptions);
     void setPropsForSpriteFromProtocolBuffers(cocos2d::CCNode* node,
                                               const protocolbuffers::SpriteOptions& spriteOptions,
@@ -146,6 +150,10 @@ protected:
     /* peterson protocol buffers */
     bool _recordProtocolBuffersPath;
     std::string _protocolBuffersPath;
+    /**/
+    
+    /* peterson cocos2d-x version that mono editor is based on */
+    std::string _monoCocos2dxVersion;
     /**/
 };
 

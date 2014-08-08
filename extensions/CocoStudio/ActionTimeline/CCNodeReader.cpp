@@ -95,6 +95,10 @@ static const char* VISIBLE          = "visible";
 static const char* TEXTURES     = "textures";
 static const char* TEXTURES_PNG = "texturesPng";
 
+/* peterson cocos2d-x version that mono editor is based on */
+static const char* MONO_COCOS2D_VERSION     = "cocos2dVersion";
+/**/
+
 // NodeCreateCallFunc
 NodeCreateCallFunc* NodeCreateCallFunc::create(CCObject* target, NodeCreateCallback callback)
 {
@@ -193,6 +197,9 @@ NodeReader::NodeReader()
     , _recordProtocolBuffersPath(true)
     , _protocolBuffersPath("")
     /**/
+    /* peterson cocos2d-x version that mono editor is based on */
+    , _monoCocos2dxVersion("")
+    /**/
 {
 }
 
@@ -279,6 +286,10 @@ cocos2d::CCNode* NodeReader::loadNodeWithContent(const std::string& content)
     {
         CCLOG("GetParseError %s\n", doc.GetParseError());
     }
+    
+    /* peterson cocos2d-x version that mono editor is based on */
+    _monoCocos2dxVersion = DICTOOL->getStringValue_json(doc, MONO_COCOS2D_VERSION, "");    
+    /**/
     
     // decode plist 
     int length = DICTOOL->getArrayCount_json(doc, TEXTURES);
@@ -570,7 +581,7 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffersFile(const std::string &file
         std::string png = gpbwp.texturespng(i);
         CCLog("png = %s", png.c_str());
         plist = _protocolBuffersPath + plist;
-        png = _protocolBuffersPath + plist;
+        png = _protocolBuffersPath + png;
         CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str(), png.c_str());
     }
     int fileDesignWidth = gpbwp.designwidth();
@@ -621,7 +632,9 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffers(const protocolbuffers::Node
         group = cocos2d::ui::TouchGroup::create();
         CCLog("group = %p", group);
         group->addWidget(widget);
+        group->setTag(widget->getTag());
         node = group;
+        
         return node;
     }
     

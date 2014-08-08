@@ -45,6 +45,9 @@
 /* peterson protocol buffers */
 #include "../Reader/ProtocolBuffers/CSParseBinary.pb.h"
 /**/
+/* peterson compatible 3.x 2.x */
+#include "../ActionTimeline/CCNodeReader.h"
+/**/
 
 
 NS_CC_EXT_BEGIN
@@ -1309,6 +1312,26 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromJsonDictionary(const 
                 }
                 else
                 {
+                    /* peterson compatible 3.x 2.x */
+                    if (cocostudio::timeline::NodeReader::getInstance()->getMonoCocos2dxVersion() == "3.x")
+                    {
+                        if (!dynamic_cast<Layout*>(widget))
+                        {
+                            if (child->getPositionType() == POSITION_PERCENT)
+                            {
+                                child->setPositionPercent(ccp(child->getPositionPercent().x - widget->getAnchorPoint().x, child->getPositionPercent().y - widget->getAnchorPoint().y));
+                                child->setPosition(ccp(child->getPositionX() + widget->getAnchorPointInPoints().x, child->getPositionY() + widget->getAnchorPointInPoints().y));
+                            }
+                            else
+                            {
+                                CCSize widgetSize = widget->getSize();
+                                child->setPosition(ccp(child->getPositionX() - widgetSize.width * widget->getAnchorPoint().x,
+                                                       child->getPositionY() - widgetSize.height * widget->getAnchorPoint().y));
+                            }
+                        }
+                    }
+                    /**/
+                    
                     widget->addChild(child);
                 }
             }
@@ -2518,6 +2541,26 @@ Widget* WidgetPropertiesReader0300::widgetFromProtocolBuffers(const protocolbuff
                 }
                 else
                 {
+                    /* peterson if cocos2d-x version is 3.x that mono editor is based on */
+                    if (cocostudio::timeline::NodeReader::getInstance()->getMonoCocos2dxVersion() == "3.x")
+                    {
+                        if (!dynamic_cast<Layout*>(widget))
+                        {
+                            if (child->getPositionType() == POSITION_PERCENT)
+                            {
+                                child->setPositionPercent(ccp(child->getPositionPercent().x - widget->getAnchorPoint().x, child->getPositionPercent().y - widget->getAnchorPoint().y));
+                                child->setPosition(ccp(child->getPositionX() + widget->getAnchorPointInPoints().x, child->getPositionY() + widget->getAnchorPointInPoints().y));
+                            }
+                            else
+                            {
+                                CCSize widgetSize = widget->getSize();
+                                child->setPosition(ccp(child->getPositionX() - widgetSize.width * widget->getAnchorPoint().x,
+                                                       child->getPositionY() - widgetSize.height * widget->getAnchorPoint().y));
+                            }
+                        }
+                    }
+                    /**/
+                    
                     widget->addChild(child);
                 }
             }

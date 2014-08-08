@@ -70,6 +70,8 @@ void WidgetReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     widget->setSizeType((ui::SizeType)DICTOOL->getIntValue_json(options, "sizeType"));
     widget->setPositionType((ui::PositionType)DICTOOL->getIntValue_json(options, "positionType"));
     
+    CCLOG("widget position type = %d", widget->getPositionType());
+    
     widget->setSizePercent(ccp(DICTOOL->getFloatValue_json(options, "sizePercentX"), DICTOOL->getFloatValue_json(options, "sizePercentY")));
     widget->setPositionPercent(ccp(DICTOOL->getFloatValue_json(options, "positionPercentX"), DICTOOL->getFloatValue_json(options, "positionPercentY")));
     
@@ -343,6 +345,7 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     
     widget->setSizeType((ui::SizeType)options.sizetype());
     widget->setPositionType((ui::PositionType)options.positiontype());
+    CCLOG("widget position type = %d", widget->getPositionType());
     
     widget->setSizePercent(ccp(options.sizepercentx(), options.sizepercenty()));
     widget->setPositionPercent(ccp(options.positionpercentx(), options.positionpercenty()));
