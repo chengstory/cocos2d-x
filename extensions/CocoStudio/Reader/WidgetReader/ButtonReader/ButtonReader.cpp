@@ -3,7 +3,7 @@
 #include "ButtonReader.h"
 #include "../../../GUI/UIWidgets/UIButton.h"
 /* peterson protocol buffers */
-#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+#include "../../../Json/CSParseBinary.pb.h"
 /**/
 
 NS_CC_EXT_BEGIN

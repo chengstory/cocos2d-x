@@ -43,7 +43,7 @@
 #include "WidgetReader/ListViewReader/ListViewReader.h"
 
 /* peterson protocol buffers */
-#include "../Reader/ProtocolBuffers/CSParseBinary.pb.h"
+#include "../Json/CSParseBinary.pb.h"
 /**/
 /* peterson compatible 3.x 2.x */
 #include "../ActionTimeline/CCNodeReader.h"

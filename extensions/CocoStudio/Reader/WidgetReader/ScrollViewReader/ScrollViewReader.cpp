@@ -3,7 +3,7 @@
 #include "ScrollViewReader.h"
 #include "../../../GUI/UIWidgets/ScrollWidget/UIScrollView.h"
 /* peterson protocol buffers */
-#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+#include "../../../Json/CSParseBinary.pb.h"
 /**/
 
 NS_CC_EXT_BEGIN

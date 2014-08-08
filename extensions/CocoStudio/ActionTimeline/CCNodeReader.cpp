@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include "../Reader/GUIReader.h"
 #include "../GUI/BaseClasses/UIWidget.h"
 /* peterson protocol buffers */
-#include "../Reader/ProtocolBuffers/CSParseBinary.pb.h"
+#include "../Json/CSParseBinary.pb.h"
 
 #include <fstream>
 /**/

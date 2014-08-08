@@ -3,7 +3,7 @@
 #include "CheckBoxReader.h"
 #include "../../../GUI/UIWidgets/UICheckBox.h"
 /* peterson protocol buffers */
-#include "../../ProtocolBuffers/CSParseBinary.pb.h"
+#include "../../../Json/CSParseBinary.pb.h"
 /**/
 
 NS_CC_EXT_BEGIN

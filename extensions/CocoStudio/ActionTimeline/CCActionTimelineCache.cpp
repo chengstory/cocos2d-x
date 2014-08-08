@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "CCFrame.h"
 
 /* peterson protocol buffers */
-#include "../Reader/ProtocolBuffers/CSParseBinary.pb.h"
+#include "../Json/CSParseBinary.pb.h"
 
 #include <fstream>
 /**/
