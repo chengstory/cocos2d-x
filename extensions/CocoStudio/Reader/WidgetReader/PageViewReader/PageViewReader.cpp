@@ -2,6 +2,9 @@
 
 #include "PageViewReader.h"
 #include "../../../GUI/UIWidgets/ScrollWidget/UIPageView.h"
+/* peterson protocol buffers */
+#include "../../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -37,6 +40,99 @@ void PageViewReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader 
 {
     LayoutReader::setPropsFromBinary(widget, pCocoLoader, pCocoNode);
 }
+
+/* peterson protocol buffers */
+void PageViewReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::PageView* pageView = static_cast<ui::PageView*>(widget);
+    const protocolbuffers::PageViewOptions& options = nodeTree.pageviewoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    bool backGroundScale9Enable = options.backgroundscale9enable();
+    pageView->setBackGroundImageScale9Enabled(backGroundScale9Enable);
+    
+    int cr;
+    int cg;
+    int cb;
+    int scr;
+    int scg;
+    int scb;
+    int ecr;
+    int ecg;
+    int ecb;
+    
+    cr = options.has_bgcolorr() ? options.bgcolorr() : 150;
+    cg = options.has_bgcolorg() ? options.bgcolorg() : 150;
+    cb = options.has_bgcolorb() ? options.bgcolorb() : 150;
+    
+    scr = options.has_bgstartcolorr() ? options.bgstartcolorr() : 255;
+    scg = options.has_bgstartcolorg() ? options.bgstartcolorg() : 255;
+    scb = options.has_bgstartcolorb() ? options.bgstartcolorb() : 255;
+    
+    ecr = options.has_bgendcolorr() ? options.bgendcolorr() : 255;
+    ecg = options.has_bgendcolorg() ? options.bgendcolorg() : 150;
+    ecb = options.has_bgendcolorb() ? options.bgendcolorb() : 100;
+    
+    float bgcv1 = options.vectorx();
+    float bgcv2 = options.has_vectory() ? options.vectory() : -0.5f;
+    pageView->setBackGroundColorVector(ccp(bgcv1, bgcv2));
+    
+    int co = options.bgcoloropacity();
+    
+    int colorType = options.colortype();
+    
+    pageView->setBackGroundColorType((ui::LayoutBackGroundColorType)colorType);
+    pageView->setBackGroundColor(ccc3(scr, scg, scb),ccc3(ecr, ecg, ecb));
+    pageView->setBackGroundColor(ccc3(cr, cg, cb));
+    pageView->setBackGroundColorOpacity(co);
+    
+    
+    const protocolbuffers::ResourceData& imageFileNameDic = options.backgroundimagedata();
+    int imageFileNameType = imageFileNameDic.resourcetype();
+    switch (imageFileNameType)
+    {
+        case 0:
+        {
+            std::string tp_b = protocolBuffersPath;
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+            pageView->setBackGroundImage(imageFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            pageView->setBackGroundImage(imageFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    
+    const protocolbuffers::WidgetOptions& widgetOptions = nodeTree.widgetoptions();
+    int bgimgcr = widgetOptions.has_colorr() ? widgetOptions.colorr() : 255;
+    int bgimgcg = widgetOptions.has_colorg() ? widgetOptions.colorg() : 255;
+    int bgimgcb = widgetOptions.has_colorb() ? widgetOptions.colorb() : 255;
+    pageView->setBackGroundImageColor(ccc3(bgimgcr, bgimgcg, bgimgcb));
+    
+    int bgimgopacity = widgetOptions.opacity();
+    pageView->setBackGroundImageOpacity(bgimgopacity);
+    
+    if (backGroundScale9Enable)
+    {
+        float cx = options.capinsetsx();
+        float cy = options.capinsetsy();
+        float cw = options.has_capinsetswidth() ? options.capinsetswidth() : 1;
+        float ch = options.has_capinsetsheight() ? options.capinsetsheight() : 1;
+        pageView->setBackGroundImageCapInsets(CCRectMake(cx, cy, cw, ch));
+    }
+}
+/**/
 
 
 

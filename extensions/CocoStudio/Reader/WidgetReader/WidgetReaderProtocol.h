@@ -35,6 +35,13 @@ namespace cocos2d
     }
 }
 
+/* peterson protocol buffers */
+namespace protocolbuffers
+{
+    class NodeTree;
+}
+/**/
+
 NS_CC_EXT_BEGIN
 
 class CocoLoader;
@@ -47,6 +54,9 @@ public:
     virtual void setPropsFromBinary(cocos2d::ui::Widget* widget,
                                     CocoLoader* pCocoLoader,
                                     stExpCocoNode*	pCocoNode) = 0;
+    /* peterson protocol buffers */
+    virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree) = 0;
+    /**/
 };
 
 NS_CC_EXT_END

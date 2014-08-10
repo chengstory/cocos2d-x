@@ -2,6 +2,9 @@
 
 #include "LayoutReader.h"
 #include "../../../GUI/Layouts/UILayout.h"
+/* peterson protocol buffers */
+#include "../../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -404,5 +407,147 @@ void LayoutReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
     panel->setLayoutType(layoutType);
     
 }
+
+/* peterson protocol buffers */
+void LayoutReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::Layout* panel = static_cast<ui::Layout*>(widget);
+    const protocolbuffers::PanelOptions& options = nodeTree.paneloptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    panel->setClippingEnabled(options.clipable());
+    
+    bool backGroundScale9Enable = options.backgroundscale9enable();
+    panel->setBackGroundImageScale9Enabled(backGroundScale9Enable);
+    
+    int cr;
+    int cg;
+    int cb;
+    int scr;
+    int scg;
+    int scb;
+    int ecr;
+    int ecg;
+    int ecb;
+    
+    if (dynamic_cast<ui::PageView*>(widget))
+    {
+        cr = options.has_bgcolorr() ? options.bgcolorr() : 150;
+        cg = options.has_bgcolorg() ? options.bgcolorg() : 150;
+        cb = options.has_bgcolorb() ? options.bgcolorb() : 150;
+        
+        scr = options.has_bgstartcolorr() ? options.bgstartcolorr() : 255;
+        scg = options.has_bgstartcolorg() ? options.bgstartcolorg() : 255;
+        scb = options.has_bgstartcolorb() ? options.bgstartcolorb() : 255;
+        
+        ecr = options.has_bgendcolorr() ? options.bgendcolorr() : 255;
+        ecg = options.has_bgendcolorg() ? options.bgendcolorg() : 150;
+        ecb = options.has_bgendcolorb() ? options.bgendcolorb() : 100;
+    }
+    else if(dynamic_cast<ui::ListView*>(widget))
+    {
+        cr = options.has_bgcolorr() ? options.bgcolorr() : 150;
+        cg = options.has_bgcolorg() ? options.bgcolorg() : 150;
+        cb = options.has_bgcolorb() ? options.bgcolorb() : 255;
+        
+        scr = options.has_bgstartcolorr() ? options.bgstartcolorr() : 255;
+        scg = options.has_bgstartcolorg() ? options.bgstartcolorg() : 255;
+        scb = options.has_bgstartcolorb() ? options.bgstartcolorb() : 255;
+        
+        ecr = options.has_bgendcolorr() ? options.bgendcolorr() : 150;
+        ecg = options.has_bgendcolorg() ? options.bgendcolorg() : 150;
+        ecb = options.has_bgendcolorb() ? options.bgendcolorb() : 255;
+    }
+    else if(dynamic_cast<ui::ScrollView*>(widget))
+    {
+        cr = options.has_bgcolorr() ? options.bgcolorr() : 255;
+        cg = options.has_bgcolorg() ? options.bgcolorg() : 150;
+        cb = options.has_bgcolorb() ? options.bgcolorb() : 100;
+        
+        scr = options.has_bgstartcolorr() ? options.bgstartcolorr() : 255;
+        scg = options.has_bgstartcolorg() ? options.bgstartcolorg() : 255;
+        scb = options.has_bgstartcolorb() ? options.bgstartcolorb() : 255;
+        
+        ecr = options.has_bgendcolorr() ? options.bgendcolorr() : 255;
+        ecg = options.has_bgendcolorg() ? options.bgendcolorg() : 150;
+        ecb = options.has_bgendcolorb() ? options.bgendcolorb() : 100;
+    }
+    else
+    {
+        cr = options.has_bgcolorr() ? options.bgcolorr() : 150;
+        cg = options.has_bgcolorg() ? options.bgcolorg() : 200;
+        cb = options.has_bgcolorb() ? options.bgcolorb() : 255;
+        
+        scr = options.has_bgstartcolorr() ? options.bgstartcolorr() : 255;
+        scg = options.has_bgstartcolorg() ? options.bgstartcolorg() : 255;
+        scb = options.has_bgstartcolorb() ? options.bgstartcolorb() : 255;
+        
+        ecr = options.has_bgendcolorr() ? options.bgendcolorr() : 150;
+        ecg = options.has_bgendcolorg() ? options.bgendcolorg() : 200;
+        ecb = options.has_bgendcolorb() ? options.bgendcolorb() : 255;
+    }
+    
+    float bgcv1 = options.vectorx();
+    float bgcv2 = options.has_vectory() ? options.vectory() : -0.5f;
+    panel->setBackGroundColorVector(ccp(bgcv1, bgcv2));
+    
+    int co = options.bgcoloropacity();
+    
+    int colorType = options.colortype();
+    
+    panel->setBackGroundColorType((ui::LayoutBackGroundColorType)colorType);
+    panel->setBackGroundColor(ccc3(scr, scg, scb),ccc3(ecr, ecg, ecb));
+    panel->setBackGroundColor(ccc3(cr, cg, cb));
+    panel->setBackGroundColorOpacity(co);
+    
+    
+    const protocolbuffers::ResourceData& imageFileNameDic = options.backgroundimagedata();
+    int imageFileNameType = imageFileNameDic.resourcetype();
+    switch (imageFileNameType)
+    {
+        case 0:
+        {
+            std::string tp_b = protocolBuffersPath;
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+            panel->setBackGroundImage(imageFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            panel->setBackGroundImage(imageFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    
+    const protocolbuffers::WidgetOptions& widgetOptions = nodeTree.widgetoptions();
+    int bgimgcr = widgetOptions.has_colorr() ? widgetOptions.colorr() : 255;
+    int bgimgcg = widgetOptions.has_colorg() ? widgetOptions.colorg() : 255;
+    int bgimgcb = widgetOptions.has_colorb() ? widgetOptions.colorb() : 255;
+    panel->setBackGroundImageColor(ccc3(bgimgcr, bgimgcg, bgimgcb));
+    
+    int bgimgopacity = widgetOptions.opacity();
+    panel->setBackGroundImageOpacity(bgimgopacity);
+    
+    if (backGroundScale9Enable)
+    {
+        float cx = options.capinsetsx();
+        float cy = options.capinsetsy();
+        float cw = options.has_capinsetswidth() ? options.capinsetswidth() : 1;
+        float ch = options.has_capinsetsheight() ? options.capinsetsheight() : 1;
+        panel->setBackGroundImageCapInsets(CCRectMake(cx, cy, cw, ch));
+        
+        panel->setLayoutType((ui::LayoutType)options.layouttype());
+    }
+}
+/**/
 
 NS_CC_EXT_END

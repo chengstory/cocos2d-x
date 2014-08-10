@@ -3,6 +3,9 @@
 #include "WidgetReader.h"
 #include "../../../../cocos2dx/CCDirector.h"
 #include "CocoStudio/ActionTimeline/CCNodeReader.h"
+/* peterson protocol buffers */
+#include "../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -66,6 +69,8 @@ void WidgetReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     
     widget->setSizeType((ui::SizeType)DICTOOL->getIntValue_json(options, "sizeType"));
     widget->setPositionType((ui::PositionType)DICTOOL->getIntValue_json(options, "positionType"));
+    
+    CCLOG("widget position type = %d", widget->getPositionType());
     
     widget->setSizePercent(ccp(DICTOOL->getFloatValue_json(options, "sizePercentX"), DICTOOL->getFloatValue_json(options, "sizePercentY")));
     widget->setPositionPercent(ccp(DICTOOL->getFloatValue_json(options, "positionPercentX"), DICTOOL->getFloatValue_json(options, "positionPercentY")));
@@ -326,6 +331,128 @@ void WidgetReader::setPropsFromBinary(cocos2d::ui::Widget *widget, cocos2d::exte
         
     }
 }
+
+/* peterson protocol buffers */
+void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    const protocolbuffers::WidgetOptions& options = nodeTree.widgetoptions();
+    
+    bool ignoreSizeExsit = options.has_ignoresize();
+    if (ignoreSizeExsit)
+    {
+        widget->ignoreContentAdaptWithSize(options.ignoresize());
+    }
+    
+    widget->setSizeType((ui::SizeType)options.sizetype());
+    widget->setPositionType((ui::PositionType)options.positiontype());
+    CCLOG("widget position type = %d", widget->getPositionType());
+    
+    widget->setSizePercent(ccp(options.sizepercentx(), options.sizepercenty()));
+    widget->setPositionPercent(ccp(options.positionpercentx(), options.positionpercenty()));
+    
+    float w = options.width();
+    float h = options.height();
+    widget->setSize(CCSizeMake(w, h));
+    
+    widget->setTag(options.tag());
+    widget->setActionTag(options.actiontag());
+    int actionTag = options.actiontag();
+    widget->setUserObject(cocostudio::timeline::TimelineActionData::create(actionTag));
+    
+    widget->setTouchEnabled(options.touchable());
+    const char* name = options.name().c_str();
+    const char* widgetName = name ? name : "default";
+    widget->setName(widgetName);
+    float x = options.x();
+    float y = options.y();
+    widget->setPosition(ccp(x, y));
+    
+    widget->setScaleX(options.scalex());
+    
+    widget->setScaleY(options.scaley());
+    
+    widget->setRotation(options.rotation());
+    
+    bool vb = options.has_visible();
+    if (vb)
+    {
+        widget->setVisible(options.visible());
+    }
+    int z = options.zorder();
+    widget->setZOrder(z);
+    
+    widget->setOpacity(options.opacity());
+    
+    bool isColorRExists = options.has_colorr();
+    bool isColorGExists = options.has_colorg();
+    bool isColorBExists = options.has_colorb();
+    
+    int colorR = options.colorr();
+    int colorG = options.colorg();
+    int colorB = options.colorb();
+    
+    if (isColorRExists && isColorGExists && isColorBExists)
+    {
+        widget->setColor(ccc3(colorR, colorG, colorB));
+    }
+    
+    bool apx = options.has_anchorpointx();
+    float apxf = apx ? options.anchorpointx() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    bool apy = options.has_anchorpointy();
+    float apyf = apy ? options.anchorpointy() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    widget->setAnchorPoint(ccp(apxf, apyf));
+    
+    bool flipX = options.flipx();
+    bool flipY = options.flipy();
+    widget->setFlipX(flipX);
+    widget->setFlipY(flipY);
+    
+    if (options.has_layoutparameter())
+    {
+        const protocolbuffers::LayoutParameter& layoutParameterOptions = options.layoutparameter();
+        int paramType = layoutParameterOptions.type();
+        ui::LayoutParameter* parameter = NULL;
+        switch (paramType)
+        {
+            case 0:
+                break;
+                
+            case 1:
+            {
+                parameter = ui::LinearLayoutParameter::create();
+                int gravity = layoutParameterOptions.gravity();
+                ((ui::LinearLayoutParameter*)parameter)->setGravity((ui::LinearGravity)gravity);
+                break;
+            }
+                
+            case 2:
+            {
+                parameter = ui::RelativeLayoutParameter::create();
+                ui::RelativeLayoutParameter* rParameter = (ui::RelativeLayoutParameter*)parameter;
+                std::string relativeName = layoutParameterOptions.relativename();
+                rParameter->setRelativeName(relativeName.c_str());
+                std::string relativeToName = layoutParameterOptions.relativetoname();
+                rParameter->setRelativeToWidgetName(relativeToName.c_str());
+                int align = layoutParameterOptions.align();
+                rParameter->setAlign((ui::RelativeAlign)align);
+                break;
+            }
+                
+            default:
+                break;
+        }
+        if (parameter)
+        {
+            float mgl = layoutParameterOptions.marginleft();
+            float mgt = layoutParameterOptions.margintop();
+            float mgr = layoutParameterOptions.marginright();
+            float mgb = layoutParameterOptions.margindown();
+            parameter->setMargin(ui::Margin(mgl, mgt, mgr, mgb));
+            widget->setLayoutParameter(parameter);
+        }
+    }
+}
+/**/
 
 
 NS_CC_EXT_END
