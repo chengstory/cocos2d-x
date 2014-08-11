@@ -451,6 +451,10 @@ void CheckBoxReader::setPropsFromProtocolBuffers(ui::Widget *widget, const proto
         default:
             break;
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 /**/
 

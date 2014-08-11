@@ -48,6 +48,7 @@ public:
     virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode);
     /* peterson protocol buffers */
     virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
+    virtual void setColorPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
     /**/
 protected:
     void beginSetBasicProperties(cocos2d::ui::Widget *widget);

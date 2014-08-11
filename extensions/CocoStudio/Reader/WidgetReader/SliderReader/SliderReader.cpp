@@ -546,6 +546,10 @@ void SliderReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
         default:
             break;
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 /**/
 
