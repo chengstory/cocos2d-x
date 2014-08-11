@@ -30,6 +30,17 @@ THE SOFTWARE.
 
 NS_CC_EXT_BEGIN
 
+/** @brief Rotates a CCNode object to a certain angle by modifying it's
+ rotation attribute.
+ The direction will be decided by the shortest angle.
+*/ 
+class CC_EX_DLL CCRotateToEx : public CCRotateTo
+{
+public:
+    /** creates the action */
+    static CCRotateToEx* create(float fDuration, float fDeltaAngle);
+    virtual void startWithTarget(CCNode *pTarget);
+};
 /** 
  @brief Ease Bezier
  @ingroup Actions

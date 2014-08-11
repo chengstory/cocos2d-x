@@ -35,6 +35,50 @@ static inline float bezieratFunction( float a, float b, float c, float d, float 
 }
 
 //
+// CCRotateToEx
+//
+
+CCRotateToEx* CCRotateToEx::create(float fDuration, float fDeltaAngle)
+{
+    CCRotateToEx* pRotateTo = new CCRotateToEx();
+    pRotateTo->initWithDuration(fDuration, fDeltaAngle);
+    pRotateTo->autorelease();
+
+    return pRotateTo;
+}
+void CCRotateToEx::startWithTarget(CCNode *pTarget)
+{
+    CCActionInterval::startWithTarget(pTarget);
+
+    // Calculate X
+    m_fStartAngleX = pTarget->getRotationX();
+    if (m_fStartAngleX > 0)
+    {
+        m_fStartAngleX = fmodf(m_fStartAngleX, 360.0f);
+    }
+    else
+    {
+        m_fStartAngleX = fmodf(m_fStartAngleX, -360.0f);
+    }
+
+    m_fDiffAngleX = m_fDstAngleX - m_fStartAngleX;
+
+    //Calculate Y: It's duplicated from calculating X since the rotation wrap should be the same
+    m_fStartAngleY = m_pTarget->getRotationY();
+
+    if (m_fStartAngleY > 0)
+    {
+        m_fStartAngleY = fmodf(m_fStartAngleY, 360.0f);
+    }
+    else
+    {
+        m_fStartAngleY = fmodf(m_fStartAngleY, -360.0f);
+    }
+
+    m_fDiffAngleY = m_fDstAngleY - m_fStartAngleY;
+}
+
+//
 // EaseBezier
 //
 

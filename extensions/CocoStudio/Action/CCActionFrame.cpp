@@ -302,7 +302,7 @@ float ActionRotationFrame::getRotation()
 
 CCActionInterval* ActionRotationFrame::getAction(float fDuration)
 {
-	return this->getEasingAction(CCRotateTo::create(fDuration,m_rotation));
+	return this->getEasingAction(CCRotateToEx::create(fDuration,m_rotation));
 }
 CCActionInterval* ActionRotationFrame::getAction(float fDuration,ActionFrame* srcFrame)
 {
