@@ -331,8 +331,6 @@ cocos2d::CCNode* NodeReader::loadNode(const rapidjson::Value& json, cocos2d::CCN
             {
                 cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
                 group->setZOrder(widget->getZOrder());
-                CCLOG("widget->getName() = %s", widget->getName());
-                CCLOG("widget->getTag() = %d", widget->getTag());
                 group->setTag(widget->getTag());
                 group->addWidget(widget);
                 parent->addChild(group);
@@ -499,7 +497,10 @@ CCNode* NodeReader::loadWidget(const rapidjson::Value& json, cocos2d::CCNode* pa
     WidgetPropertiesReader* pReader = new WidgetPropertiesReader0300();
     cocos2d::ui::Widget* widget = pReader->widgetFromJsonDictionary(json);
 
-    initNode(widget, json);
+    const rapidjson::Value& options = DICTOOL->getSubDictionary_json(json, OPTIONS);
+    initNode(widget, options);
+    
+    CC_SAFE_DELETE(pReader);
 
     return widget;
 }
@@ -602,7 +603,6 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffersFile(const std::string &file
 cocos2d::CCNode* NodeReader::nodeFromProtocolBuffers(const protocolbuffers::NodeTree &nodetree)
 {
     CCNode* node = NULL;
-    cocos2d::ui::TouchGroup* group = NULL;
     
     std::string classname = nodetree.classname();
     CCLog("classname = %s", classname.c_str());
@@ -624,11 +624,13 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffers(const protocolbuffers::Node
     {
         WidgetPropertiesReader* pReader = new WidgetPropertiesReader0300();
         cocos2d::ui::Widget* widget = pReader->widgetFromProtocolBuffers(nodetree);
-        group = cocos2d::ui::TouchGroup::create();
-        CCLog("group = %p", group);
-        group->addWidget(widget);
+        cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
+        group->setZOrder(widget->getZOrder());
         group->setTag(widget->getTag());
+        group->addWidget(widget);
         node = group;
+            
+        CC_SAFE_DELETE(pReader);
         
         return node;
     }
@@ -649,8 +651,7 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffers(const protocolbuffers::Node
     return node;
 }
 
-void NodeReader::setPropsForNodeFromProtocolBuffers(cocos2d::CCNode *node,
-                                                    const protocolbuffers::WidgetOptions &nodeOptions)
+void NodeReader::initNodeFromProtocolBuffers(cocos2d::CCNode *node, const protocolbuffers::WidgetOptions &nodeOptions)
 {
     const protocolbuffers::WidgetOptions& options = nodeOptions;
     
@@ -687,6 +688,12 @@ void NodeReader::setPropsForNodeFromProtocolBuffers(cocos2d::CCNode *node,
     {
         node->setUserObject(cocostudio::timeline::TimelineActionData::create(actionTag));
     }
+}
+
+void NodeReader::setPropsForNodeFromProtocolBuffers(cocos2d::CCNode *node,
+                                                    const protocolbuffers::WidgetOptions &nodeOptions)
+{
+    initNodeFromProtocolBuffers(node, nodeOptions);
 }
 
 void NodeReader::setPropsForSpriteFromProtocolBuffers(cocos2d::CCNode *node,

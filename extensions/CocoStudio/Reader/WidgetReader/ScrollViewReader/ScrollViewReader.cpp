@@ -170,9 +170,9 @@ void ScrollViewReader::setPropsFromProtocolBuffers(ui::Widget *widget, const pro
         float cw = options.has_capinsetswidth() ? options.capinsetswidth() : 1;
         float ch = options.has_capinsetsheight() ? options.capinsetsheight() : 1;
         scrollView->setBackGroundImageCapInsets(CCRectMake(cx, cy, cw, ch));
-        
-        scrollView->setLayoutType((ui::LayoutType)options.layouttype());
     }
+    
+    scrollView->setLayoutType((ui::LayoutType)options.layouttype());
     
     
     

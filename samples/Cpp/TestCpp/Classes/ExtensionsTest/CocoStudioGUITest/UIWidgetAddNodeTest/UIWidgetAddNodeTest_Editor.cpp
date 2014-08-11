@@ -79,21 +79,6 @@ void UIWidgetAddNodeTest_Editor::switchLoadMethod(cocos2d::CCObject *pSender)
             break;
         }
             
-            /*
-             case 2:
-             {
-             _layout->removeAllChildrenWithCleanup(true);
-             _layout->removeFromParentAndCleanup(true);
-             
-             _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/ui_widget_add_node_editor.csb"));
-             _touchGroup->addWidget(_layout);
-             
-             this->configureGUIScene();
-             
-             break;
-             }
-             */
-            
         default:
             break;
     }

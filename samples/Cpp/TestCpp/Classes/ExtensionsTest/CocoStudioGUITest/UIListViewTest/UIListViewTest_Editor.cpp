@@ -50,7 +50,7 @@ void UIListViewTest_Vertical_Editor::switchLoadMethod(cocos2d::CCObject *pSender
         {
             _layout->removeFromParentAndCleanup(true);
             
-            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNode("cocosui/UIEditorTest/UIListView_Editor/UIListView_Vertical_Editor/crossplatform_UIListView_Vertical_Editor_1.csb");
+            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNode("cocosui/UIEditorTest/UIListView_Editor/UIListView_Vertical_Editor/crossplatform_UIListView_Vertical_Editor_1.ExportJson");
             TouchGroup* temp = static_cast<TouchGroup*>(node->getChildByTag(5));
             Layout* tempLayout = static_cast<Layout*>(temp->getWidgetByTag(5));
             tempLayout->removeFromParent();

@@ -415,6 +415,11 @@ void LayoutReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     
     std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
     
+    const protocolbuffers::WidgetOptions& widgetOptions = nodeTree.widgetoptions();
+    float w = widgetOptions.width();
+    float h = widgetOptions.height();
+    panel->setSize(CCSizeMake(w, h));
+    
     panel->setClippingEnabled(options.clipable());
     
     bool backGroundScale9Enable = options.backgroundscale9enable();
@@ -525,13 +530,13 @@ void LayoutReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     }
     
     
-    const protocolbuffers::WidgetOptions& widgetOptions = nodeTree.widgetoptions();
+    
     int bgimgcr = widgetOptions.has_colorr() ? widgetOptions.colorr() : 255;
     int bgimgcg = widgetOptions.has_colorg() ? widgetOptions.colorg() : 255;
     int bgimgcb = widgetOptions.has_colorb() ? widgetOptions.colorb() : 255;
     panel->setBackGroundImageColor(ccc3(bgimgcr, bgimgcg, bgimgcb));
     
-    int bgimgopacity = widgetOptions.opacity();
+    int bgimgopacity = widgetOptions.has_opacity() ? widgetOptions.opacity() : 255;
     panel->setBackGroundImageOpacity(bgimgopacity);
     
     if (backGroundScale9Enable)
@@ -541,9 +546,8 @@ void LayoutReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
         float cw = options.has_capinsetswidth() ? options.capinsetswidth() : 1;
         float ch = options.has_capinsetsheight() ? options.capinsetsheight() : 1;
         panel->setBackGroundImageCapInsets(CCRectMake(cx, cy, cw, ch));
-        
-        panel->setLayoutType((ui::LayoutType)options.layouttype());
     }
+    panel->setLayoutType((ui::LayoutType)options.layouttype());
 }
 
 NS_CC_EXT_END

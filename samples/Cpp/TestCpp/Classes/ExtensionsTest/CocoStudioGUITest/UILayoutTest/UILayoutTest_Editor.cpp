@@ -294,7 +294,7 @@ void UILayoutTest_Gradient_Editor::switchLoadMethod(cocos2d::CCObject *pSender)
         {
             _layout->removeFromParentAndCleanup(true);
             
-            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UILayout_Editor/UILayout_Gradient_Color_Editor/window_ui_layout_gradient_color_editor_1_0.json"));
+            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UILayout_Editor/UILayout_Gradient_Color_Editor/windows_ui_layout_gradient_color_editor_1_0.json"));
             _touchGroup->addWidget(_layout);
             
             this->configureGUIScene();
@@ -306,7 +306,7 @@ void UILayoutTest_Gradient_Editor::switchLoadMethod(cocos2d::CCObject *pSender)
         {
             _layout->removeFromParentAndCleanup(true);
             
-            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UILayout_Editor/UILayout_Gradient_Color_Editor/window_ui_layout_gradient_color_editor_1_0.csb"));
+            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UILayout_Editor/UILayout_Gradient_Color_Editor/windows_ui_layout_gradient_color_editor_1_0.csb"));
             _touchGroup->addWidget(_layout);
             
             this->configureGUIScene();
@@ -585,7 +585,7 @@ void UILayoutTest_BackGroundImage_Scale9_Editor::switchLoadMethod(cocos2d::CCObj
         {
             _layout->removeFromParentAndCleanup(true);
             
-            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNode("cocosui/UIEditorTest/UILayout_Editor/UILayout_Scale9_BackgroundImage_Editor/crossplatform_UILayout_Scale9_BackgroundImage_Editor_1.csb");
+            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNode("cocosui/UIEditorTest/UILayout_Editor/UILayout_Scale9_BackgroundImage_Editor/crossplatform_UILayout_Scale9_BackgroundImage_Editor_1.ExportJson");
             TouchGroup* temp = static_cast<TouchGroup*>(node->getChildByTag(5));
             Layout* tempLayout = static_cast<Layout*>(temp->getWidgetByTag(5));
             tempLayout->removeFromParent();

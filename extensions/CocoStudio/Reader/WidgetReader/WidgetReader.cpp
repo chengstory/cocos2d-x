@@ -77,7 +77,6 @@ void WidgetReader::setPropsFromJsonDictionary(ui::Widget *widget, const rapidjso
     float h = DICTOOL->getFloatValue_json(options, "height");
     widget->setSize(CCSizeMake(w, h));
     
-    CCLOG("tag = %d", DICTOOL->getIntValue_json(options, "tag"));
     widget->setTag(DICTOOL->getIntValue_json(options, "tag"));
     widget->setActionTag(DICTOOL->getIntValue_json(options, "actiontag"));
     
@@ -339,14 +338,16 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     const protocolbuffers::WidgetOptions& options = nodeTree.widgetoptions();
     
     bool ignoreSizeExsit = options.has_ignoresize();
+    
+    
     if (ignoreSizeExsit)
     {
-        widget->ignoreContentAdaptWithSize(options.ignoresize());
+        bool ignoresize = (options.has_ignoresize() ? options.ignoresize() : false);
+        widget->ignoreContentAdaptWithSize(ignoresize);
     }
     
     widget->setSizeType((ui::SizeType)options.sizetype());
     widget->setPositionType((ui::PositionType)options.positiontype());
-    CCLOG("widget position type = %d", widget->getPositionType());
     
     widget->setSizePercent(ccp(options.sizepercentx(), options.sizepercenty()));
     widget->setPositionPercent(ccp(options.positionpercentx(), options.positionpercenty()));
@@ -357,6 +358,7 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     
     widget->setTag(options.tag());
     widget->setActionTag(options.actiontag());
+    
     int actionTag = options.actiontag();
     widget->setUserObject(cocostudio::timeline::TimelineActionData::create(actionTag));
     
@@ -368,11 +370,14 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     float y = options.y();
     widget->setPosition(ccp(x, y));
     
-    widget->setScaleX(options.scalex());
+    float scalex = options.has_scalex() ? options.scalex() : 1.0;
+    widget->setScaleX(scalex);
     
-    widget->setScaleY(options.scaley());
+    float scaley = options.has_scaley() ? options.scaley() : 1.0;
+    widget->setScaleY(scaley);
     
-    widget->setRotation(options.rotation());
+    float rotation = options.has_rotation() ? options.rotation() : 0;
+    widget->setRotation(rotation);
     
     bool vb = options.has_visible();
     if (vb)
@@ -382,7 +387,11 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     int z = options.zorder();
     widget->setZOrder(z);
     
-    widget->setOpacity(options.opacity());
+    
+    
+    // original color etc.
+    int opacity = options.has_opacity() ? options.opacity() : 255;
+    widget->setOpacity(opacity);
     
     bool isColorRExists = options.has_colorr();
     bool isColorGExists = options.has_colorg();
@@ -407,11 +416,13 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     bool flipY = options.flipy();
     widget->setFlipX(flipX);
     widget->setFlipY(flipY);
+    //
     
-    if (options.has_layoutparameter())
+    bool layout = options.has_layoutparameter();
+    if (layout)
     {
-        const protocolbuffers::LayoutParameter& layoutParameterOptions = options.layoutparameter();
-        int paramType = layoutParameterOptions.type();
+        const protocolbuffers::LayoutParameter& layoutParameterDic = options.layoutparameter();
+        int paramType = layoutParameterDic.type();
         ui::LayoutParameter* parameter = NULL;
         switch (paramType)
         {
@@ -421,7 +432,7 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
             case 1:
             {
                 parameter = ui::LinearLayoutParameter::create();
-                int gravity = layoutParameterOptions.gravity();
+                int gravity = layoutParameterDic.gravity();
                 ((ui::LinearLayoutParameter*)parameter)->setGravity((ui::LinearGravity)gravity);
                 break;
             }
@@ -430,11 +441,11 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
             {
                 parameter = ui::RelativeLayoutParameter::create();
                 ui::RelativeLayoutParameter* rParameter = (ui::RelativeLayoutParameter*)parameter;
-                std::string relativeName = layoutParameterOptions.relativename();
+                std::string relativeName = layoutParameterDic.relativename();
                 rParameter->setRelativeName(relativeName.c_str());
-                std::string relativeToName = layoutParameterOptions.relativetoname();
+                std::string relativeToName = layoutParameterDic.relativetoname();
                 rParameter->setRelativeToWidgetName(relativeToName.c_str());
-                int align = layoutParameterOptions.align();
+                int align = layoutParameterDic.align();
                 rParameter->setAlign((ui::RelativeAlign)align);
                 break;
             }
@@ -444,12 +455,12 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
         }
         if (parameter)
         {
-            float mgl = layoutParameterOptions.marginleft();
-            float mgt = layoutParameterOptions.margintop();
-            float mgr = layoutParameterOptions.marginright();
-            float mgb = layoutParameterOptions.margindown();
+            float mgl = layoutParameterDic.marginleft();
+            float mgt = layoutParameterDic.margintop();
+            float mgr = layoutParameterDic.marginright();
+            float mgb = layoutParameterDic.margindown();
             parameter->setMargin(ui::Margin(mgl, mgt, mgr, mgb));
-            widget->setLayoutParameter(parameter);
+            widget->setLayoutParameter(parameter);                        
         }
     }
 }

@@ -127,6 +127,7 @@ protected:
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
 	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
     
+    void initNodeFromProtocolBuffers(cocos2d::CCNode* node, const protocolbuffers::WidgetOptions& nodeOptions);
     void setPropsForNodeFromProtocolBuffers(cocos2d::CCNode* node, const protocolbuffers::WidgetOptions& nodeOptions);
     void setPropsForSpriteFromProtocolBuffers(cocos2d::CCNode* node,
                                               const protocolbuffers::SpriteOptions& spriteOptions,
