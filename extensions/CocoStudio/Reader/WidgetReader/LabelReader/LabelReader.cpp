@@ -292,6 +292,10 @@ void LabelReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocol
     {
         label->setTextVerticalAlignment((CCVerticalTextAlignment)options.valignment());
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 /**/
 

@@ -547,6 +547,19 @@ void LayoutReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
         
         panel->setLayoutType((ui::LayoutType)options.layouttype());
     }
+    
+    
+    // other commonly properties
+    bool apx = widgetOptions.has_anchorpointx();
+    float apxf = apx ? widgetOptions.anchorpointx() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    bool apy = widgetOptions.has_anchorpointy();
+    float apyf = apy ? widgetOptions.anchorpointy() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    widget->setAnchorPoint(ccp(apxf, apyf));
+    
+    bool flipX = widgetOptions.flipx();
+    bool flipY = widgetOptions.flipy();
+    widget->setFlipX(flipX);
+    widget->setFlipY(flipY);
 }
 /**/
 

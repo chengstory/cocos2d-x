@@ -263,6 +263,10 @@ void LabelAtlasReader::setPropsFromProtocolBuffers(ui::Widget *widget, const pro
         default:
             break;
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 /**/
 

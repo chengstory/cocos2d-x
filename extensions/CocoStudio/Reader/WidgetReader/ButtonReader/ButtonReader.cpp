@@ -478,6 +478,11 @@ void ButtonReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     
     const char* fontName = options.has_fontname() ? options.fontname().c_str() : "微软雅黑";
     button->setTitleFontName(fontName);
+    
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 /**/
 
