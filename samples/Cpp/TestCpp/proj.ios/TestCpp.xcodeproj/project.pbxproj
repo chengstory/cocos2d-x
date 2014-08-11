@@ -1232,7 +1232,6 @@
 		37CA1CF817D87AC700A649D0 /* SceneEditorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneEditorTest.h; sourceTree = "<group>"; };
 		38BCC2A01994AA1C00619F1D /* CSParseBinary.pb.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSParseBinary.pb.cc; sourceTree = "<group>"; };
 		38BCC2A11994AA1C00619F1D /* CSParseBinary.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSParseBinary.pb.h; sourceTree = "<group>"; };
-		38BCC3611994AA2E00619F1D /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ios_mac/config.h; sourceTree = "<group>"; };
 		38BCC3651994AA3400619F1D /* code_generator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = code_generator.cc; sourceTree = "<group>"; };
 		38BCC3661994AA3400619F1D /* code_generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = code_generator.h; sourceTree = "<group>"; };
 		38BCC3671994AA3400619F1D /* command_line_interface.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = command_line_interface.cc; sourceTree = "<group>"; };
@@ -1357,6 +1356,7 @@
 		38BCC3E11994AA3400619F1D /* wire_format_lite.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wire_format_lite.cc; sourceTree = "<group>"; };
 		38BCC3E21994AA3400619F1D /* wire_format_lite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wire_format_lite.h; sourceTree = "<group>"; };
 		38BCC3E31994AA3400619F1D /* wire_format_lite_inl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wire_format_lite_inl.h; sourceTree = "<group>"; };
+		38BCC5C91998BBC700619F1D /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/google/protobuf/config.h; sourceTree = "<group>"; };
 		38FA2E85194E92F400FF2BE4 /* CCActionTimeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCActionTimeline.cpp; sourceTree = "<group>"; };
 		38FA2E86194E92F400FF2BE4 /* CCActionTimeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionTimeline.h; sourceTree = "<group>"; };
 		38FA2E87194E92F400FF2BE4 /* CCActionTimelineCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCActionTimelineCache.cpp; sourceTree = "<group>"; };
@@ -3358,7 +3358,7 @@
 		38BCC2A21994AA1C00619F1D /* protocolBuf */ = {
 			isa = PBXGroup;
 			children = (
-				38BCC3611994AA2E00619F1D /* config.h */,
+				38BCC5C91998BBC700619F1D /* config.h */,
 				38BCC3621994AA3400619F1D /* google */,
 			);
 			path = protocolBuf;
