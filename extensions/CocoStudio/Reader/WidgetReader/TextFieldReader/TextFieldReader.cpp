@@ -2,6 +2,9 @@
 
 #include "TextFieldReader.h"
 #include "../../../GUI/UIWidgets/UITextField.h"
+/* peterson protocol buffers */
+#include "../../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -241,6 +244,74 @@ void TextFieldReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader
     } //end of for loop
     this->endSetBasicProperties(widget);
 }
+
+/* peterson protocol buffers */
+void TextFieldReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::TextField* textField = static_cast<ui::TextField*>(widget);
+    const protocolbuffers::TextFieldOptions& options = nodeTree.textfieldoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    std::string placeholder = options.has_placeholder() ? options.placeholder() : "inputs words here";
+    textField->setPlaceHolder(placeholder.c_str());
+    
+    std::string text = options.has_text() ? options.text() : "Text Field";
+    textField->setText(text.c_str());
+    
+    int fontSize = options.has_fontsize() ? options.fontsize() : 20;
+    textField->setFontSize(fontSize);
+    
+    std::string fontName = options.has_fontname() ? options.fontname() : "微软雅黑";
+    textField->setFontName(fontName.c_str());
+    
+//    bool tsw = options.has_touchsizewidth();
+//    bool tsh = options.has_touchsizeheight();
+//    if (tsw && tsh)
+//    {
+//        textField->setTouchSize(CCSizeMake(options.touchsizewidth(), options.touchsizeheight()));
+//    }
+    
+    //
+    //    float dw = DICTOOL->getFloatValue_json(options, "width");
+    //    float dh = DICTOOL->getFloatValue_json(options, "height");
+    //    if (dw > 0.0f || dh > 0.0f)
+    //    {
+    //        //textField->setSize(CCSizeMake(dw, dh));
+    //    }
+    //
+    
+    bool maxLengthEnable = options.maxlengthenable();
+    textField->setMaxLengthEnabled(maxLengthEnable);
+    
+    if (maxLengthEnable)
+    {
+        int maxLength = options.has_maxlength() ? options.maxlength() : 10;
+        textField->setMaxLength(maxLength);
+    }
+    bool passwordEnable = options.passwordenable();
+    textField->setPasswordEnabled(passwordEnable);
+    if (passwordEnable)
+    {
+        std::string passwordStyleText = options.has_passwordstyletext() ? options.passwordstyletext() : "*";
+        textField->setPasswordStyleText(passwordStyleText.c_str());
+    }
+    
+    bool aw = options.has_areawidth();
+    bool ah = options.has_areaheight();
+    if (aw && ah)
+    {
+        CCSize size = CCSize(options.areawidth(), options.areaheight());
+        textField->setTextAreaSize(size);
+    }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
+}
+/**/
 
 
 NS_CC_EXT_END

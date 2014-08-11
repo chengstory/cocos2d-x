@@ -2,6 +2,9 @@
 
 #include "ButtonReader.h"
 #include "../../../GUI/UIWidgets/UIButton.h"
+/* peterson protocol buffers */
+#include "../../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -359,5 +362,128 @@ void ButtonReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
     
     button->setTitleColor(ccc3(cri, cgi, cbi));
 }
+
+/* peterson protocol buffers */
+void ButtonReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::Button* button = static_cast<ui::Button*>(widget);
+    const protocolbuffers::ButtonOptions& options = nodeTree.buttonoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();;
+    
+    bool scale9Enable = options.scale9enable();
+    button->setScale9Enabled(scale9Enable);
+    
+    const protocolbuffers::ResourceData& normalDic = options.normaldata();
+    int normalType = normalDic.resourcetype();
+    switch (normalType)
+    {
+        case 0:
+        {
+            std::string tp_n = protocolBuffersPath;
+            const char* normalFileName = normalDic.path().c_str();
+            const char* normalFileName_tp = (normalFileName && (strcmp(normalFileName, "") != 0))?tp_n.append(normalFileName).c_str():NULL;
+            button->loadTextureNormal(normalFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* normalFileName = normalDic.path().c_str();
+            button->loadTextureNormal(normalFileName,ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    const protocolbuffers::ResourceData& pressedDic = options.presseddata();
+    int pressedType = pressedDic.resourcetype();
+    switch (pressedType)
+    {
+        case 0:
+        {
+            std::string tp_p = protocolBuffersPath;
+            const char* pressedFileName = pressedDic.path().c_str();
+            const char* pressedFileName_tp = (pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
+            button->loadTexturePressed(pressedFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* pressedFileName = pressedDic.path().c_str();
+            button->loadTexturePressed(pressedFileName,ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    const protocolbuffers::ResourceData& disabledDic = options.disableddata();
+    int disabledType = disabledDic.resourcetype();
+    switch (disabledType)
+    {
+        case 0:
+        {
+            std::string tp_d = protocolBuffersPath;
+            const char* disabledFileName = disabledDic.path().c_str();
+            const char* disabledFileName_tp = (disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
+            button->loadTextureDisabled(disabledFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* disabledFileName = disabledDic.path().c_str();
+            button->loadTextureDisabled(disabledFileName,ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    if (scale9Enable)
+    {
+        float cx = options.capinsetsx();
+        float cy = options.capinsetsy();
+        float cw = options.capinsetswidth();
+        float ch = options.capinsetsheight();
+        
+        button->setCapInsets(CCRectMake(cx, cy, cw, ch));
+        bool sw = options.has_scale9width();
+        bool sh = options.has_scale9height();
+        if (sw && sh)
+        {
+            float swf = options.scale9width();
+            float shf = options.scale9height();
+            button->setSize(CCSizeMake(swf, shf));
+        }
+    }
+    bool tt = options.has_text();
+    if (tt)
+    {
+        const char* text = options.text().c_str();
+        if (text)
+        {
+            button->setTitleText(text);
+        }
+    }
+    
+    int cri = options.has_textcolorr() ? options.textcolorr() : 255;
+    int cgi = options.has_textcolorg() ? options.textcolorg() : 255;
+    int cbi = options.has_textcolorb() ? options.textcolorb() : 255;
+    
+    button->setTitleColor(ccc3(cri,cgi,cbi));
+    
+    int fontSize = options.has_fontsize() ? options.fontsize() : 14;
+    button->setTitleFontSize(fontSize);
+    
+    
+    const char* fontName = options.has_fontname() ? options.fontname().c_str() : "微软雅黑";
+    button->setTitleFontName(fontName);
+    
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
+}
+/**/
 
 NS_CC_EXT_END

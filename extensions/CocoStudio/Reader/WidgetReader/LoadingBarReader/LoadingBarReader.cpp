@@ -2,6 +2,9 @@
 
 #include "LoadingBarReader.h"
 #include "../../../GUI/UIWidgets/UILoadingBar.h"
+/* peterson protocol buffers */
+#include "../../../Json/CSParseBinary.pb.h"
+/**/
 
 NS_CC_EXT_BEGIN
 
@@ -255,5 +258,69 @@ void LoadingBarReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoade
     }
     
 }
+
+/* peterson protocol buffers */
+void LoadingBarReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::LoadingBar* loadingBar = static_cast<ui::LoadingBar*>(widget);
+    const protocolbuffers::LoadingBarOptions& options = nodeTree.loadingbaroptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    const protocolbuffers::ResourceData& imageFileNameDic = options.texturedata();
+    int imageFileNameType = imageFileNameDic.resourcetype();
+    switch (imageFileNameType)
+    {
+        case 0:
+        {
+            std::string tp_i = protocolBuffersPath;
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            const char* imageFileName_tp = NULL;
+            if (imageFileName && (strcmp(imageFileName, "") != 0))
+            {
+                imageFileName_tp = tp_i.append(imageFileName).c_str();
+                loadingBar->loadTexture(imageFileName_tp);
+            }
+            break;
+        }
+        case 1:
+        {
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            loadingBar->loadTexture(imageFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    bool scale9Enable = options.scale9enable();
+    loadingBar->setScale9Enabled(scale9Enable);
+    
+    if (scale9Enable)
+    {
+        float cx = options.capinsetsx();
+        float cy = options.capinsetsy();
+        float cw = options.capinsetswidth();
+        float ch = options.capinsetsheight();
+        
+        loadingBar->setCapInsets(CCRectMake(cx, cy, cw, ch));
+        
+        const protocolbuffers::WidgetOptions& widgetOptions = nodeTree.widgetoptions();
+        float width = widgetOptions.width();
+        float height = widgetOptions.height();
+        loadingBar->setSize(CCSizeMake(width, height));
+    }
+    
+    loadingBar->setDirection(ui::LoadingBarType(options.direction()));
+    int percent = options.has_percent() ? options.percent() : 100;
+    loadingBar->setPercent(percent);
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
+}
+/**/
 
 NS_CC_EXT_END

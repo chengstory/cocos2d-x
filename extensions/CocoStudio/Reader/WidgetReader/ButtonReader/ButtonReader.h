@@ -42,6 +42,9 @@ public:
     virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode);
 
     virtual void setPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
+    /* peterson protocol buffers */
+    virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
+    /**/
     
     
 };
