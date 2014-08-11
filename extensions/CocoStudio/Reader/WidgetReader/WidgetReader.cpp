@@ -388,36 +388,6 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
     widget->setZOrder(z);
     
     
-    
-    // original color etc.
-    int opacity = options.has_opacity() ? options.opacity() : 255;
-    widget->setOpacity(opacity);
-    
-    bool isColorRExists = options.has_colorr();
-    bool isColorGExists = options.has_colorg();
-    bool isColorBExists = options.has_colorb();
-    
-    int colorR = options.colorr();
-    int colorG = options.colorg();
-    int colorB = options.colorb();
-    
-    if (isColorRExists && isColorGExists && isColorBExists)
-    {
-        widget->setColor(ccc3(colorR, colorG, colorB));
-    }
-    
-    bool apx = options.has_anchorpointx();
-    float apxf = apx ? options.anchorpointx() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
-    bool apy = options.has_anchorpointy();
-    float apyf = apy ? options.anchorpointy() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
-    widget->setAnchorPoint(ccp(apxf, apyf));
-    
-    bool flipX = options.flipx();
-    bool flipY = options.flipy();
-    widget->setFlipX(flipX);
-    widget->setFlipY(flipY);
-    //
-    
     bool layout = options.has_layoutparameter();
     if (layout)
     {
@@ -463,6 +433,38 @@ void WidgetReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protoco
             widget->setLayoutParameter(parameter);                        
         }
     }
+}
+
+void WidgetReader::setColorPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    const protocolbuffers::WidgetOptions& options = nodeTree.widgetoptions();
+    
+    int opacity = options.has_opacity() ? options.opacity() : 255;
+    widget->setOpacity(opacity);
+    
+    bool isColorRExists = options.has_colorr();
+    bool isColorGExists = options.has_colorg();
+    bool isColorBExists = options.has_colorb();
+    
+    int colorR = options.colorr();
+    int colorG = options.colorg();
+    int colorB = options.colorb();
+    
+    if (isColorRExists && isColorGExists && isColorBExists)
+    {
+        widget->setColor(ccc3(colorR, colorG, colorB));
+    }
+    
+    bool apx = options.has_anchorpointx();
+    float apxf = apx ? options.anchorpointx() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    bool apy = options.has_anchorpointy();
+    float apyf = apy ? options.anchorpointy() : ((widget->getWidgetType() == ui::WidgetTypeWidget) ? 0.5f : 0.0f);
+    widget->setAnchorPoint(ccp(apxf, apyf));
+    
+    bool flipX = options.flipx();
+    bool flipY = options.flipy();
+    widget->setFlipX(flipX);
+    widget->setFlipY(flipY);
 }
 
 

@@ -313,6 +313,10 @@ void ImageViewReader::setPropsFromProtocolBuffers(ui::Widget *widget, const prot
         
         imageView->setCapInsets(CCRectMake(cx, cy, cw, ch));
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 
 NS_CC_EXT_END

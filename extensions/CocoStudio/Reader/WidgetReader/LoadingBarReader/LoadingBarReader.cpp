@@ -313,6 +313,10 @@ void LoadingBarReader::setPropsFromProtocolBuffers(ui::Widget *widget, const pro
     loadingBar->setDirection(ui::LoadingBarType(options.direction()));
     int percent = options.has_percent() ? options.percent() : 100;
     loadingBar->setPercent(percent);
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 
 NS_CC_EXT_END

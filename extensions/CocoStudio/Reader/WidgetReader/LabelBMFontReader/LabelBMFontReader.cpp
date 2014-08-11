@@ -237,6 +237,10 @@ void LabelBMFontReader::setPropsFromProtocolBuffers(ui::Widget *widget, const pr
     
     const char* text = (options.has_text()) ? options.text().c_str() : "Text Label";
     labelBMFont->setText(text);
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 
 NS_CC_EXT_END

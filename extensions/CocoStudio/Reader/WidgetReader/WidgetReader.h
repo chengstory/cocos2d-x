@@ -47,6 +47,7 @@ public:
     virtual void setColorPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
     virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode);
     virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
+    virtual void setColorPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
     
 protected:
     void beginSetBasicProperties(cocos2d::ui::Widget *widget);

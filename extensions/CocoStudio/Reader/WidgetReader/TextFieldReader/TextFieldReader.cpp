@@ -303,6 +303,10 @@ void TextFieldReader::setPropsFromProtocolBuffers(ui::Widget *widget, const prot
         CCSize size = CCSize(options.areawidth(), options.areaheight());
         textField->setTextAreaSize(size);
     }
+    
+    
+    // other commonly properties
+    WidgetReader::setColorPropsFromProtocolBuffers(widget, nodeTree);
 }
 
 
