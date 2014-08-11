@@ -130,11 +130,36 @@ files
     ["CocoStudio/Json/rapidjson"]
     ("../CocoStudio/Json/rapidjson")
     "*.h"
-	
+
 	 ["CocoStudio/Json/rapidjson/internal"]
     ("../CocoStudio/Json/rapidjson/internal")
     "*.h"
 
+	["CocoStudio/Json/protocolBuf/src/google/protobuf"]
+    ("../CocoStudio/Json/protocolBuf/src/google/protobuf")
+    "*.h"
+	"*.cpp"
+	
+	["CocoStudio/Json/protocolBuf/src/google/protobuf/compiler"]
+    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/compiler")
+    "*.h"
+	"*.cpp"
+	
+	["CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp"]
+    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp")
+    "*.h"
+	"*.cpp"
+	
+	["CocoStudio/Json/protocolBuf/src/google/protobuf/io"]
+    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/io")
+    "*.h"
+	"*.cpp"
+	
+	["CocoStudio/Json/protocolBuf/src/google/protobuf/stubs"]
+    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/stubs")
+    "*.h"
+	"*.cpp"
+	
 	["CocoStudio/Reader"]
     ("../CocoStudio/Reader")
     "*.h"
