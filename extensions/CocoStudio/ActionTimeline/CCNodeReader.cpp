@@ -27,6 +27,9 @@ THE SOFTWARE.
 #include "CCFrame.h"
 #include "../Reader/GUIReader.h"
 #include "../GUI/BaseClasses/UIWidget.h"
+#include "../Json/CSParseBinary.pb.h"
+
+#include <fstream>
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -89,6 +92,8 @@ static const char* VISIBLE          = "visible";
 
 static const char* TEXTURES     = "textures";
 static const char* TEXTURES_PNG = "texturesPng";
+
+static const char* MONO_COCOS2D_VERSION     = "cocos2dVersion";
 
 // NodeCreateCallFunc
 NodeCreateCallFunc* NodeCreateCallFunc::create(CCObject* target, NodeCreateCallback callback)
@@ -184,6 +189,9 @@ void NodeReader::destroyInstance()
 NodeReader::NodeReader()
     : _recordJsonPath(true)
     , _jsonPath("")
+    , _recordProtocolBuffersPath(true)
+    , _protocolBuffersPath("")
+    , _monoCocos2dxVersion("")
 {
 }
 
@@ -271,6 +279,9 @@ cocos2d::CCNode* NodeReader::loadNodeWithContent(const std::string& content)
         CCLOG("GetParseError %s\n", doc.GetParseError());
     }
     
+    // cocos2d version that mono editor is based on
+    _monoCocos2dxVersion = DICTOOL->getStringValue_json(doc, MONO_COCOS2D_VERSION, "");
+    
     // decode plist 
     int length = DICTOOL->getArrayCount_json(doc, TEXTURES);
     for(int i=0; i<length; i++)
@@ -320,6 +331,9 @@ cocos2d::CCNode* NodeReader::loadNode(const rapidjson::Value& json, cocos2d::CCN
             {
                 cocos2d::ui::TouchGroup* group = cocos2d::ui::TouchGroup::create();
                 group->setZOrder(widget->getZOrder());
+                CCLOG("widget->getName() = %s", widget->getName());
+                CCLOG("widget->getTag() = %d", widget->getTag());
+                group->setTag(widget->getTag());
                 group->addWidget(widget);
                 parent->addChild(group);
             }
@@ -507,6 +521,237 @@ bool NodeReader::isUiWidget(const std::string &type)
         || type == ClassName_Widget
         || type == ClassName_Panel
         || type == ClassName_Label);
+}
+
+cocos2d::CCNode* NodeReader::createNodeFromProtocolBuffers(const std::string &filename)
+{
+    if(_recordProtocolBuffersPath)
+    {
+        std::string protocolBuffersPath = filename.substr(0, filename.find_last_of('/') + 1);
+        CCLog("protocolBuffersPath = %s", protocolBuffersPath.c_str());
+        GUIReader::shareReader()->setFilePath(protocolBuffersPath);
+        
+        _protocolBuffersPath = protocolBuffersPath;
+    }
+    else
+    {
+        GUIReader::shareReader()->setFilePath("");
+        _protocolBuffersPath = "";
+    }
+    
+    cocos2d::CCNode* node = nodeFromProtocolBuffersFile(filename);
+    
+    return node;
+}
+
+cocos2d::CCNode* NodeReader::nodeFromProtocolBuffersFile(const std::string &fileName)
+{
+    std::string path = fileName;
+    int pos = path.find_last_of('/');
+    //	_protocolBuffersPath = path.substr(0, pos + 1);
+    
+    std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName.c_str());
+    std::fstream in(fullPath.c_str(), std::ios::in | std::ios::binary);
+    protocolbuffers::CSParseBinary gpbwp;
+    //    protocolbuffers::GUIProtocolBuffersProtobuf gpbwp;
+    if (!gpbwp.ParseFromIstream(&in))
+    {
+        return NULL;
+    }
+    in.close();
+    /*
+     CCLog("dataScale = %d", gpbwp.datascale());
+     CCLog("designHeight = %d", gpbwp.designheight());
+     CCLog("designWidth = %d", gpbwp.designwidth());
+     CCLog("version = %s", gpbwp.version().c_str());
+     */
+    
+    // decode plist
+    int textureSize = gpbwp.textures_size();
+    CCLog("textureSize = %d", textureSize);
+    for (int i = 0; i < textureSize; ++i)
+    {
+        std::string plist = gpbwp.textures(i);
+        CCLog("plist = %s", plist.c_str());
+        std::string png = gpbwp.texturespng(i);
+        CCLog("png = %s", png.c_str());
+        plist = _protocolBuffersPath + plist;
+        png = _protocolBuffersPath + png;
+        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str(), png.c_str());
+    }
+    int fileDesignWidth = gpbwp.designwidth();
+    int fileDesignHeight = gpbwp.designheight();
+    if (fileDesignWidth <= 0 || fileDesignHeight <= 0)
+    {
+        CCLog("Read design size error!\n");
+        CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+        GUIReader::shareReader()->storeFileDesignSize(fileName.c_str(), winSize);
+    }
+    else
+    {
+        GUIReader::shareReader()->storeFileDesignSize(fileName.c_str(),
+                                                      CCSizeMake(fileDesignWidth, fileDesignHeight));
+    }
+    
+    protocolbuffers::NodeTree rootNodeTree = gpbwp.nodetree();
+    CCNode* node = nodeFromProtocolBuffers(rootNodeTree);
+    
+    return node;
+}
+
+cocos2d::CCNode* NodeReader::nodeFromProtocolBuffers(const protocolbuffers::NodeTree &nodetree)
+{
+    CCNode* node = NULL;
+    cocos2d::ui::TouchGroup* group = NULL;
+    
+    std::string classname = nodetree.classname();
+    CCLog("classname = %s", classname.c_str());
+    
+    if (classname == "Node")
+    {
+        node = CCNode::create();
+        const protocolbuffers::WidgetOptions& options = nodetree.widgetoptions();
+        setPropsForNodeFromProtocolBuffers(node, options);
+    }
+    else if (classname == "Sprite")
+    {
+        node = CCSprite::create();
+        const protocolbuffers::WidgetOptions& nodeOptions = nodetree.widgetoptions();
+        const protocolbuffers::SpriteOptions& options = nodetree.spriteoptions();
+        setPropsForSpriteFromProtocolBuffers(node, options, nodeOptions);
+    }
+    else
+    {
+        WidgetPropertiesReader* pReader = new WidgetPropertiesReader0300();
+        cocos2d::ui::Widget* widget = pReader->widgetFromProtocolBuffers(nodetree);
+        group = cocos2d::ui::TouchGroup::create();
+        CCLog("group = %p", group);
+        group->addWidget(widget);
+        group->setTag(widget->getTag());
+        node = group;
+        
+        return node;
+    }
+    
+    int size = nodetree.children_size();
+    CCLog("size = %d", size);
+    for (int i = 0; i < size; ++i)
+    {
+        protocolbuffers::NodeTree subNodeTree = nodetree.children(i);
+        CCNode* child = nodeFromProtocolBuffers(subNodeTree);
+        CCLog("child = %p", child);
+        if (child)
+        {
+            node->addChild(child);
+        }
+    }
+    
+    return node;
+}
+
+void NodeReader::setPropsForNodeFromProtocolBuffers(cocos2d::CCNode *node,
+                                                    const protocolbuffers::WidgetOptions &nodeOptions)
+{
+    const protocolbuffers::WidgetOptions& options = nodeOptions;
+    
+    float x             = options.x();
+    float y             = options.y();
+    CCLog("x = %f, y = %f", x, y);
+    float scalex        = options.has_scalex() ? options.scalex() : 1;
+    float scaley        = options.has_scaley() ? options.scaley() : 1;
+    float rotation      = options.rotation();
+    float anchorx       = options.has_anchorpointx() ? options.anchorpointx() : 0.5f;
+    float anchory       = options.has_anchorpointy() ? options.anchorpointy() : 0.5f;
+    int zorder          = options.zorder();
+    int tag             = options.tag();
+    int actionTag       = options.actiontag();
+    bool visible        = options.visible();
+    
+    if(x != 0 || y != 0)
+        node->setPosition(CCPoint(x, y));
+    if(scalex != 1)
+        node->setScaleX(scalex);
+    if(scaley != 1)
+        node->setScaleY(scaley);
+    if (rotation != 0)
+        node->setRotation(rotation);
+    if(anchorx != 0.5f || anchory != 0.5f)
+        node->setAnchorPoint(CCPoint(anchorx, anchory));
+    if(zorder != 0)
+        node->setZOrder(zorder);
+    if(visible != true)
+        node->setVisible(visible);
+    
+    node->setTag(tag);
+    if (actionTag != -1)
+    {
+        node->setUserObject(cocostudio::timeline::TimelineActionData::create(actionTag));
+    }
+}
+
+void NodeReader::setPropsForSpriteFromProtocolBuffers(cocos2d::CCNode *node,
+                                                      const protocolbuffers::SpriteOptions &spriteOptions,
+                                                      const protocolbuffers::WidgetOptions &nodeOptions)
+{
+    CCSprite* sprite = static_cast<CCSprite*>(node);
+    const protocolbuffers::SpriteOptions& options = spriteOptions;
+    
+    std::string protocolBuffersPath = _protocolBuffersPath;
+    
+    if (options.has_filename())
+    {
+        const char* filePath = options.filename().c_str();
+        
+        CCLOG("filePath = %s", filePath);
+        
+        if (filePath && strcmp("", filePath) != 0)
+        {
+            std::string path = filePath;
+            CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(path.c_str());
+            if(!spriteFrame)
+            {
+                path = protocolBuffersPath + path;
+                sprite->initWithFile(path.c_str());
+            }
+            else
+            {
+                sprite->initWithSpriteFrame(spriteFrame);
+            }
+            
+            if(sprite == NULL)
+                CCLOG("create sprite with file name : %s  failed.", filePath);
+        }
+    }
+    
+    setPropsForNodeFromProtocolBuffers(sprite, nodeOptions);
+    
+    GLubyte alpha       = (GLubyte)nodeOptions.has_opacity() ? nodeOptions.opacity() : 255;
+	GLubyte red         = (GLubyte)nodeOptions.has_colorr() ? nodeOptions.colorr() : 255;
+	GLubyte green       = (GLubyte)nodeOptions.has_colorg() ? nodeOptions.colorg() : 255;
+	GLubyte blue        = (GLubyte)nodeOptions.has_colorb() ? nodeOptions.colorb() : 255;
+    
+    CCRGBAProtocol *rgbaProtocaol = dynamic_cast<CCRGBAProtocol *>(sprite);
+    if(rgbaProtocaol)
+    {
+        if(alpha != 255)
+        {
+            rgbaProtocaol->setOpacity(alpha);
+            rgbaProtocaol->setCascadeOpacityEnabled(true);
+        }
+        if(red != 255 || green != 255 || blue != 255)
+        {
+            rgbaProtocaol->setColor(ccc3(red, green, blue));
+            rgbaProtocaol->setCascadeColorEnabled(true);
+        }
+    }
+    
+    bool flipX          = nodeOptions.flipx();
+    bool flipY          = nodeOptions.flipy();
+    
+    if(flipX != false)
+        sprite->setFlipX(flipX);
+    if(flipY != false)
+        sprite->setFlipY(flipY);
 }
 
 NS_TIMELINE_END

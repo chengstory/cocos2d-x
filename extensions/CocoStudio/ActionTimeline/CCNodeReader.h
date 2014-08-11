@@ -36,6 +36,13 @@ namespace cocos2d
 	}
 }
 
+namespace protocolbuffers
+{
+    class NodeTree;
+    class WidgetOptions;
+    class SpriteOptions;
+}
+
 NS_TIMELINE_BEGIN
 
 
@@ -94,6 +101,21 @@ public:
 
     void setJsonPath(std::string jsonPath) { _jsonPath = jsonPath; }
     std::string getJsonPath() const { return _jsonPath; }
+    
+    cocos2d::CCNode* createNodeFromProtocolBuffers(const std::string& filename);
+    cocos2d::CCNode* nodeFromProtocolBuffersFile(const std::string& fileName);
+    cocos2d::CCNode* nodeFromProtocolBuffers(const protocolbuffers::NodeTree& nodetree);
+    
+    void setRecordProtocolBuffersPath(bool record) { _recordProtocolBuffersPath = record; }
+    bool isRecordProtocolBuffersPath() const { return _recordProtocolBuffersPath; }
+    
+    void setProtocolBuffersPath(std::string protocolBuffersPath) { _protocolBuffersPath = protocolBuffersPath; }
+    std::string getProtocolBuffersPath() const { return _protocolBuffersPath; }
+    /**/
+    
+    /* peterson cocos2d-x version that mono editor is based on */
+    const std::string& getMonoCocos2dxVersion() const { return _monoCocos2dxVersion; };
+    
 protected:
 
     cocos2d::CCNode* loadNode(const rapidjson::Value& json, cocos2d::CCNode* parent = NULL);
@@ -104,6 +126,11 @@ protected:
     cocos2d::CCNode* loadSprite(const rapidjson::Value& json, cocos2d::CCNode* parent);
     cocos2d::CCNode* loadParticle(const rapidjson::Value& json, cocos2d::CCNode* parent);
 	cocos2d::CCNode* loadWidget(const rapidjson::Value& json, cocos2d::CCNode* parent);
+    
+    void setPropsForNodeFromProtocolBuffers(cocos2d::CCNode* node, const protocolbuffers::WidgetOptions& nodeOptions);
+    void setPropsForSpriteFromProtocolBuffers(cocos2d::CCNode* node,
+                                              const protocolbuffers::SpriteOptions& spriteOptions,
+                                              const protocolbuffers::WidgetOptions& nodeOptions);
 
     bool isUiWidget(const std::string& type);
 
@@ -113,6 +140,11 @@ protected:
 
     bool _recordJsonPath;
     std::string _jsonPath;
+    
+    bool _recordProtocolBuffersPath;
+    std::string _protocolBuffersPath;
+    
+    std::string _monoCocos2dxVersion;
 };
 
 NS_TIMELINE_END

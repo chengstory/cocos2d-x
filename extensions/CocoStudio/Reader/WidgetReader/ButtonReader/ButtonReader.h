@@ -43,6 +43,8 @@ public:
 
     virtual void setPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
     
+    virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
+    
     
 };
 

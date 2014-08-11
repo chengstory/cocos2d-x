@@ -27,24 +27,33 @@ bool UIScene_Editor::init()
         
         
         //add switch
-        CCMenuItem* pLoadJsonItem = CCMenuItemFont::create("Switch to Binary Load", this,
-                                                           NULL);
-        CCMenuItem* pLoadBinaryItem = CCMenuItemFont::create("Switch to Json Load", this, NULL);
+        CCMenuItem* pLoadJsonItem = CCMenuItemFont::create("Switch to Windows Json Load", this, NULL);
+        CCMenuItem* pLoadBinaryItem = CCMenuItemFont::create("Switch to Windows Binary Load", this, NULL);
+        CCMenuItem* pLoadJsonItemCrossPlatForm = CCMenuItemFont::create("Switch to Cross PlatForm Json Load", this, NULL);
+        CCMenuItem* pLoadBinaryItemCrossPlatForm = CCMenuItemFont::create("Switch to Cross PlatForm Binary Load", this, NULL);
+        
         pLoadJsonItem->setTag(1);
         pLoadBinaryItem->setTag(2);
+        pLoadJsonItemCrossPlatForm->setTag(3);
+        pLoadBinaryItemCrossPlatForm->setTag(4);
         
         CCArray *array  = CCArray::create();
-        array->addObject(pLoadJsonItem);
         array->addObject(pLoadBinaryItem);
+        array->addObject(pLoadJsonItemCrossPlatForm);
+        array->addObject(pLoadBinaryItemCrossPlatForm);
+        array->addObject(pLoadJsonItem);
+        
         CCMenuItemToggle *pToggleItem = CCMenuItemToggle::createWithTarget(this,
                                                                            menu_selector(UIScene_Editor::switchLoadMethod),
                                                                            array);
-        pToggleItem->setPosition(ccp(VisibleRect::right().x - 150, VisibleRect::top().y - 50));;
+        pToggleItem->setTag(1);
+        CCMenuItem* selectedItem = pToggleItem->selectedItem();
+        pToggleItem->setPosition(ccp(VisibleRect::center().x, VisibleRect::center().y - selectedItem->getContentSize().height * 3.75f));
         
         CCMenu* pMenu =CCMenu::create(pToggleItem, NULL);
         pMenu->setPosition( CCPointZero );
         
-        addChild(pMenu, 1);
+        addChild(pMenu, 1, 1);
         
         return true;
     }

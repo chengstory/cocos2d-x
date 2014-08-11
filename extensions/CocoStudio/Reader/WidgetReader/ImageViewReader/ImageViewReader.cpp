@@ -2,6 +2,7 @@
 
 #include "ImageViewReader.h"
 #include "../../../GUI/UIWidgets/UIImageView.h"
+#include "../../../Json/CSParseBinary.pb.h"
 
 NS_CC_EXT_BEGIN
 
@@ -257,6 +258,61 @@ void ImageViewReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader
     
     this->endSetBasicProperties(widget);
     
+}
+
+void ImageViewReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::ImageView* imageView = static_cast<ui::ImageView*>(widget);
+    const protocolbuffers::ImageViewOptions& options = nodeTree.imageviewoptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    const protocolbuffers::ResourceData& imageFileNameDic = options.filenamedata();
+    int imageFileNameType = imageFileNameDic.resourcetype();
+    switch (imageFileNameType)
+    {
+        case 0:
+        {
+            std::string tp_i = protocolBuffersPath;
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            const char* imageFileName_tp = NULL;
+            if (imageFileName && (strcmp(imageFileName, "") != 0))
+            {
+                imageFileName_tp = tp_i.append(imageFileName).c_str();
+                imageView->loadTexture(imageFileName_tp);
+            }
+            imageView->loadTexture(imageFileName_tp);
+            break;
+        }
+            
+        case 1:
+        {
+            const char* imageFileName = imageFileNameDic.path().c_str();
+            imageView->loadTexture(imageFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    bool scale9Enable = options.scale9enable();
+    imageView->setScale9Enabled(scale9Enable);
+    if (scale9Enable)
+    {
+        float swf = options.has_scale9width() ? options.scale9width() : 80.0f;
+        float shf = options.has_scale9height() ? options.scale9height() : 80.0f;
+        imageView->setSize(CCSizeMake(swf, shf));
+        
+        float cx = options.capinsetsx();
+        float cy = options.capinsetsy();
+        float cw = options.has_capinsetswidth() ? options.capinsetswidth() : 1.0;
+        float ch = options.has_capinsetsheight() ? options.capinsetsheight() : 1.0;
+        
+        imageView->setCapInsets(CCRectMake(cx, cy, cw, ch));
+    }
 }
 
 NS_CC_EXT_END

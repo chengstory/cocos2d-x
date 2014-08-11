@@ -2,6 +2,7 @@
 
 #include "SliderReader.h"
 #include "../../../GUI/UIWidgets/UISlider.h"
+#include "../../../Json/CSParseBinary.pb.h"
 
 NS_CC_EXT_BEGIN
 
@@ -384,6 +385,164 @@ void SliderReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *p
         slider->setSize(CCSize(barLength, slider->getContentSize().height));
     }
     
+}
+
+void SliderReader::setPropsFromProtocolBuffers(ui::Widget *widget, const protocolbuffers::NodeTree &nodeTree)
+{
+    WidgetReader::setPropsFromProtocolBuffers(widget, nodeTree);
+    
+    ui::Slider* slider = static_cast<ui::Slider*>(widget);
+    const protocolbuffers::SliderOptions& options = nodeTree.slideroptions();
+    
+    std::string protocolBuffersPath = GUIReader::shareReader()->getFilePath();
+    
+    bool barTextureScale9Enable = options.scale9enable();
+    slider->setScale9Enabled(barTextureScale9Enable);
+    
+    float barLength = options.has_length() ? options.length() : 290;
+    
+    if (barTextureScale9Enable)
+    {
+        
+        const protocolbuffers::ResourceData& imageFileNameDic = options.barfilenamedata();
+        int imageFileType = imageFileNameDic.resourcetype();
+        switch (imageFileType)
+        {
+            case 0:
+            {
+                std::string tp_b = protocolBuffersPath;
+                const char* imageFileName = imageFileNameDic.path().c_str();
+                const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+                slider->loadBarTexture(imageFileName_tp);
+                break;
+            }
+            case 1:
+            {
+                const char* imageFileName = imageFileNameDic.path().c_str();
+                slider->loadBarTexture(imageFileName, ui::UI_TEX_TYPE_PLIST);
+                break;
+            }
+            default:
+                break;
+        }
+        
+        slider->setSize(CCSizeMake(barLength, slider->getContentSize().height));
+    }
+    else
+    {
+        const protocolbuffers::ResourceData& imageFileNameDic = options.barfilenamedata();
+        int imageFileType = imageFileNameDic.resourcetype();
+        switch (imageFileType)
+        {
+            case 0:
+            {
+                std::string tp_b = protocolBuffersPath;
+                const char*imageFileName =  imageFileNameDic.path().c_str();
+                const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+                slider->loadBarTexture(imageFileName_tp);
+                break;
+            }
+            case 1:
+            {
+                const char*imageFileName =  imageFileNameDic.path().c_str();
+                slider->loadBarTexture(imageFileName, ui::UI_TEX_TYPE_PLIST);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    
+    
+    const protocolbuffers::ResourceData& normalDic = options.ballnormaldata();
+    int normalType = normalDic.resourcetype();
+    switch (normalType)
+    {
+        case 0:
+        {
+            std::string tp_n = protocolBuffersPath;
+            const char* normalFileName = normalDic.path().c_str();
+            const char* normalFileName_tp = (normalFileName && (strcmp(normalFileName, "") != 0))?tp_n.append(normalFileName).c_str():NULL;
+            slider->loadSlidBallTextureNormal(normalFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* normalFileName = normalDic.path().c_str();
+            slider->loadSlidBallTextureNormal(normalFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& pressedDic = options.ballpresseddata();
+    int pressedType = pressedDic.resourcetype();
+    switch (pressedType)
+    {
+        case 0:
+        {
+            std::string tp_p = protocolBuffersPath;
+            const char* pressedFileName = pressedDic.path().c_str();
+            const char* pressedFileName_tp = (pressedFileName && (strcmp(pressedFileName, "") != 0))?tp_p.append(pressedFileName).c_str():NULL;
+            slider->loadSlidBallTexturePressed(pressedFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* pressedFileName = pressedDic.path().c_str();
+            slider->loadSlidBallTexturePressed(pressedFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    const protocolbuffers::ResourceData& disabledDic = options.balldisableddata();
+    int disabledType = disabledDic.resourcetype();
+    switch (disabledType)
+    {
+        case 0:
+        {
+            std::string tp_d = protocolBuffersPath;
+            const char* disabledFileName = disabledDic.path().c_str();
+            const char* disabledFileName_tp = (disabledFileName && (strcmp(disabledFileName, "") != 0))?tp_d.append(disabledFileName).c_str():NULL;
+            slider->loadSlidBallTextureDisabled(disabledFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* disabledFileName = disabledDic.path().c_str();
+            slider->loadSlidBallTextureDisabled(disabledFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
+    
+    slider->setPercent(options.percent());
+    
+    const protocolbuffers::ResourceData& progressBarDic = options.progressbardata();
+    int progressBarType = progressBarDic.resourcetype();
+    switch (progressBarType)
+    {
+        case 0:
+        {
+            std::string tp_b = protocolBuffersPath;
+            const char* imageFileName = progressBarDic.path().c_str();
+            const char* imageFileName_tp = (imageFileName && (strcmp(imageFileName, "") != 0))?tp_b.append(imageFileName).c_str():NULL;
+            slider->loadProgressBarTexture(imageFileName_tp);
+            break;
+        }
+        case 1:
+        {
+            const char* imageFileName = progressBarDic.path().c_str();
+            slider->loadProgressBarTexture(imageFileName, ui::UI_TEX_TYPE_PLIST);
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 NS_CC_EXT_END

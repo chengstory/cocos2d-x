@@ -18,22 +18,84 @@ UIWidgetAddNodeTest_Editor::~UIWidgetAddNodeTest_Editor()
 void UIWidgetAddNodeTest_Editor::switchLoadMethod(cocos2d::CCObject *pSender)
 {
     CCMenuItemToggle *item = (CCMenuItemToggle*)pSender;
-    if (item->getSelectedIndex() == 0){
-        _layout->removeAllChildrenWithCleanup(true);
-        _layout->removeFromParentAndCleanup(true);
-        
-        _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/ui_widget_add_node_editor.json"));
-        _touchGroup->addWidget(_layout);
-        
-        this->configureGUIScene();
-    }else{
-        _layout->removeAllChildrenWithCleanup(true);
-        _layout->removeFromParentAndCleanup(true);
-        
-        _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/ui_widget_add_node_editor.csb"));
-        _touchGroup->addWidget(_layout);
-        
-        this->configureGUIScene();
+    
+    switch (item->getSelectedIndex())
+    {
+        case 0:
+        {
+            _layout->removeAllChildrenWithCleanup(true);
+            _layout->removeFromParentAndCleanup(true);
+            
+            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/windows_ui_widget_add_node_editor.json"));
+            _touchGroup->addWidget(_layout);
+            
+            this->configureGUIScene();
+            
+            break;
+        }
+            
+        case 1:
+        {
+            _layout->removeAllChildrenWithCleanup(true);
+            _layout->removeFromParentAndCleanup(true);
+            
+            _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/windows_ui_widget_add_node_editor.csb"));
+            _touchGroup->addWidget(_layout);
+            
+            this->configureGUIScene();
+            
+            break;
+        }
+            
+        case 2:
+        {
+            _layout->removeFromParentAndCleanup(true);
+            
+            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNode("cocosui/UIEditorTest/UIWidgetAddNode_Editor/crossplatform_UIWidgetAddNode_Editor_1.ExportJson");
+            TouchGroup* temp = static_cast<TouchGroup*>(node->getChildByTag(5));
+            Layout* tempLayout = static_cast<Layout*>(temp->getWidgetByTag(5));
+            tempLayout->removeFromParent();
+            _layout = tempLayout;
+            _touchGroup->addWidget(_layout);
+            
+            this->configureGUIScene();
+            
+            break;
+        }
+            
+        case 3:
+        {
+            _layout->removeFromParentAndCleanup(true);
+            
+            CCNode* node = cocostudio::timeline::NodeReader::getInstance()->createNodeFromProtocolBuffers("cocosui/UIEditorTest/UIWidgetAddNode_Editor/crossplatform_UIWidgetAddNode_Editor_1.csb");
+            TouchGroup* temp = static_cast<TouchGroup*>(node->getChildByTag(5));
+            Layout* tempLayout = static_cast<Layout*>(temp->getWidgetByTag(5));
+            tempLayout->removeFromParent();
+            _layout = tempLayout;
+            _touchGroup->addWidget(_layout);
+            
+            this->configureGUIScene();
+            
+            break;
+        }
+            
+            /*
+             case 2:
+             {
+             _layout->removeAllChildrenWithCleanup(true);
+             _layout->removeFromParentAndCleanup(true);
+             
+             _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromBinaryFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/ui_widget_add_node_editor.csb"));
+             _touchGroup->addWidget(_layout);
+             
+             this->configureGUIScene();
+             
+             break;
+             }
+             */
+            
+        default:
+            break;
     }
 }
 
@@ -67,7 +129,7 @@ bool UIWidgetAddNodeTest_Editor::init()
 {
     if (UIScene_Editor::init())
     {
-        _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/ui_widget_add_node_editor.json"));
+        _layout = static_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("cocosui/UIEditorTest/UIWidgetAddNode_Editor/windows_ui_widget_add_node_editor.json"));
         _touchGroup->addWidget(_layout);
         
         this->configureGUIScene();

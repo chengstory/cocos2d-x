@@ -42,9 +42,13 @@
 #include "WidgetReader/ScrollViewReader/ScrollViewReader.h"
 #include "WidgetReader/ListViewReader/ListViewReader.h"
 
+#include "../Json/CSParseBinary.pb.h"
+#include "../ActionTimeline/CCNodeReader.h"
+
 NS_CC_EXT_BEGIN
 
 using namespace cocos2d::ui;
+using namespace protocolbuffers;
 
 static GUIReader* sharedReader = NULL;
 
@@ -254,7 +258,8 @@ cocos2d::ui::Widget* GUIReader::widgetFromJsonFile(const char *fileName)
 	unsigned char *pBytes = NULL;
 	std::string jsonpath;
 	rapidjson::Document jsonDict;
-    jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
+    jsonpath = fileName;
+//    jsonpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName);
     int pos = jsonpath.find_last_of('/');
 	m_strFilePath = jsonpath.substr(0,pos+1);
     unsigned long size = 0;
@@ -1238,6 +1243,24 @@ cocos2d::ui::Widget* WidgetPropertiesReader0300::widgetFromJsonDictionary(const 
                 }
                 else
                 {
+                    if (cocostudio::timeline::NodeReader::getInstance()->getMonoCocos2dxVersion() == "3.x")
+                    {
+                        if (!dynamic_cast<Layout*>(widget))
+                        {
+                            if (child->getPositionType() == POSITION_PERCENT)
+                            {
+                                child->setPositionPercent(ccp(child->getPositionPercent().x - widget->getAnchorPoint().x, child->getPositionPercent().y - widget->getAnchorPoint().y));
+                                child->setPosition(ccp(child->getPositionX() + widget->getAnchorPointInPoints().x, child->getPositionY() + widget->getAnchorPointInPoints().y));
+                            }
+                            else
+                            {
+                                CCSize widgetSize = widget->getSize();
+                                child->setPosition(ccp(child->getPositionX() - widgetSize.width * widget->getAnchorPoint().x,
+                                                       child->getPositionY() - widgetSize.height * widget->getAnchorPoint().y));
+                            }
+                        }
+                    }
+                    
                     widget->addChild(child);
                 }
             }
@@ -2377,6 +2400,114 @@ void WidgetPropertiesReader0300::setPropsForAllWidgetFromBinary(WidgetReaderProt
                                             stExpCocoNode*	pCocoNode)
 {
     reader->setPropsFromBinary(widget, pCocoLoader, pCocoNode);
+}
+
+Widget* WidgetPropertiesReader0300::widgetFromProtocolBuffers(const protocolbuffers::NodeTree &nodetree)
+{
+    std::string classname = nodetree.classname();
+    CCLog("classname = %s", classname.c_str());
+    
+    cocos2d::ui::Widget* widget = ObjectFactory::getInstance()->createGUI(classname);
+    
+    // create widget reader to parse properties of widget
+    std::string readerName = getWidgetReaderClassName(classname);
+    CCLog("readerName = %s", readerName.c_str());
+    
+    WidgetReaderProtocol* reader = this->createWidgetReaderProtocol(readerName);
+    protocolbuffers::WidgetOptions widgetOptions = nodetree.widgetoptions();
+    
+    if (reader)
+    {
+        // widget parse with widget reader
+        setPropsForAllWidgetFromProtocolBuffers(reader, widget, nodetree);
+    }
+    else
+    {
+        //
+        // 1st., custom widget parse properties of parent widget with parent widget reader
+        readerName = this->getWidgetReaderClassName(widget);
+        reader =  this->createWidgetReaderProtocol(readerName);
+        if (reader && widget)
+        {
+            setPropsForAllWidgetFromProtocolBuffers(reader, widget, nodetree);
+            
+            // 2nd., custom widget parse with custom reader
+            const WidgetOptions& widgetOptions = nodetree.widgetoptions();
+            const char* customProperty = widgetOptions.customproperty().c_str();
+            rapidjson::Document customJsonDict;
+            customJsonDict.Parse<0>(customProperty);
+            if (customJsonDict.HasParseError())
+            {
+                CCLOG("GetParseError %s\n", customJsonDict.GetParseError());
+            }
+            setPropsForAllCustomWidgetFromJsonDictionary(classname, widget, customJsonDict);
+        }
+        else
+        {
+            CCLOG("Widget or WidgetReader doesn't exists!!!  Please check your json file.");
+        }
+        //
+    }
+    
+    int size = nodetree.children_size();
+    CCLog("widget children size = %d", size);
+    for (int i = 0; i < size; ++i)
+    {
+        protocolbuffers::NodeTree subNodeTree = nodetree.children(i);
+        Widget* child = widgetFromProtocolBuffers(subNodeTree);
+        CCLog("widget child = %p", child);
+        if (child)
+        {
+            PageView* pageView = dynamic_cast<PageView*>(widget);
+            if (pageView)
+            {
+                pageView->addPage(static_cast<Layout*>(child));
+            }
+            else
+            {
+                ListView* listView = dynamic_cast<ListView*>(widget);
+                if (listView)
+                {
+                    listView->pushBackCustomItem(child);
+                }
+                else
+                {
+                    /* peterson if cocos2d-x version is 3.x that mono editor is based on */
+                    if (cocostudio::timeline::NodeReader::getInstance()->getMonoCocos2dxVersion() == "3.x")
+                    {
+                        if (!dynamic_cast<Layout*>(widget))
+                        {
+                            if (child->getPositionType() == POSITION_PERCENT)
+                            {
+                                child->setPositionPercent(ccp(child->getPositionPercent().x - widget->getAnchorPoint().x, child->getPositionPercent().y - widget->getAnchorPoint().y));
+                                child->setPosition(ccp(child->getPositionX() + widget->getAnchorPointInPoints().x, child->getPositionY() + widget->getAnchorPointInPoints().y));
+                            }
+                            else
+                            {
+                                CCSize widgetSize = widget->getSize();
+                                child->setPosition(ccp(child->getPositionX() - widgetSize.width * widget->getAnchorPoint().x,
+                                                       child->getPositionY() - widgetSize.height * widget->getAnchorPoint().y));
+                            }
+                        }
+                    }
+                    /**/
+                    
+                    widget->addChild(child);
+                }
+            }
+        }
+    }
+    
+    CCLog("widget = %p", widget);
+    
+    return widget;
+}
+
+void WidgetPropertiesReader0300::setPropsForAllWidgetFromProtocolBuffers(cocos2d::extension::WidgetReaderProtocol *reader,
+                                                                         cocos2d::ui::Widget *widget,
+                                                                         const protocolbuffers::NodeTree &nodetree)
+{
+    reader->setPropsFromProtocolBuffers(widget, nodetree);
 }
 
 NS_CC_EXT_END

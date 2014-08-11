@@ -42,6 +42,7 @@ public:
     
     virtual void setPropsFromJsonDictionary(ui::Widget* widget, const rapidjson::Value& options);
     virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* pCocoLoader,  stExpCocoNode*	pCocoNode) ;
+    virtual void setPropsFromProtocolBuffers(ui::Widget* widget, const protocolbuffers::NodeTree& nodeTree);
 };
 
 NS_CC_EXT_END
