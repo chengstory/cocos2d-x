@@ -117,6 +117,14 @@ CocoStudio/Json/protocolBuf/src/google/protobuf/text_format.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/unknown_field_set.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/wire_format.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/wire_format_lite.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/code_generator.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/command_line_interface.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/importer.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/parser.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/plugin.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/plugin.pb.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/subprocess.cc \
+CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/zip_writer.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp/cpp_enum.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp/cpp_enum_field.cc \
 CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp/cpp_extension.cc \
@@ -213,7 +221,11 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                            $(LOCAL_PATH)/GUI/CCScrollView \
                            $(LOCAL_PATH)/network \
                            $(LOCAL_PATH)/LocalStorage \
-						               $(LOCAL_PATH)/CocoStudio/Armature
+	                   $(LOCAL_PATH)/CocoStudio/Armature
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/CocoStudio/Json/protocolBuf/src \
+                    $(LOCAL_PATH)/CocoStudio/Json/protocolBuf/src/google/protobuf
+			   
 
 LOCAL_CFLAGS := -fexceptions
                     

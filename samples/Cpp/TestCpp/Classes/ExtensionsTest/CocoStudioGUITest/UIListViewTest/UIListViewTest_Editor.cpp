@@ -1,6 +1,6 @@
 
 #include "UIListViewTest_Editor.h"
-#include "VisibleRect.h"
+#include "../../../VisibleRect.h"
 
 
 // UIListViewTest_Vertical_Editor

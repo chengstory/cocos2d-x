@@ -1,7 +1,7 @@
 
 
 #include "UIPageViewTest_Editor.h"
-#include "VisibleRect.h"
+#include "../../../VisibleRect.h"
 
 
 // UIPageViewTest_Editor

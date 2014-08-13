@@ -1,7 +1,7 @@
 
 
 #include "UIScrollViewTest_Editor.h"
-#include "VisibleRect.h"
+#include "../../../VisibleRect.h"
 
 
 // UIScrollViewTest_Vertical_Editor

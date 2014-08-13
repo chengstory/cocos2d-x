@@ -1,7 +1,7 @@
 
 
 #include "UILayoutTest_Editor.h"
-#include "VisibleRect.h"
+#include "../../../VisibleRect.h"
 
 
 // UILayoutTest_Editor
