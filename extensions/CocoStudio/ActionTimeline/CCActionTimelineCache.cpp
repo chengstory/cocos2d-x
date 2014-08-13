@@ -261,14 +261,15 @@ ActionTimeline* ActionTimelineCache::loadAnimationActionWithFileFromProtocolBuff
     //	_protocolBuffersPath = path.substr(0, pos + 1);
     
     std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName.c_str());
-    std::fstream in(fullPath.c_str(), std::ios::in | std::ios::binary);
+  	unsigned long size = 0;
+	unsigned char *content = CCFileUtils::sharedFileUtils()->getFileData(fullPath.c_str(), "rt", &size);
     protocolbuffers::CSParseBinary gpbwp;
     //    protocolbuffers::GUIProtocolBuffersProtobuf gpbwp;
-    if (!gpbwp.ParseFromIstream(&in))
+	if (!gpbwp.ParseFromArray(content, size))
     {
         return NULL;
     }
-    in.close();
+	CC_SAFE_DELETE_ARRAY(content);
     
     
     const protocolbuffers::NodeAction& actionProtobuf = gpbwp.action();

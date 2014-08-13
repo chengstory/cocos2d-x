@@ -140,16 +140,6 @@ files
     "*.h"
 	"*.cpp"
 	
-	["CocoStudio/Json/protocolBuf/src/google/protobuf/compiler"]
-    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/compiler")
-    "*.h"
-	"*.cpp"
-	
-	["CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp"]
-    ("../CocoStudio/Json/protocolBuf/src/google/protobuf/compiler/cpp")
-    "*.h"
-	"*.cpp"
-	
 	["CocoStudio/Json/protocolBuf/src/google/protobuf/io"]
     ("../CocoStudio/Json/protocolBuf/src/google/protobuf/io")
     "*.h"
