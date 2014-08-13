@@ -552,14 +552,27 @@ cocos2d::CCNode* NodeReader::nodeFromProtocolBuffersFile(const std::string &file
     //	_protocolBuffersPath = path.substr(0, pos + 1);
     
     std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(fileName.c_str());
-    std::fstream in(fullPath.c_str(), std::ios::in | std::ios::binary);
+    
+    
+    unsigned long size = 0;
+    unsigned char* pData = 0;
+    pData = CCFileUtils::sharedFileUtils()->getFileData(fileName.c_str(), "rb", &size);
+    
     protocolbuffers::CSParseBinary gpbwp;
-    //    protocolbuffers::GUIProtocolBuffersProtobuf gpbwp;
-    if (!gpbwp.ParseFromIstream(&in))
+    if (!gpbwp.ParseFromArray(pData, size))
     {
         return NULL;
     }
-    in.close();
+    
+//    std::fstream in(fullPath.c_str(), std::ios::in | std::ios::binary);
+//    protocolbuffers::CSParseBinary gpbwp;
+//    //    protocolbuffers::GUIProtocolBuffersProtobuf gpbwp;
+//    if (!gpbwp.ParseFromIstream(&in))
+//    {
+//        return NULL;
+//    }
+//    in.close();
+    
     /*
      CCLog("dataScale = %d", gpbwp.datascale());
      CCLog("designHeight = %d", gpbwp.designheight());
