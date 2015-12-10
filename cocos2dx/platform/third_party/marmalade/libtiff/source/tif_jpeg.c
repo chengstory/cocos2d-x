@@ -1499,6 +1499,7 @@ JPEGSetupEncode(TIFF* tif)
 	JPEGState* sp = JState(tif);
 	TIFFDirectory *td = &tif->tif_dir;
 	static const char module[] = "JPEGSetupEncode";
+	boolean bitspersampleTest;
 
 #if defined(JPEG_DUAL_MODE_8_12) && !defined(TIFFInitJPEG)
         if( tif->tif_dir.td_bitspersample == 12 )
@@ -1569,10 +1570,11 @@ JPEGSetupEncode(TIFF* tif)
 	 */
 #ifdef JPEG_LIB_MK1
         /* BITS_IN_JSAMPLE now permits 8 and 12 --- dgilbert */
-	if (td->td_bitspersample != 8 && td->td_bitspersample != 12) 
+	bitspersampleTest = td->td_bitspersample != 8 && td->td_bitspersample != 12;
 #else
-	if (td->td_bitspersample != BITS_IN_JSAMPLE )
+	bitspersampleTest = td->td_bitspersample != BITS_IN_JSAMPLE;
 #endif
+	if (bitspersampleTest)
 	{
 		TIFFErrorExt(tif->tif_clientdata, module, "BitsPerSample %d not allowed for JPEG",
 			  (int) td->td_bitspersample);
