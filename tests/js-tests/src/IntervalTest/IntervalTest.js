@@ -123,7 +123,10 @@ var IntervalLayer = cc.LayerGradient.extend({
 
     step1:function (dt) {
         this.time1 += dt;
+       // print(this.time1);
+       // print(this.time1.toFixed(1));
         this.label1.setString(this.time1.toFixed(1));
+
     },
     step2:function (dt) {
         this.time2 += dt;
